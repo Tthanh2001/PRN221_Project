@@ -1,3 +1,8 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using ProjectPRN.Models;
+using ProjectPRN.Utils;
+
 namespace PRN221_Project
 {
     public class Program
@@ -8,6 +13,18 @@ namespace PRN221_Project
 
             // Add services to the container.
             builder.Services.AddRazorPages();
+
+            builder.Services.AddDbContext<CinphileDbContext>(
+            options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+
+            builder.Services.AddIdentity<ApplicationAccount, IdentityRole>()
+                .AddDefaultUI()
+                .AddEntityFrameworkStores<CinphileDbContext>()
+                .AddDefaultTokenProviders();
 
             var app = builder.Build();
 
