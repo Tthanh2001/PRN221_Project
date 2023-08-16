@@ -20,6 +20,9 @@ namespace PRN221_Project
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
+                        builder.Services.AddDefaultIdentity<ApplicationAccount>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<CinphileDbContext>();
+
 
             builder.Services.AddIdentity<ApplicationAccount, IdentityRole>()
                 .AddDefaultUI()
@@ -40,6 +43,7 @@ namespace PRN221_Project
             app.UseStaticFiles();
 
             app.UseRouting();
+                        app.UseAuthentication();;
 
             app.UseAuthorization();
 
