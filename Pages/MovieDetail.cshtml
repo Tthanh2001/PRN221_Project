@@ -1,0 +1,30 @@
+﻿@page
+@model PRN221_Project.Pages.MovieDetailModel
+@{
+}
+<style>
+    .modal-video {
+        max-width: 100%;
+        height: auto;
+    }
+</style>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
+  Mở Pop-up
+</button>
+
+<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+                <p>@Model.movie.Title</p>
+                
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
