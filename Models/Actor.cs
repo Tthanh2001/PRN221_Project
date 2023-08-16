@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ProjectPRN.Models
+namespace PRN221_Project.Models
 {
     [Table("Actor")]
     public class Actor

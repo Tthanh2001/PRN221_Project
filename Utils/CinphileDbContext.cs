@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PRN221_Project.Models;
-using ProjectPRN.Models;
+using PRN221_Project.Models;
 
-namespace ProjectPRN.Utils
+namespace PRN221_Project.Utils
 {
     public class CinphileDbContext : IdentityDbContext<ApplicationAccount>
     {

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 
-namespace ProjectPRN.Models
+namespace PRN221_Project.Models
 {
     [Table("Movie")]
     public class Movie

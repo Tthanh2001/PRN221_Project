@@ -1,4 +1,4 @@
-﻿using ProjectPRN.Models;
+﻿using PRN221_Project.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace PRN221_Project.Models
