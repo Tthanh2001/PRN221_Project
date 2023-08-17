@@ -87,6 +87,14 @@ namespace PRN221_Project.Areas.Identity.Pages.Account
             [EmailAddress]
             public string Email { get; set; }
 
+            [RegularExpression(@"^0\d{9}$",
+                ErrorMessage = "Please enter a valid phone number starting with " +
+                "'0' and having a total of 10 digits.")]
+            [DataType(DataType.PhoneNumber)]
+            [Required]
+            [Display(Name = "Phone Number")]
+            public string PhoneNumber { get; set; }
+
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
@@ -210,6 +218,7 @@ namespace PRN221_Project.Areas.Identity.Pages.Account
                 user.DateOfBirth = Input.DateOfBirth;
                 user.RegistrationDate = DateTime.Now;
 
+                await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
                 var result = await _userManager.CreateAsync(user, Input.Password);

@@ -58,7 +58,10 @@ namespace PRN221_Project.Areas.Identity.Pages.Account.Manage
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Phone(ErrorMessage = "{0} wrong format")]
+            [RegularExpression(@"^0\d{9}$",
+                ErrorMessage = "Please enter a valid phone number starting with " +
+                "'0' and having a total of 10 digits.")]
+            [DataType(DataType.PhoneNumber)]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
 

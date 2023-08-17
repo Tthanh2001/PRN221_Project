@@ -105,6 +105,9 @@ namespace PRN221_Project.Areas.Identity.Pages.Account
             [Display(Name = "Full Name")]
             public string FullName { get; set; }
 
+            [RegularExpression(@"^0\d{9}$", 
+                ErrorMessage = "Please enter a valid phone number starting with " +
+                "'0' and having a total of 10 digits.")]
             [DataType(DataType.PhoneNumber)]
             [Required]
             [Display(Name = "Phone Number")]
@@ -130,14 +133,15 @@ namespace PRN221_Project.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
+
                 user.DateOfBirth = Input.DateOfBirth;
                 user.RegistrationDate = DateTime.Now;
                 user.FullName = Input.FullName;
-                user.PhoneNumber = Input.PhoneNumber;
                 
+                await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
+                await _userManager.SetUserNameAsync(user, Input.PhoneNumber);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                
-
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
