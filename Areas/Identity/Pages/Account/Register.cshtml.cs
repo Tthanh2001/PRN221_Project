@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using ProjectPRN.Models;
+using PRN221_Project.Models;
 
 namespace PRN221_Project.Areas.Identity.Pages.Account
 {
@@ -98,6 +98,25 @@ namespace PRN221_Project.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [RegularExpression(@"^[a-zA-ZÀ-ỹà-ỹ ]+$", 
+                ErrorMessage = "Please enter a correct name")]
+            [Required]
+            [Display(Name = "Full Name")]
+            public string FullName { get; set; }
+
+            [RegularExpression(@"^0\d{9}$", 
+                ErrorMessage = "Please enter a valid phone number starting with " +
+                "'0' and having a total of 10 digits.")]
+            [DataType(DataType.PhoneNumber)]
+            [Required]
+            [Display(Name = "Phone Number")]
+            public string PhoneNumber { get; set; }
+
+            [Required]
+            [Display(Name = "Date of Birth")]
+            [DataType(DataType.Date)]
+            public DateTime DateOfBirth { get; set; }
         }
 
 
@@ -115,8 +134,14 @@ namespace PRN221_Project.Areas.Identity.Pages.Account
             {
                 var user = CreateUser();
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                user.DateOfBirth = Input.DateOfBirth;
+                user.RegistrationDate = DateTime.Now;
+                user.FullName = Input.FullName;
+                
+                await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
+                await _userManager.SetUserNameAsync(user, Input.PhoneNumber);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+               
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
@@ -129,7 +154,7 @@ namespace PRN221_Project.Areas.Identity.Pages.Account
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
-                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+                        values: new { area = "Identity", userId, code, returnUrl },
                         protocol: Request.Scheme);
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
@@ -137,7 +162,7 @@ namespace PRN221_Project.Areas.Identity.Pages.Account
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl });
                     }
                     else
                     {

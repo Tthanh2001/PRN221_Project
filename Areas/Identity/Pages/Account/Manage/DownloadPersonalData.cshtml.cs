@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using ProjectPRN.Models;
+using PRN221_Project.Models;
 
 namespace PRN221_Project.Areas.Identity.Pages.Account.Manage
 {

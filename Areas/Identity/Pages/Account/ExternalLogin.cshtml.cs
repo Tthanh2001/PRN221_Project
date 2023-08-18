@@ -17,7 +17,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using ProjectPRN.Models;
+using PRN221_Project.Models;
+using MimeKit;
 
 namespace PRN221_Project.Areas.Identity.Pages.Account
 {
@@ -85,8 +86,42 @@ namespace PRN221_Project.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
             public string Email { get; set; }
+
+            [RegularExpression(@"^0\d{9}$",
+                ErrorMessage = "Please enter a valid phone number starting with " +
+                "'0' and having a total of 10 digits.")]
+            [DataType(DataType.PhoneNumber)]
+            [Required]
+            [Display(Name = "Phone Number")]
+            public string PhoneNumber { get; set; }
+
+            [Required]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [DataType(DataType.Password)]
+            [Display(Name = "Password")]
+            public string Password { get; set; }
+
+            /// <summary>
+            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+            ///     directly from your code. This API may change or be removed in future releases.
+            /// </summary>
+            [DataType(DataType.Password)]
+            [Display(Name = "Confirm password")]
+            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            public string ConfirmPassword { get; set; }
+
+            [RegularExpression(@"^[a-zA-ZÀ-ỹà-ỹ ]+$",
+                ErrorMessage = "Please enter a correct name")]
+            [Required]
+            [Display(Name = "Full Name")]
+            public string FullName { get; set; }
+
+            [Required]
+            [Display(Name = "Date of Birth")]
+            [DataType(DataType.Date)]
+            public DateTime DateOfBirth { get; set; }
         }
-        
+
         public IActionResult OnGet() => RedirectToPage("./Login");
 
         public IActionResult OnPost(string provider, string returnUrl = null)
@@ -94,12 +129,13 @@ namespace PRN221_Project.Areas.Identity.Pages.Account
             // Request a redirect to the external login provider.
             var redirectUrl = Url.Page("./ExternalLogin", pageHandler: "Callback", values: new { returnUrl });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+
             return new ChallengeResult(provider, properties);
         }
 
         public async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
+            returnUrl ??= Url.Content("~/Index");
             if (remoteError != null)
             {
                 ErrorMessage = $"Error from external provider: {remoteError}";
@@ -110,6 +146,30 @@ namespace PRN221_Project.Areas.Identity.Pages.Account
             {
                 ErrorMessage = "Error loading external login information.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+            }
+
+            //Check xem email đã tồn tại chưa
+            string externalMail = null;
+            if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+            {
+                externalMail = info.Principal.FindFirstValue(ClaimTypes.Email);
+            }
+            var userWithexternalMail = (externalMail != null) ? (await _userManager.FindByEmailAsync(externalMail)) : null;
+
+            // Xử lý khi có thông tin về email từ info, đồng thời có user với email đó
+            // trường hợp này sẽ thực hiện liên kết tài khoản ngoài + xác thực email luôn     
+            if (userWithexternalMail != null)
+            {
+                // xác nhận email luôn nếu chưa xác nhận
+                if (!userWithexternalMail.EmailConfirmed)
+                {
+                    var codeactive = await _userManager.GenerateEmailConfirmationTokenAsync(userWithexternalMail);
+                    await _userManager.ConfirmEmailAsync(userWithexternalMail, codeactive);
+                    return LocalRedirect(returnUrl);
+                }
+                // Thực hiện login    
+                await _signInManager.SignInAsync(userWithexternalMail, isPersistent: false);
+                return LocalRedirect(returnUrl);
             }
 
             // Sign in the user with this external login provider if the user already has a login.
@@ -141,7 +201,7 @@ namespace PRN221_Project.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
+            returnUrl ??= Url.Content("~/Index");
             // Get the information about the user from the external login provider
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
@@ -154,10 +214,14 @@ namespace PRN221_Project.Areas.Identity.Pages.Account
             {
                 var user = CreateUser();
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                user.FullName = Input.FullName;
+                user.DateOfBirth = Input.DateOfBirth;
+                user.RegistrationDate = DateTime.Now;
+
+                await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
-                var result = await _userManager.CreateAsync(user);
+                var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user, info);
@@ -165,23 +229,10 @@ namespace PRN221_Project.Areas.Identity.Pages.Account
                     {
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
 
-                        var userId = await _userManager.GetUserIdAsync(user);
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                        var callbackUrl = Url.Page(
-                            "/Account/ConfirmEmail",
-                            pageHandler: null,
-                            values: new { area = "Identity", userId = userId, code = code },
-                            protocol: Request.Scheme);
-
-                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                        // If account confirmation is required, we need to show the link if we don't have a real email sender
-                        if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                        {
-                            return RedirectToPage("./RegisterConfirmation", new { Email = Input.Email });
-                        }
+                        code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+                        await _userManager.ConfirmEmailAsync(user, code);
 
                         await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
                         return LocalRedirect(returnUrl);

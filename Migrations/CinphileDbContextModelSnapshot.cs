@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ProjectPRN.Utils;
+using PRN221_Project.Utils;
 
 #nullable disable
 
@@ -393,7 +393,7 @@ namespace PRN221_Project.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<string>("UserName")
+                    b.Property<string>("FullName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 

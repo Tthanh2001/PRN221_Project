@@ -1,0 +1,19 @@
+﻿@{
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+@section Styles{
+    <style>
+        input {
+            margin: 10px 0;
+        }
+    </style>
+}
+
+
+@RenderBody()
+
+@section Scripts
+    {
+    @RenderSection("Scripts", required: false)
+}
