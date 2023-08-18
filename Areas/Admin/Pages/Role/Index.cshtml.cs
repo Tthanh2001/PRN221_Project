@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using ProjectPRN.Utils;
+using PRN221_Project.Utils;
 
 namespace PRN221_Project.Areas.Admin.Pages.Role
 {

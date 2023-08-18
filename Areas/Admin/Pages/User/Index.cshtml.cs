@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.PowerBI.Api.Models;
-using ProjectPRN.Utils;
+using PRN221_Project.Utils;
 
 namespace PRN221_Project.Areas.Admin.Pages.User
 {
