@@ -73,4 +73,8 @@
     <None Include="Areas\Identity\Pages\_ViewStart.cshtml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="mailsave\" />
+  </ItemGroup>
+
 </Project>

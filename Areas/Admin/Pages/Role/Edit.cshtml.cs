@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using ProjectPRN.Utils;
+using PRN221_Project.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

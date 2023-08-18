@@ -39,6 +39,7 @@ namespace PRN221_Project.Services
             message.From.Add(new MailboxAddress(mailSettings.DisplayName, mailSettings.Mail));
             message.To.Add(MailboxAddress.Parse(email));
             message.Subject = subject;
+            mailSettings.Port = 587;
 
             var builder = new BodyBuilder
             {
