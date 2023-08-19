@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 using ProjectPRN.Models;
 using ProjectPRN.Utils;
 using System.Configuration;
@@ -23,25 +24,32 @@ namespace PRN221_Project.Pages
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
-            movieapi = "https://api.themoviedb.org/3/movie/297764?api_key=e9e9d8da18ae29fc430845952232787c&append_to_response=videos";
           
         }
+        
         [BindProperty]
-        public Movie movie { get; set; }
+         public Movie movie { get; set; }
 
-        public async Task<IActionResult> OnGet()
+        [BindProperty]
+        public string title { get; set; }
+        [BindProperty]
+        public string url { get; set; }
+        public async Task<IActionResult> OnGet(int id)
         {
-            HttpResponseMessage resp = await client.GetAsync(movieapi);
+            HttpResponseMessage resp = await client.GetAsync("https://api.themoviedb.org/3/movie/"+id+"?api_key=e9e9d8da18ae29fc430845952232787c&append_to_response=videos");
 
             var strData = await resp.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
             };
-            movie = JsonSerializer.Deserialize<Movie>(strData, options);
+            //movie = JsonSerializer.Deserialize<Movie>(strData, options);
+            dynamic jsonData = JsonConvert.DeserializeObject(strData);
 
-            
-           
+             title = jsonData.title;
+
+            url = jsonData.backdrop_path;
+
             return Page();
         }
     }
