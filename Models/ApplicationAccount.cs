@@ -3,7 +3,7 @@ using PRN221_Project.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ProjectPRN.Models
+namespace PRN221_Project.Models
 {
     [Table("ApplicationAccount")]
     public class ApplicationAccount : IdentityUser

@@ -1,0 +1,28 @@
+﻿@page "Admin/roles"
+@model PRN221_Project.Areas.Admin.Pages.Role.IndexModel
+@{
+    ViewData["Title"] = "Role list";
+}
+
+<partial name="_StatusMessage" model="@Model.StatusMessage"></partial>
+<div class="mb-2">
+    <a class="btn btn-secondary" asp-page="./Create">Create new role</a>
+    <a class="btn btn-secondary" asp-page="../User/Index">User Management</a>
+</div>
+
+<table class="table">
+    <tr>
+        <th>Role Name</th>
+        <th>Action</th>
+    </tr>
+    @foreach(var role in Model.roles)
+    {
+        <tr>
+            <td>@role.Name</td>
+            <td>
+                <a class="btn btn-success btn-sm" asp-page="./Edit" asp-role-roleid="@role.Id">Edit</a>
+                <a class="btn btn-success btn-sm" asp-page="./Delete" asp-role-roleid="@role.Id">Delete</a>
+            </td>
+        </tr>
+    }
+</table>

@@ -1,0 +1,125 @@
+﻿@page
+@model PRN221_Project.Pages.Admin.ManagerShowTimes.IndexModel
+@{
+}
+<div class="row">
+    <div class="col-12">
+        @foreach (var r in Model.rooms)
+        {
+            <div class="card my-4" style="margin-bottom:60px!important">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between">
+                        <h6 class="text-white text-capitalize ps-3">@r.RoomName</h6>
+                        <button class="btn bg-gradient-info ms-auto" data-bs-toggle="modal" data-bs-target="#addMovieModal">Add Lịch Chiếu</button>
+                    </div>
+                </div>
+                <div class="card-body px-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center justify-content-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Movies</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Start Time</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">End Time</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Status</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">COMPLETION</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var s in r.MovieSchedules)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex px-2">
+                                                <div class="my-auto">
+                                                    <h6 class="mb-0 text-sm">@s.Movie.Title</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <p class="text-sm font-weight-bold mb-0">@s.StartTime</p>
+                                        </td>
+                                        <td>
+                                            <span class="text-sm font-weight-bold mb-0">@s.EndTime</span>
+                                        </td>
+                                        @if (s.StartTime < DateTime.Now && s.EndTime > DateTime.Now)
+                                        {
+                                            <td style="text-align: center">
+                                                <span class="text-sm font-weight-bold mb-0">Currently showing</span>
+                                            </td>
+                                        }
+                                        else if (s.StartTime > DateTime.Now)
+                                        {
+                                            <td style="text-align: center">
+                                                <span class="text-sm font-weight-bold mb-0">Not yet</span>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td style="text-align: center">
+                                                <span class="text-sm font-weight-bold mb-0">Already released</span>
+                                            </td>
+                                        }
+                                        <td class="align-middle text-center">
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <span class="me-2 text-xs font-weight-bold">60%</span>
+                                                <div>
+                                                    <div class="progress">
+                                                        <div class="progress-bar bg-gradient-info" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @*Modal*@
+            <div class="modal fade" id="addMovieModal" tabindex="-1" aria-labelledby="addMovieModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <form method="post">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addMovieModalLabel">Add New Movie Off Room @r.RoomName</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="category" class="form-label">Movie</label>
+                                    <select class="form-control" id="Genre" name="Genre" style="border:1px solid #ced4da">
+                                        @foreach (var m in Model.movies)
+                                        {
+                                            <option value="@m.Id">@m.Title</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Start Time</label>
+                                    <select class="form-select" name="StartTime">
+                                        @for (int hour = 9; hour <= 24; hour++)
+                                        {
+                                            for (int minute = 0; minute < 60; minute += 30)
+                                            {
+                                                <option value="@($"{hour:D2}:{minute:D2}")">@($"{hour:D2}:{minute:D2}")</option>
+                                            }
+                                        }
+                                        <option value="24:00">24:00</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <div>
+                                    <input type="submit" value="Add" class="btn btn-primary" />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+</div>
