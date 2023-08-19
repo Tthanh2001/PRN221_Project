@@ -13,6 +13,9 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
         [BindProperty]
         public List<Room> rooms { get; set; }
 
+        [BindProperty]
+        public List<Movie> movies { get; set; } 
+
         public IndexModel(CinphileDbContext context)
         {
             _context = context;
@@ -20,6 +23,7 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
         public void OnGet()
         {
             rooms = _context.Rooms.Include(m => m.MovieSchedules).ThenInclude(m => m.Movie).ToList();
+            movies= _context.Movies.ToList();
         }
     }
 }
