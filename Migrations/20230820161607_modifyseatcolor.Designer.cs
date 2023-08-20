@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PRN221_Project.Utils;
 
@@ -11,9 +12,10 @@ using PRN221_Project.Utils;
 namespace PRN221_Project.Migrations
 {
     [DbContext(typeof(CinphileDbContext))]
-    partial class CinphileDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230820161607_modifyseatcolor")]
+    partial class modifyseatcolor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

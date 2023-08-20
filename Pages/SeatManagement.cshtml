@@ -1,0 +1,71 @@
+﻿@page
+@using PRN221_Project.Models;
+@model PRN221_Project.Pages.SeatManagementModel
+@{
+    ViewData["Title"] = "Seat Management";
+}
+
+@section Styles {
+    <style>
+        .seat-grid {
+            display: grid;
+            grid-template-columns: repeat(35, 40px);
+            justify-content: center;
+            overflow-x: auto;
+        }
+
+        .seat {
+            height: 35px;
+            width: 35px;
+            border: 1px solid black;
+            cursor: pointer;
+            margin: 5px;
+            background: rgba(0, 0, 0, 0)
+        }
+    </style>
+}
+
+<div class="container-fluid p-2">
+    <h1 class="text-center mb-3">@ViewData["Title"]</h1>
+
+    <div class="row mb-md-5">
+        <div class="col-2 d-flex justify-content-end m-0">
+            <label for="seatType" class="fs-5">Select Seat Type:</label>
+        </div>
+        <div class="col-10 align-content-center">
+            <select class="form-select" id="seatType">
+                @foreach (SeatType st in Model.SeatType)
+                {
+                    <option value="@st.Id" data-color="@st.SeatColor" data-type="">@st.Name</option>
+                }
+            </select>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="seat-grid">
+            @for (int col = 0; col < 35; col++)
+            {
+                <div class="grid-col">
+                    @for (int row = 0; row < 16; row++)
+                    {
+                        <div class="grid-seat">
+                            <div class="seat" data-row="@row" data-col="@col" data-seatId=""></div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <button id="saveButton" class="btn btn-info">Save</button>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/SeatManagement.js"></script>
+}
+
+
