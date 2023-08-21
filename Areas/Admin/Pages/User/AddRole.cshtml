@@ -1,5 +1,6 @@
-﻿@page "/admin/assign-user-role/{id}"
+﻿@page "/admin/assign-user-role/{id}" 
 @model PRN221_Project.Areas.Admin.Pages.User.AddRoleModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     ViewData["Title"] = "Assign role";
 }
@@ -7,9 +8,33 @@
 
 
 <div class="row"> 
+   
     <div class="col-md-6">
-        <form>
+        <form method="post" id="assign-user-role">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="RoleNames"></label>
+               @Html.ListBoxFor(m=>m.RoleNames, @Model.allRoles, new{
+                   id="id-select-roles",
+                   @class="w-100"
+               })
+                <span asp-validation-for="RoleNames" class="text-danger"></span>
+            </div>
             <button type="submit" class="btn btn-primary">Update</button>
+            <a class="btn btn-primary" asp-page="./Index">User List</a>
         </form>
     </div>
 </div>
+
+@section Scripts{
+    <script src="~/lib/multiple-select/multiple-select.min.js"></script>
+    <link rel="stylesheet" href="~/lib/multiple-select/multiple-select.min.css"/>
+    <script>
+        $("#id-select-roles").multipleSelect({
+            selectAll:false,
+            keepOpen: false,
+            isOpen: false,
+        });
+    </script>
+    <partial name="_ValidationScriptsPartial"/>
+}

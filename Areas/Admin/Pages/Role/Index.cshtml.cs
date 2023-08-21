@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -6,9 +7,10 @@ using PRN221_Project.Utils;
 
 namespace PRN221_Project.Areas.Admin.Pages.Role
 {
+    //[Authorize(Roles ="Admin, Vip, Editor")]
     public class IndexModel : RolePageModel
     {
-
+       
         public IndexModel(RoleManager<IdentityRole> roleManager,
             CinphileDbContext context) : base(roleManager,context)
         {
