@@ -15,33 +15,44 @@
         }
     });
 
-    $("#saveButton").click(async function () {
+    $("#saveButton").click(function () {
         const selectedSeats = [];
-        seatElements.each(function () {
+        seatGrid.find(".seat").each(function () {
             const seat = $(this);
-            if (seat.css("background-color")) {
-                selectedSeats.push({
+            const seatId = seat.attr("data-seatId");
+
+            if (seatId) {
+                const seatData = {
                     row: seat.attr("data-row"),
                     col: seat.attr("data-col"),
-                    typeId: seat.attr("data-seatId")
-                });
+                    typeId: seatId
+                };
+                selectedSeats.push(seatData);
             }
         });
 
         if (selectedSeats.length > 0) {
             try {
-                await $.ajax({
+                $.ajax({
                     url: "/SeatManagement",
                     method: "POST",
                     contentType: "application/json",
-                    data: JSON.stringify(selectedSeats)
+                    data: JSON.stringify(selectedSeats),
+                    headers: {
+                        RequestVerificationToken:
+                            $('input:hidden[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function (response) {
+                        console.log(response);
+                    },
+                    error: function (error) {
+                        console.log("Error:", error);
+                    }
                 });
-
-                // Handle success, e.g., show a success message
                 console.log("Selected seats saved successfully.");
             } catch (error) {
                 // Handle error, e.g., show an error message
-                console.error("Error saving selected seats:", error);
+                console.log("Error saving selected seats:", error);
             }
         }
     });

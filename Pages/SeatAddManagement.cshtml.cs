@@ -34,13 +34,11 @@ namespace PRN221_Project.Pages
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(int roomId, string seats)
+        public async Task<IActionResult> OnPostAsync([FromBody] List<SelectedSeat> selectedSeats)
         {
-            List<SelectedSeat>? selectedSeats = JsonConvert.DeserializeObject<List<SelectedSeat>>(seats);
-
             if (selectedSeats == null)
             {
-                return BadRequest();
+                return new JsonResult("Selected seats saved successfully.");
             }
 
             foreach (var seat in selectedSeats)
@@ -49,8 +47,8 @@ namespace PRN221_Project.Pages
                 {
                     SeatCol = seat.Col,
                     SeatRow = seat.Row,
-                    IsBookable = true, 
-                    RoomId = roomId,
+                    IsBookable = true,
+                    RoomId = 1, //Hardcode
                     SeatTypeId = seat.TypeId
                 });
             }

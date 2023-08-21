@@ -59,9 +59,10 @@
         </div>
     </div>
 
-    <div class="row">
+    <form class="row" method="post">
+        @Html.AntiForgeryToken()
         <button id="saveButton" class="btn btn-info">Save</button>
-    </div>
+    </form>
 </div>
 
 @section Scripts {
