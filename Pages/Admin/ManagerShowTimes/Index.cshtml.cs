@@ -3,13 +3,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using PRN221_Project.Models;
 using PRN221_Project.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PRN221_Project.Pages.Admin.ManagerShowTimes
 {
     public class IndexModel : PageModel
     {
         private readonly CinphileDbContext _context;
-
         DateTime _date;
 
         [BindProperty]
@@ -22,10 +24,10 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
         {
             _context = context;
         }
+
         public void OnGet()
         {
             LoadMovieInRoomToday();
-            //rooms = _context.Rooms.Include(m => m.MovieSchedules).ThenInclude(m => m.Movie).ToList();
             movies = _context.Movies.ToList();
         }
 
@@ -34,7 +36,7 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
             var today = DateTime.Today;
             _date = today;
             var startDate = today;
-            var endDate = today.AddDays(1).AddTicks(-1); // Kết thúc vào 23:59:59
+            var endDate = today.AddDays(1).AddTicks(-1);
 
             rooms = _context.Rooms
                 .Include(m => m.MovieSchedules)
@@ -48,26 +50,30 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
                     .ToList();
             }
         }
+
         public IActionResult OnPost()
         {
-            var selectedDateStr = Request.Form["date"];
-            _date = DateTime.Parse(selectedDateStr);
-            if (DateTime.TryParse(selectedDateStr, out var selectedDate))
+            var today = DateTime.Parse(Request.Form["date"]);
+            var startDate = today;
+            var endDate = today.AddDays(1).AddTicks(-1);
+
+            rooms = _context.Rooms
+             .Include(m => m.MovieSchedules)
+             .ThenInclude(m => m.Movie)
+             .ToList();
+            ViewData["SelectedDate"] = today;
+            foreach (var room in rooms)
             {
-                var startDate = selectedDate.Date;
-                var endDate = startDate.AddDays(1).AddTicks(-1);
-
-
-                rooms = _context.Rooms
-                    .Include(m => m.MovieSchedules)
-                    .ThenInclude(m => m.Movie)
-                    .Where(r => r.MovieSchedules.Any(s => s.StartTime >= startDate && s.StartTime <= endDate))
+                room.MovieSchedules = room.MovieSchedules
+                    .Where(s => s.StartTime >= startDate && s.StartTime <= endDate)
                     .ToList();
             }
+
             movies = _context.Movies.ToList();
 
             return Page();
         }
+
         public IActionResult OnPostAdd()
         {
             DateTime selectedDate = DateTime.Parse(Request.Form["dateInput"]);
@@ -78,40 +84,92 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
             DateTime StartTime = selectedDate.Date.Add(selectedStartTime);
 
             Movie m = _context.Movies.FirstOrDefault(m => m.Id == IdMovie);
-            
-
-            if (IsStartTimeValid(selectedDate, StartTime))
+            if (m != null)
             {
-                Console.WriteLine(m);
-                if (m != null)
+                if (checkReleaseDateMovie(m, StartTime))
                 {
-                    TimeSpan convertTime = TimeSpan.FromMinutes(m.DurationMinutes);
+                    if (CheckStartTime(StartTime))
+                    {
+                        if (IsEndTimeValid(selectedDate, StartTime, idRoom))
+                        {
+                            if (IsStartTimeValid(selectedDate, StartTime, idRoom, IdMovie))
+                            {
+                                TimeSpan convertTime = TimeSpan.FromMinutes(m.DurationMinutes);
+                                MovieSchedule movieSchedule = new MovieSchedule();
+                                movieSchedule.RoomId = idRoom;
+                                movieSchedule.MovieId = IdMovie;
+                                movieSchedule.StartTime = StartTime;
+                                movieSchedule.EndTime = StartTime.Add(convertTime);
 
-                    MovieSchedule movieSchedule = new MovieSchedule();
-                    movieSchedule.RoomId = idRoom;
-                    movieSchedule.MovieId = IdMovie;
-                    movieSchedule.StartTime = StartTime;
-                    movieSchedule.EndTime = StartTime.Add(convertTime);
+                                _context.MovieSchedules.Add(movieSchedule);
+                                _context.SaveChanges();
 
-                    _context.MovieSchedules.Add(movieSchedule);
-                    _context.SaveChanges();
-                }                
+                            }
+                            else
+                            {
+                                Console.WriteLine("Không hợp lệ");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Phim chưa kết thúc");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Đã quá giờ Công chiếu");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Phim Chưa được công chiếu");
+                }
             }
-            else
-            {
-                Console.WriteLine("Không hợp lệ");
-            }
-
-
-
-
             return RedirectToPage();
         }
-
-        public bool IsStartTimeValid(DateTime selectedDate, DateTime newStartTime)
+        public bool IsEndTimeValid(DateTime selectedDate, DateTime newStartTime, int roomId)
         {
-            List<MovieSchedule> allSchedules = new List<MovieSchedule>();
-            allSchedules = _context.MovieSchedules.ToList();
+            var latestScheduleInRoom = _context.MovieSchedules
+                .Where(s => s.RoomId == roomId && s.StartTime.Date == selectedDate.Date)
+                .OrderByDescending(s => s.StartTime)
+                .FirstOrDefault();
+
+            if (latestScheduleInRoom != null && newStartTime < latestScheduleInRoom.EndTime)
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //public bool IsEndTimeValid(Movie movie, DateTime startTime)
+        //{
+        //    TimeSpan convertTime = TimeSpan.FromMinutes(movie.DurationMinutes);
+        //    DateTime endTime = startTime.Add(convertTime);
+
+        //    return endTime > startTime;
+        //}
+        public bool CheckStartTime(DateTime StartTime)
+        {
+            DateTime time = DateTime.Now;
+            if (StartTime < time)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public bool checkReleaseDateMovie(Movie m, DateTime StartTime)
+        {
+            if (StartTime < m.ReleaseDate)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public bool IsStartTimeValid(DateTime selectedDate, DateTime newStartTime, int roomId, int movieId)
+        {
+            List<MovieSchedule> allSchedules = _context.MovieSchedules.ToList();
 
             TimeSpan minTimeBetweenSchedules = TimeSpan.FromMinutes(30);
 
@@ -123,13 +181,15 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
 
                     if (timeDifference.Duration() < minTimeBetweenSchedules)
                     {
-                        return false;
+                        if (schedule.MovieId == movieId && schedule.RoomId != roomId)
+                        {
+                            return false;
+                        }
                     }
                 }
             }
 
             return true;
         }
-
     }
 }

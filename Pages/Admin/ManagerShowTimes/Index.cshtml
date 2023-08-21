@@ -12,9 +12,25 @@
                         @for (int i = 0; i <= 7; i++)
                         {
                             var currentDate = DateTime.Now.AddDays(i);
-                            <option value="@currentDate">@currentDate.ToString("yyyy-MM-dd")</option>
+                            if (@ViewBag.SelectedDate != null)
+                            {
+                                var c = (DateTime)@ViewBag.SelectedDate;
+                                if (@currentDate.Date == @c.Date)
+                                {
+                                    <option value="@currentDate" selected="selected">@currentDate.ToString("yyyy-MM-dd")</option>
+                                }
+                                else
+                                {
+                                    <option value="@currentDate">@currentDate.ToString("yyyy-MM-dd")</option>
+                                }
+                            }
+                            else
+                            {
+                                <option value="@currentDate">@currentDate.ToString("yyyy-MM-dd")</option>
+                            }                         
                         }
                     </select>
+
                 </div>
             </form>
         </div>
@@ -110,8 +126,8 @@
                             @*Thẻ Input ẩn*@
                             <input name="IdRoom" value="@r.Id" hidden />
                             <input type="hidden" id="dateInput-@r.Id" name="dateInput" />
-                            
-                              @* Input ẩn*@
+
+                            @* Input ẩn*@
                             <div class="modal-body">
                                 <div class="mb-3">
                                     <label for="category" class="form-label">Movie</label>
@@ -157,6 +173,6 @@
         var selectedDate = document.getElementById("datetime").value;
         var dateInput = document.getElementById("dateInput-" + roomId);
         dateInput.value = selectedDate;
-      
+
     }
 </script>
