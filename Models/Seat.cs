@@ -11,7 +11,10 @@ namespace PRN221_Project.Models
 
         [Key]
         public int Id { get; set; }
+        public string SeatName { get; set; } = null!;
+        
         public int SeatCol { get; set; }
+        
         public int SeatRow { get; set; } 
         public bool IsBookable { get; set; }
         public int RoomId { get; set; }

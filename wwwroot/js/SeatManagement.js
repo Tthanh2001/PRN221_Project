@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    const seatGrid = $(".seat-grid");
+    const seatGrid = $("#seat-grid");
     const seatTypeSelect = $("#seatType");
 
     seatGrid.on("click", ".seat", function () {
@@ -8,10 +8,10 @@
 
         if (seat.css("background-color") === "rgba(0, 0, 0, 0)") {
             seat.css("background-color", selectedSeatType.attr("data-color"));
-            seat.attr("data-seatId", selectedSeatType.val());
+            seat.attr("data-seatTypeId", selectedSeatType.val());
         } else {
             seat.css("background-color", "rgba(0, 0, 0, 0)");
-            seat.attr("data-seatId", "");
+            seat.attr("data-seatTypeId", "");
         }
     });
 
@@ -19,13 +19,14 @@
         const selectedSeats = [];
         seatGrid.find(".seat").each(function () {
             const seat = $(this);
-            const seatId = seat.attr("data-seatId");
+            const seatId = seat.attr("data-seatTypeId");
 
             if (seatId) {
                 const seatData = {
                     row: seat.attr("data-row"),
                     col: seat.attr("data-col"),
-                    typeId: seatId
+                    typeId: seatId,
+                    available: seat.attr("data-availabe")
                 };
                 selectedSeats.push(seatData);
             }

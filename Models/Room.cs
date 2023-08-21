@@ -13,7 +13,10 @@ namespace PRN221_Project.Models
         [Key]
         public int Id { get; set; }
         public string RoomName { get; set; } = null!;
-        public int NumberOfSeats { get; set;}
+        [Range(1, 50)]
+        public int NumberOfCols { get; set;}
+        [Range(1, 50)]
+        public int NumberOfRows { get; set;}
         public virtual ICollection<MovieSchedule> MovieSchedules { get; set; } = null!;
         public virtual ICollection<Seat> Seats { get; set; } = null!;
     }

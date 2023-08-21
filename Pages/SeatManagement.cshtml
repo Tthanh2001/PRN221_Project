@@ -3,13 +3,13 @@
 @model PRN221_Project.Pages.SeatManagementModel
 @{
     ViewData["Title"] = "Seat Management";
+    var seatDictionary = Model.Room.Seats.ToDictionary(s => (s.SeatRow, s.SeatCol));
 }
 
 @section Styles {
     <style>
-        .seat-grid {
+        #seat-grid {
             display: grid;
-            grid-template-columns: repeat(35, 40px);
             justify-content: center;
             overflow-x: auto;
         }
@@ -44,15 +44,25 @@
     </div>
 
     <div class="row">
-        <div class="seat-grid">
-            @for (int col = 0; col < 35; col++)
+        <div id="seat-grid">
+            @for (int col = 0; col < Model.Room.NumberOfCols; col++)
             {
                 <div class="grid-col">
-                    @for (int row = 0; row < 16; row++)
+                    @for (int row = 0; row < Model.Room.NumberOfRows; row++)
                     {
-                        <div class="grid-seat">
-                            <div class="seat" data-row="@row" data-col="@col" data-seatId=""></div>
-                        </div>
+                        var seatKey = (row, col);
+                        if (seatDictionary.TryGetValue(seatKey, out var seat))
+                        {
+                            <div class="grid-seat">
+                                <div class="seat" data-row="@row" data-col="@col" data-seatTypeId="@seat.SeatTypeId" data-available="@(seat.IsBookable ? "true" : "false")" style="background-color: @seat.SeatType.SeatColor;"></div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="grid-seat">
+                                <div class="seat" data-row="@row" data-col="@col" data-seatTypeId="" data-available="true"></div>
+                            </div>
+                        }
                     }
                 </div>
             }
@@ -66,6 +76,10 @@
 </div>
 
 @section Scripts {
+    <script>
+        document.getElementById("seat-grid").setAttribute('style', 'grid-template-columns: repeat(' + @Model.Room.NumberOfCols + ', 40px)');
+    </script>
+
     <script type="text/javascript" src="~/js/SeatManagement.js"></script>
 }
 
