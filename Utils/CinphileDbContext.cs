@@ -33,6 +33,8 @@ namespace PRN221_Project.Utils
                 .Build();
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             optionsBuilder.UseSqlServer(connectionString);
+           
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

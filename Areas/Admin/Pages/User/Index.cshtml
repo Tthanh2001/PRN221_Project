@@ -16,10 +16,17 @@
     @foreach(var user in Model.users)
     {
         <tr>
-            <td>@user.DisplayName</td>
+            <td>@user.UserName</td>
+            <td>@user.RoleNames</td>
             <td>
-                <a class="btn btn-success btn-sm" asp-page="./AddRole" asp-role-id="@user.Identifier">Edit</a>
-                
+                @if (string.IsNullOrEmpty(user.RoleNames))
+                {
+                    <a class="text-dark" asp-page="./AddRole" asp-route-id="@user.Id">+ Add roles</a>
+                }
+                else
+                {
+                    <a asp-page="./AddRole" asp-route-id="@user.Id">@user.RoleNames</a>
+                }               
             </td>
         </tr>
     }
