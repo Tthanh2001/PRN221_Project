@@ -1,5 +1,6 @@
-﻿@page "/admin/edit-role{roleid}"
+﻿@page "/admin/edit-role/{roleid}"
 @model PRN221_Project.Areas.Admin.Pages.Role.EditModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{   
     ViewData["Title"] = "Edit Role";
 }
@@ -14,10 +15,11 @@
             <div class="form-group">
                 <label asp-for="Input.Name" class="control-label"></label>
                 <input asp-for="Input.Name" class="form-control"/>
-                <span asp-validation-for="Input.Name"></span>
+                <span asp-validation-for="Input.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Edit" class="btn btn-primary"/>
+                <a class="btn btn-primary" asp-page="./Index">Role list</a>
             </div>
         </form>
     </div>

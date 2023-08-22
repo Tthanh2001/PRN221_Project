@@ -33,6 +33,9 @@ namespace PRN221_Project.Areas.Admin.Pages.Role
             
                 return NotFound("role not found");
             
+            
+             
+            
             var role=await _roleManager.FindByIdAsync(roleid);
             if (role != null)
             {
@@ -42,7 +45,7 @@ namespace PRN221_Project.Areas.Admin.Pages.Role
                 };
                 return Page();
             }
-           return Page();
+            return NotFound("role not found");
         }
 
         public async Task<IActionResult> OnPostAsync(string roleid)
