@@ -15,6 +15,7 @@ namespace PRN221_Project.Pages
         public int Row { get; set; }
         public int Col { get; set; }
         public int TypeId { get; set; }
+        public string SeatName { get; set; } = null!;
         public bool Available { get; set; }
     }
 
@@ -51,7 +52,7 @@ namespace PRN221_Project.Pages
         {           
             if (selectedSeats == null)
             {
-                return new JsonResult("Selected seats saved successfully.");
+                return NotFound();
             }
 
             Room = await _context.Rooms
@@ -72,6 +73,7 @@ namespace PRN221_Project.Pages
                         SeatCol = seat.Col,
                         SeatRow = seat.Row,
                         IsBookable = seat.Available,
+                        SeatName = seat.SeatName,
                         RoomId = Room.Id,
                         SeatTypeId = seat.TypeId
                     });
@@ -91,9 +93,23 @@ namespace PRN221_Project.Pages
                         // Update existing seat attributes
                         existingSeat.SeatTypeId = selectedSeat.TypeId;
                         existingSeat.IsBookable = selectedSeat.Available;
+                        existingSeat.SeatName = selectedSeat.SeatName;
 
                         // Remove seat from dictionary to avoid duplicate updates
                         existingSeats.Remove(seatKey);
+                    }
+                    else
+                    {
+                        //Add not exist seat
+                        await _context.Seats.AddAsync(new Seat
+                        {
+                            SeatCol = selectedSeat.Col,
+                            SeatRow = selectedSeat.Row,
+                            IsBookable = selectedSeat.Available,
+                            SeatName = selectedSeat.SeatName,
+                            RoomId = Room.Id,
+                            SeatTypeId = selectedSeat.TypeId
+                        });
                     }
                 }
 
@@ -112,7 +128,7 @@ namespace PRN221_Project.Pages
             
             await _context.SaveChangesAsync();
 
-            return new JsonResult("Selected seats saved successfully.");
+            return Page();
         }
     }
 }

@@ -17,27 +17,42 @@
 
     $("#saveButton").click(function () {
         const selectedSeats = [];
+        const emptySeatNames = [];
         seatGrid.find(".seat").each(function () {
             const seat = $(this);
             const seatId = seat.attr("data-seatTypeId");
 
             if (seatId) {
+                const seatName = seat.text().trim();
                 const seatData = {
                     row: seat.attr("data-row"),
                     col: seat.attr("data-col"),
                     typeId: seatId,
-                    available: seat.attr("data-availabe")
+                    available: seat.attr("data-availabe"),
+                    seatName: seatName
                 };
-                selectedSeats.push(seatData);
+                if (!seatName) {
+                    emptySeatNames.push(seatData);
+                } else {
+                    selectedSeats.push(seatData);
+                }
             }
+
+            
         });
+
+        if (emptySeatNames.length > 0) {
+            const warningMessage = `There are ${emptySeatNames.length} seats don't have name'`;
+            alert(warningMessage);
+            return; // Don't proceed with submission
+        }
 
         if (selectedSeats.length > 0) {
             try {
-                $.ajax({
+                $.post({
                     url: "/SeatManagement",
-                    method: "POST",
-                    contentType: "application/json",
+                    dataType: 'json',
+                    contentType: "application/json; charset=UTF-8",
                     data: JSON.stringify(selectedSeats),
                     headers: {
                         RequestVerificationToken:
@@ -50,10 +65,60 @@
                         console.log("Error:", error);
                     }
                 });
-                console.log("Selected seats saved successfully.");
             } catch (error) {
                 // Handle error, e.g., show an error message
                 console.log("Error saving selected seats:", error);
+            }
+        }
+    });
+
+    $("#assignName").click(function () {
+        const selectedSeats = [];
+        const selectedRows = new Set();
+        const selectedColumns = new Set();
+
+        // Loop through selected seats to collect rows and columns and store selected seat data
+        seatGrid.find(".seat").each(function () {
+            const seat = $(this);
+            const seatId = seat.attr("data-seatTypeId");
+
+            if (seatId) {
+                const row = seat.attr("data-row");
+                const col = seat.attr("data-col");
+                selectedSeats.push({ seat, row, col });
+                selectedRows.add(row);
+                selectedColumns.add(col);
+            }
+        });
+
+        var sortedRows;
+        var sortedCols;
+
+        if ($("#ColumnDirection1").is(":checked")) {
+            sortedRows = Array.from(selectedRows).sort((a, b) => a - b);
+        }
+        else {
+            sortedRows = Array.from(selectedRows).sort((a, b) => b - a);
+        }
+
+        if ($("#RowDirection1").is(":checked")) {
+            sortedCols = Array.from(selectedColumns).sort((a, b) => a - b);
+        }
+        else {
+            sortedCols = Array.from(selectedColumns).sort((a, b) => b - a);
+        }
+
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+        for (let row = 0; row < sortedRows.length; row++) {
+            const rowName = alphabet[row];
+            let colName = 1;
+            for (let col = 0; col < sortedCols.length; col++) {
+                const seatData = selectedSeats.find(s => s.row === sortedRows[row] && s.col === sortedCols[col]);
+                if (seatData) {
+                    seatData.seat.text(rowName + colName.toString());
+                    colName++;
+                }
             }
         }
     });
