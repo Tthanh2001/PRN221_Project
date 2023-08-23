@@ -11,9 +11,13 @@ using Microsoft.PowerBI.Api.Models;
 using System.ComponentModel;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using PRN221_Project.Pages.Admin.User;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
-namespace PRN221_Project.Areas.Admin.Pages.User
+namespace PRN221_Project.Pages.Admin.User
 {
+    [Authorize(Roles = "Admin, Vip, Editor")]
     public class AddRoleModel : PageModel
     {
         private readonly UserManager<ApplicationAccount> _userManager;

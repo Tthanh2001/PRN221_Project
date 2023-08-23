@@ -21,8 +21,8 @@ namespace PRN221_Project.Pages
         }
         public void OnGet()
         {
-            movies = _context.Movies.Include(m => m.Director).Include(m => m.Genre).ToList();
-            rooms = _context.Rooms.Include(m => m.MovieSchedules).ThenInclude(m => m.Movie).ToList();
+            /*movies = _context.Movies.Include(m => m.Director).Include(m => m.Genre).ToList();
+            rooms = _context.Rooms.Include(m => m.MovieSchedules).ThenInclude(m => m.Movie).ToList();*/
         }
     }
 }

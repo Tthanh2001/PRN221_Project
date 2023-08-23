@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using PRN221_Project.Models;
@@ -9,6 +10,7 @@ using System.Linq;
 
 namespace PRN221_Project.Pages.Admin.ManagerShowTimes
 {
+    [Authorize(Roles = "Admin, Vip, Editor")]
     public class IndexModel : PageModel
     {
         private readonly CinphileDbContext _context;

@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using PRN221_Project.Utils;
+using PRN221_Project.Pages.Admin.Role;
 
-namespace PRN221_Project.Areas.Admin.Pages.Role
+namespace PRN221_Project.Pages.Admin.Role
 {
-    //[Authorize(Roles ="Admin, Vip, Editor")]
+    [Authorize(Roles ="Admin, Vip, Editor")]
     public class IndexModel : RolePageModel
     {
        

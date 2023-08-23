@@ -1,7 +1,8 @@
-﻿@page "/admin/add-role"
-@model PRN221_Project.Areas.Admin.Pages.Role.CreateModel
+﻿@page "/admin/edit-role/{roleid}"
+@model PRN221_Project.Pages.Admin.Role.EditModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{   
-    ViewData["Title"] = "Create new Role";
+    ViewData["Title"] = "Edit Role";
 }
 <h2>@ViewData["Title"]</h2>
 <partial name="_StatusMessage" model="@Model.StatusMessage"></partial>
@@ -14,10 +15,10 @@
             <div class="form-group">
                 <label asp-for="Input.Name" class="control-label"></label>
                 <input asp-for="Input.Name" class="form-control"/>
-                <span asp-validation-for="Input.Name"></span>
+                <span asp-validation-for="Input.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create new" class="btn btn-primary"/>
+                <input type="submit" value="Edit" class="btn btn-primary"/>
                 <a class="btn btn-primary" asp-page="./Index">Role list</a>
             </div>
         </form>

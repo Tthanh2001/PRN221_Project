@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
-using ProjectPRN.Models;
-using ProjectPRN.Utils;
+using PRN221_Project.Models;
+using PRN221_Project.Utils;
 using System.Configuration;
 using System.Net.Http.Headers;
 using System.Text.Json;

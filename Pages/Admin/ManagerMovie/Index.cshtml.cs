@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using PRN221_Project.Models;
@@ -6,6 +7,7 @@ using PRN221_Project.Utils;
 
 namespace PRN221_Project.Pages.Admin.ManagerMovie
 {
+    [Authorize(Roles = "Admin, Vip, Editor")]
     public class IndexModel : PageModel
     {
         private readonly CinphileDbContext _context;
