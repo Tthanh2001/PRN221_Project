@@ -20,15 +20,25 @@ namespace PRN221_Project.Pages.Admin.ManagerMovie
         {
             Console.WriteLine(id);
             EditMovie = _context.Movies.FirstOrDefault(x => x.Id == id);
-            
+
         }
         public IActionResult OnPost()
         {
-            Console.WriteLine(EditMovie);
-            EditMovie.Id = int.Parse(Request.Form["title"]);
+            EditMovie.MovieIdApi = Request.Form["MovieIdApi"];
             EditMovie.ReleaseDate = DateTime.Parse(Request.Form["ReleaseDate"]);
-            EditMovie.DurationMinutes = int.Parse(Request.Form["duration"]);           
-            EditMovie.IsReleased = false;
+            EditMovie.DurationMinutes = int.Parse(Request.Form["duration"]);
+            if (Request.Form["Status"] == 0)
+            {
+                EditMovie.IsReleased = false;
+            }
+            else if (Request.Form["Status"] == 1)
+            {
+                EditMovie.IsReleased = true;
+            }
+            else
+            {
+                EditMovie.IsReleased = null;
+            }
             _context.Attach(EditMovie).State = EntityState.Modified;
             _context.SaveChanges();
             return RedirectToPage("/Admin/ManagerMovie/Index");

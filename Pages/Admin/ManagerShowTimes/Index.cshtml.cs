@@ -28,7 +28,7 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
         public void OnGet()
         {
             LoadMovieInRoomToday();
-            movies = _context.Movies.ToList();
+            movies = _context.Movies.Where(x => x.IsReleased != false && x.IsReleased != null).ToList();
         }
 
         public void LoadMovieInRoomToday()
@@ -51,17 +51,17 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
             }
         }
 
-        public IActionResult OnPost()
+
+        public void GetMovieSchedules(DateTime selectedDate)
         {
-            var today = DateTime.Parse(Request.Form["date"]);
-            var startDate = today;
-            var endDate = today.AddDays(1).AddTicks(-1);
+            var startDate = selectedDate.Date;
+            var endDate = selectedDate.Date.AddDays(1).AddTicks(-1);
 
             rooms = _context.Rooms
-             .Include(m => m.MovieSchedules)
-             .ThenInclude(m => m.Movie)
-             .ToList();
-            ViewData["SelectedDate"] = today;
+               .Include(m => m.MovieSchedules)
+               .ThenInclude(m => m.Movie)
+               .ToList();
+
             foreach (var room in rooms)
             {
                 room.MovieSchedules = room.MovieSchedules
@@ -69,7 +69,47 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
                     .ToList();
             }
 
-            movies = _context.Movies.ToList();
+            ViewData["SelectedDate"] = selectedDate;
+            movies = _context.Movies.Where(x => x.IsReleased != false && x.IsReleased != null).ToList();
+        }
+        public IActionResult OnPostDelete(int id)
+        {
+            Console.WriteLine("đã vào");
+            Console.WriteLine(id);
+            DateTime selectedDate = DateTime.Parse(Request.Form["dateInput1-" + id]);
+            MovieSchedule m = _context.MovieSchedules.FirstOrDefault(x => x.Id == id);
+            if (m != null)
+            {
+                _context.MovieSchedules.Remove(m);
+                _context.SaveChanges();
+            }
+
+            GetMovieSchedules(selectedDate);
+            ViewData["SelectedDate"] = selectedDate;
+
+            return Page();
+        }      
+
+        public IActionResult OnPostSelect()
+        {
+            var selectedDate = DateTime.Parse(Request.Form["date"]);
+            var startDate = selectedDate.Date;
+            var endDate = selectedDate.Date.AddDays(1).AddTicks(-1);
+
+            rooms = _context.Rooms
+               .Include(m => m.MovieSchedules)
+               .ThenInclude(m => m.Movie)
+               .ToList();
+
+            foreach (var room in rooms)
+            {
+                room.MovieSchedules = room.MovieSchedules
+                    .Where(s => s.StartTime >= startDate && s.StartTime <= endDate)
+                    .ToList();
+            }
+
+            ViewData["SelectedDate"] = selectedDate;
+            movies = _context.Movies.Where(x => x.IsReleased != false && x.IsReleased != null).ToList();
 
             return Page();
         }
@@ -83,7 +123,7 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
             TimeSpan selectedStartTime = TimeSpan.Parse(Request.Form["StartTime-" + idRoom]);
             DateTime StartTime = selectedDate.Date.Add(selectedStartTime);
 
-            Movie m = _context.Movies.FirstOrDefault(m => m.Id == IdMovie);
+            Movie m = _context.Movies.FirstOrDefault(movie => movie.Id == IdMovie);
             if (m != null)
             {
                 if (checkReleaseDateMovie(m, StartTime))
@@ -107,26 +147,34 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
                             }
                             else
                             {
+                                ViewData["msg" + idRoom] = "Không thể sếp một bộ phim cùng một giờ chiếu";
                                 Console.WriteLine("Không hợp lệ");
                             }
                         }
                         else
                         {
+                            ViewData["msg" + idRoom] = "Có một bộ phim chưa kết thúc. Không thể set lịch chiếu";
                             Console.WriteLine("Phim chưa kết thúc");
                         }
                     }
                     else
                     {
+                        ViewData["msg" + idRoom] = "Đã quá thời gian để set lịch chiếu phim";
                         Console.WriteLine("Đã quá giờ Công chiếu");
                     }
                 }
                 else
                 {
+                    ViewData["msg" + idRoom] = "Phim chưa được công chiếu";
                     Console.WriteLine("Phim Chưa được công chiếu");
                 }
             }
-            return RedirectToPage();
+            GetMovieSchedules(selectedDate);
+            ViewData["SelectedDate"] = selectedDate;
+            //OnGet();
+            return Page();
         }
+
         public bool IsEndTimeValid(DateTime selectedDate, DateTime newStartTime, int roomId)
         {
             var latestScheduleInRoom = _context.MovieSchedules
@@ -141,13 +189,6 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
 
             return true;
         }
-        //public bool IsEndTimeValid(Movie movie, DateTime startTime)
-        //{
-        //    TimeSpan convertTime = TimeSpan.FromMinutes(movie.DurationMinutes);
-        //    DateTime endTime = startTime.Add(convertTime);
-
-        //    return endTime > startTime;
-        //}
         public bool CheckStartTime(DateTime StartTime)
         {
             DateTime time = DateTime.Now;

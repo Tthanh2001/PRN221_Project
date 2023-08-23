@@ -1,11 +1,12 @@
 ﻿@page
 @model PRN221_Project.Pages.Admin.ManagerShowTimes.IndexModel
 @{
+    Layout = "_Layout _Admin";
 }
 <div class="row">
     <div class="col-12">
         <div style="margin-bottom:50px">
-            <form id="dateForm" method="post">
+            <form id="dateForm" method="post" asp-page-handler="Select">
                 <div class="mb-3 d-flex align-items-center">
                     <label for="category" class="form-label me-2">Date</label>
                     <select class="form-control" id="datetime" name="date" style="border: 1px solid #ced4da;" onchange="submitForm()">
@@ -27,7 +28,7 @@
                             else
                             {
                                 <option value="@currentDate">@currentDate.ToString("yyyy-MM-dd")</option>
-                            }                         
+                            }
                         }
                     </select>
 
@@ -37,6 +38,10 @@
         @foreach (var r in Model.rooms)
         {
             <div class="card my-4" style="margin-bottom:60px!important">
+                @if (ViewData["msg" + r.Id] != null)
+                {
+                    <h5 style="color:red;padding:20px 14px">@ViewData["msg" + r.Id]</h5>
+                }
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between">
                         <h6 class="text-white text-capitalize ps-3">@r.RoomName</h6>
@@ -48,10 +53,6 @@
                 </div>
                 <div class="card-body px-0 pb-2">
                     <div class="table-responsive p-0">
-                        @* @if (@ViewBag.msg != null)
-                            {
-                            <h1 style="color:red">@ViewBag.msg</h1>
-                            }*@
                         <table class="table align-items-center justify-content-center mb-0">
                             <thead>
                                 <tr>
@@ -59,7 +60,7 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Start Time</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">End Time</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Status</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">COMPLETION</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -69,7 +70,7 @@
                                         <td>
                                             <div class="d-flex px-2">
                                                 <div class="my-auto">
-                                                    <h6 class="mb-0 text-sm">@s.Movie.Id</h6>
+                                                    <h6 class="mb-0 text-sm">@s.Movie.MovieIdApi</h6>
                                                 </div>
                                             </div>
                                         </td>
@@ -97,16 +98,16 @@
                                                 <span class="text-sm font-weight-bold mb-0">Already released</span>
                                             </td>
                                         }
-                                        <td class="align-middle text-center">
-                                            <div class="d-flex align-items-center justify-content-center">
-                                                <span class="me-2 text-xs font-weight-bold">60%</span>
-                                                <div>
-                                                    <div class="progress">
-                                                        <div class="progress-bar bg-gradient-info" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <td class="align-middle">
+                                            <form id="Delete-Movies" method="post" asp-page-handler="Delete" onsubmit="return SubmitFormDelete('@r.Id')">
+                                                <input type="hidden" asp-for="@s.Id" name="id" />
+                                                <input type="hidden" id="dateInput1-@r.Id" name="dateInput1-@r.Id" />
+                                                <button class="btn btn-danger" style="float:right;margin-right:20px">
+                                                    Delete
+                                                </button>
+                                            </form>
                                         </td>
+
                                     </tr>
                                 }
                             </tbody>
@@ -134,7 +135,7 @@
                                     <select class="form-control" id="MovieRoom-@r.Id" name="MovieRoom-@r.Id" style="border:1px solid #ced4da">
                                         @foreach (var m in Model.movies)
                                         {
-                                            <option value="@m.Id">@m.Id</option>
+                                            <option value="@m.Id">@m.MovieIdApi</option>
                                         }
                                     </select>
                                 </div>
@@ -174,5 +175,16 @@
         var dateInput = document.getElementById("dateInput-" + roomId);
         dateInput.value = selectedDate;
 
+    }
+     function SubmitFormDelete(roomId){
+        var selectedDate = document.getElementById("datetime").value; 
+        var dateInput = document.getElementById("dateInput1-" + roomId);
+        dateInput.value = selectedDate;
+        var result = confirm("Are you sure you want to delete?");
+        if (result) {
+           document.getElementById("Delete-Movies").submit();
+        } else {
+            return false;
+        }
     }
 </script>

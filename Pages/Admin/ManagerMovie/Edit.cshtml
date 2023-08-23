@@ -1,18 +1,19 @@
 ﻿@page
 @model PRN221_Project.Pages.Admin.ManagerMovie.EditModel
 @{
+    Layout = "_Layout _Admin";
 }
 <div class="modal-dialog">
     <form method="post">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addMovieModalLabel">Add New Movie</h5>
+                <h5 class="modal-title" id="addMovieModalLabel">Edit New Movie</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <label for="title" class="form-label">Title</label>
-                    <input value="@Model.EditMovie.Id" type="text" class="form-control" id="title" name="title">
+                    <label for="title" class="form-label">Movie API</label>
+                    <input value="@Model.EditMovie.MovieIdApi" type="text" class="form-control" id="title" name="MovieIdApi">
                 </div>
                 <div class="mb-3">
                     <label asp-for="EditMovie.ReleaseDate" class="form-label">Release Date</label>
@@ -23,10 +24,11 @@
                     <input value="@Model.EditMovie.DurationMinutes" type="number" class="form-control" id="duration" name="duration">
                 </div>
                 <div class="mb-3">
-                    <label for="category" class="form-label">Genre</label>
-                    <select class="form-control" id="Genre" name="Genre" style="border:1px solid #ced4da">
-                        <option value="0">Ngừng Chiếu</option>
-                        <option value="0">Chiếu</option>
+                    <label for="category" class="form-label">Status</label>
+                    <select class="form-control" id="Status" name="Status" style="border:1px solid #ced4da">
+                        <option value="0">Stop Release</option>
+                        <option value="1">Released</option>
+                        <option value="2">Upcoming</option>
                     </select>
                 </div>
 
@@ -39,3 +41,8 @@
         </div>
     </form>
 </div>
+<style>
+    input.form-control {
+        border: 1px solid #ced4da; /*  */
+    }
+</style>

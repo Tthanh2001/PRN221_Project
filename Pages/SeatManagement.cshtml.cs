@@ -33,12 +33,19 @@ namespace PRN221_Project.Pages
             _context = context;
         }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int id)
         {
             SeatType = await _context.SeatTypes.ToListAsync();
-            Room = await _context.Rooms
-                .Include(r => r.Seats)
-                .FirstOrDefaultAsync(r => r.Id == 1);  //Hardcode
+            if(id == null)
+            {
+                Room = await _context.Rooms.Include(r => r.Seats).FirstOrDefaultAsync(r => r.Id == 1);
+            }
+            else
+            {
+                Room = await _context.Rooms.Include(r => r.Seats).FirstOrDefaultAsync(r => r.Id == id);
+            }
+            //Console.WriteLine(id);
+            //Room = await _context.Rooms.Include(r => r.Seats).FirstOrDefaultAsync(r => r.Id == 1);
             
             if (Room == null)
             {
