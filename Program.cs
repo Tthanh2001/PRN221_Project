@@ -43,7 +43,7 @@ namespace PRN221_Project
             app.UseStaticFiles();
 
             app.UseRouting();
-                        app.UseAuthentication();;
+                        //app.UseAuthentication();;
 
             app.UseAuthorization();
 
