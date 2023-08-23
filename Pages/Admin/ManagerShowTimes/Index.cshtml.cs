@@ -136,7 +136,7 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
                         {
                             if (IsStartTimeValid(selectedDate, StartTime, idRoom, IdMovie))
                             {
-                                TimeSpan convertTime = TimeSpan.FromMinutes(m.DurationMinutes);
+                                TimeSpan convertTime = TimeSpan.FromMinutes((double)m.DurationMinutes);
                                 MovieSchedule movieSchedule = new MovieSchedule();
                                 movieSchedule.RoomId = idRoom;
                                 movieSchedule.MovieId = IdMovie;

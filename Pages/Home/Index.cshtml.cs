@@ -1,5 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Newtonsoft.Json;
+using PRN221_Project.Models;
+using PRN221_Project.Utils;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using static System.Net.WebRequestMethods;
@@ -14,9 +18,10 @@ namespace PRN221_Project.Pages
         private readonly IConfiguration _configuration;
         private readonly string PopularFilm;
 
-
-        public IndexModel(IConfiguration configuration)
+        private readonly CinphileDbContext _db;
+        public IndexModel(IConfiguration configuration, CinphileDbContext db)
         {
+            _db = db;
             _configuration = configuration;
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
@@ -25,38 +30,51 @@ namespace PRN221_Project.Pages
                 ;
         }
 
+        public List<MovieApi> listFilms { get; set; } = new List<MovieApi>();
 
+        public List<string> movie { get; set; }
         public async Task<IActionResult> OnGetAsync()
         {
-            HttpResponseMessage resp = await client.GetAsync(PopularFilm);
 
-            if (!resp.IsSuccessStatusCode)
+            string apiUrl = PopularFilm;
+            HttpResponseMessage response = await client.GetAsync(apiUrl);
+
+            movie = _db.Movies.Select(o => o.MovieIdApi).ToList();
+
+            if (response.IsSuccessStatusCode)
             {
-                return Page();
+                string json = await response.Content.ReadAsStringAsync();
+                dynamic dataFromApi = JsonConvert.DeserializeObject(json);
+
+                
+                foreach (var result in dataFromApi["results"])
+                {
+                    foreach (var item in movie)
+                    {
+                        
+                        if (item == result["id"].ToString())
+                        {
+
+                            int Id = result["id"];
+                            string poster_path = "https://image.tmdb.org/t/p/w500/" + result["poster_path"];
+                            string title = result["title"];
+
+
+
+                            listFilms.Add(new MovieApi { Id=Id, poster_path=poster_path,title = title});
+                        }
+                    }
+                }
             }
-
-            var strData = await resp.Content.ReadAsStringAsync();
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
-
-
-            //var response = JsonSerializer.Deserialize<ListFilm>(strData, options);
-            //List<Genres> listGenres = response.Genres;
-
-            //ListAuthor = listGenres;
             return Page();
+
         }
 
-        public class ListFilm
+        public class MovieApi
         {
-            public int Id { get; set; }
-            public string Name { get; set; }
-            public string backdrop_path { get; set; }
-
-            public int genre_ids { get; set; }
-
+            public int? Id { get; set; }
+            public string? title { get; set; }
+            public string? poster_path { get; set; }
 
         }
 
