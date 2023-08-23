@@ -1,0 +1,40 @@
+﻿@page
+@model PRN221_Project.Pages.Admin.ManagerRoom.EditModel
+@{
+    Layout = "_Layout _Admin";
+}
+
+<div class="modal-dialog">
+    <form method="post">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addMovieModalLabel">Edit New Movie</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="title" class="form-label">RoomName</label>
+                    <input value="@Model.rooms.RoomName" type="text" class="form-control" id="title" name="RoomName">
+                </div>
+                <div class="mb-3">
+                    <label asp-for="rooms.NumberOfRows" class="form-label">NumberOfRows</label>
+                    <input asp-for="rooms.NumberOfRows" min="0" value="@Model.rooms.NumberOfRows" type="number" class="form-control" name="NumberOfRows" />
+                </div>
+                <div class="mb-3">
+                    <label for="duration" class="form-label">NumberOfCols</label>
+                    <input value="@Model.rooms.NumberOfCols" min="0" type="number" class="form-control" id="duration" name="NumberOfCols" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div>
+                    <input type="submit" value="Edit" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<style>
+    input.form-control {
+        border: 1px solid #ced4da; /*  */
+    }
+</style>

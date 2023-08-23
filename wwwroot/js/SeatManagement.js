@@ -9,6 +9,7 @@
         if (seat.css("background-color") === "rgba(0, 0, 0, 0)") {
             seat.css("background-color", selectedSeatType.attr("data-color"));
             seat.attr("data-seatTypeId", selectedSeatType.val());
+            seat.text("");
         } else {
             seat.css("background-color", "rgba(0, 0, 0, 0)");
             seat.attr("data-seatTypeId", "");

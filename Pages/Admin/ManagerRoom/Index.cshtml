@@ -1,0 +1,126 @@
+﻿@page
+@model PRN221_Project.Pages.Admin.ManagerRoom.IndexModel
+@{
+    Layout = "_Layout _Admin";
+}
+<div class="row">
+    <div class="col-12">
+        <div class="card my-4">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3" style="background: brown;box-shadow:0 4px 20px 0 rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(0, 0, 0, 0.5) !important">
+                    <h6 class="text-white text-capitalize ps-3">All Rooms</h6>
+                </div>
+                <button class="btn btn-success" style="float:right;bottom:-35px" data-bs-toggle="modal" data-bs-target="#addMovieModal">Add New Room</button>
+            </div>
+            <div class="card-body px-0 pb-2">
+                <div class="table-responsive p-0">
+                    @if (ViewBag.msg != null)
+                    {
+                        <h5 style="color:red">@ViewBag.msg</h5>
+                    }
+                    <table class="table align-items-center mb-0">
+                        <thead>
+                            <tr>
+                                <th class="text-secondary opacity-7 text-start">RoomName</th>
+                                <th class="text-secondary opacity-7 text-start">NumberOfRows</th>
+                                <th class="text-secondary opacity-7 text-end" style="width:10px">NumberOfCols</th>
+                                <th class="text-secondary opacity-7 text-end" style="width:10px"></th>
+                                <th class="text-secondary opacity-7 text-end" style="width:10px"></th>
+                                <th class="text-secondary opacity-7 text-end" style="width:10px"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var m in Model.rooms)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <span class="text-secondary text-xs font-weight-bold">@m.RoomName</span>                                               
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="text-secondary text-xs font-weight-bold">@m.NumberOfRows</span>                                      
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="text-secondary text-xs font-weight-bold">@m.NumberOfCols</span>
+                                    </td>
+                                    <td class="align-middle">
+                                        <a asp-page="/SeatManagement" asp-route-id="@m.Id" class="btn bg-gradient-success">
+                                            Setting Seats
+                                        </a>
+                                    </td>
+                                    <td class="align-middle">
+                                        <a asp-page="./Edit" asp-route-id="@m.Id" class="btn bg-gradient-info">
+                                            Edit
+                                        </a>
+                                    </td>
+                                    <td class="align-middle">
+                                        <form id="Delete-Movies" method="post" asp-page-handler="Delete" onsubmit="return SubmitFormDelete()">
+                                            <input type="hidden" asp-for="@m.Id" name="id" />
+                                            <button class="btn btn-danger">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*Modal Add New Movie*@
+<div class="modal fade" id="addMovieModal" tabindex="-1" aria-labelledby="addMovieModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="post">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addMovieModalLabel">Add New Room</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label asp-for="AddRoom.RoomName" for="title" class="form-label">RoomName</label>
+                        <input asp-for="AddRoom.RoomName" type="text" class="form-control" id="Id" name="RoomName">
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="AddRoom.NumberOfRows" for="releaseDate" class="form-label">NumberOfRows</label>
+                        <input asp-for="AddRoom.NumberOfRows" min="0" type="number" class="form-control" id="releaseDate" name="NumberOfRows">
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="AddRoom.NumberOfCols" for="duration" class="form-label">NumberOfCols</label>
+                        <input asp-for="AddRoom.NumberOfCols" min="0" type="number" min="0" class="form-control" id="duration" name="NumberOfCols">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <div>
+                        <input type="submit" value="Add" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function SubmitFormDelete(){
+        var result = confirm("Are you sure you want to delete?");
+        if (result) {
+           document.getElementById("Delete-Movies").submit();
+        } else {
+            return false;
+        }
+    }
+
+</script>
+
+<style>
+    input.form-control {
+        border: 1px solid #ced4da;
+    }
+</style>

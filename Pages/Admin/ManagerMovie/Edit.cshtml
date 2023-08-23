@@ -1,18 +1,19 @@
 ﻿@page
 @model PRN221_Project.Pages.Admin.ManagerMovie.EditModel
 @{
+    Layout = "_Layout _Admin";
 }
 <div class="modal-dialog">
     <form method="post">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addMovieModalLabel">Add New Movie</h5>
+                <h5 class="modal-title" id="addMovieModalLabel">Edit New Movie</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <label for="title" class="form-label">Title</label>
-                    <input value="@Model.EditMovie.Title" type="text" class="form-control" id="title" name="title">
+                    <label for="title" class="form-label">Movie API</label>
+                    <input value="@Model.EditMovie.MovieIdApi" type="text" class="form-control" id="title" name="MovieIdApi">
                 </div>
                 <div class="mb-3">
                     <label asp-for="EditMovie.ReleaseDate" class="form-label">Release Date</label>
@@ -23,29 +24,16 @@
                     <input value="@Model.EditMovie.DurationMinutes" type="number" class="form-control" id="duration" name="duration">
                 </div>
                 <div class="mb-3">
-                    <label asp-for="EditMovie.Description" for="description" class="form-label">Description</label>
-                    <textarea asp-for="EditMovie.Description" value="@Model.EditMovie.Description" class="form-control" id="description" name="description" rows="3" style="border:1px solid #ced4da"></textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="posterUrl" class="form-label">Poster URL</label>
-                    <input value="@Model.EditMovie.PosterUrl" type="url" class="form-control" id="posterUrl" name="posterUrl">
-                </div>
-                <div class="mb-3">
-                    <label for="trailerUrl" class="form-label">Trailer URL</label>
-                    <input value="@Model.EditMovie.TrailerUrl" type="url" class="form-control" id="trailerUrl" name="trailerUrl">
-                </div>
-                <div class="mb-3">
-                    <label asp-for="EditMovie.GenreId"  for="category" class="form-label">Genre</label>
-                    <select asp-for="EditMovie.GenreId" class="form-control" id="Genre" name="Genre" style="border:1px solid #ced4da">
-                        @foreach (var g in Model.Genres)
-                        {
-                            <option value="@g.Id">@g.Name</option>
-                        }
+                    <label for="category" class="form-label">Status</label>
+                    <select class="form-control" id="Status" name="Status" style="border:1px solid #ced4da">
+                        <option value="0">Stop Release</option>
+                        <option value="1">Released</option>
+                        <option value="2">Upcoming</option>
                     </select>
                 </div>
 
             </div>
-            <div class="modal-footer">                
+            <div class="modal-footer">
                 <div>
                     <input type="submit" value="Edit" class="btn btn-primary" />
                 </div>
@@ -53,3 +41,8 @@
         </div>
     </form>
 </div>
+<style>
+    input.form-control {
+        border: 1px solid #ced4da; /*  */
+    }
+</style>

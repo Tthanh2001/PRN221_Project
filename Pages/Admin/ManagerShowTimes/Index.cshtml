@@ -1,16 +1,54 @@
 ﻿@page
 @model PRN221_Project.Pages.Admin.ManagerShowTimes.IndexModel
 @{
+    Layout = "_Layout _Admin";
 }
 <div class="row">
     <div class="col-12">
+        <div style="margin-bottom:50px">
+            <form id="dateForm" method="post" asp-page-handler="Select">
+                <div class="mb-3 d-flex align-items-center">
+                    <label for="category" class="form-label me-2">Date</label>
+                    <select class="form-control" id="datetime" name="date" style="border: 1px solid #ced4da;" onchange="submitForm()">
+                        @for (int i = 0; i <= 7; i++)
+                        {
+                            var currentDate = DateTime.Now.AddDays(i);
+                            if (@ViewBag.SelectedDate != null)
+                            {
+                                var c = (DateTime)@ViewBag.SelectedDate;
+                                if (@currentDate.Date == @c.Date)
+                                {
+                                    <option value="@currentDate" selected="selected">@currentDate.ToString("yyyy-MM-dd")</option>
+                                }
+                                else
+                                {
+                                    <option value="@currentDate">@currentDate.ToString("yyyy-MM-dd")</option>
+                                }
+                            }
+                            else
+                            {
+                                <option value="@currentDate">@currentDate.ToString("yyyy-MM-dd")</option>
+                            }
+                        }
+                    </select>
+
+                </div>
+            </form>
+        </div>
         @foreach (var r in Model.rooms)
         {
             <div class="card my-4" style="margin-bottom:60px!important">
+                @if (ViewData["msg" + r.Id] != null)
+                {
+                    <h5 style="color:red;padding:20px 14px">@ViewData["msg" + r.Id]</h5>
+                }
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between">
                         <h6 class="text-white text-capitalize ps-3">@r.RoomName</h6>
-                        <button class="btn bg-gradient-info ms-auto" data-bs-toggle="modal" data-bs-target="#addMovieModal">Add Lịch Chiếu</button>
+                        <button class="btn bg-gradient-info ms-auto" data-bs-toggle="modal"
+                            data-bs-target="#addMovieModal-@r.Id" style="margin-right:10px" onclick="setDateValue('@r.Id')">
+                            Add Lịch Chiếu
+                        </button>
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
@@ -22,7 +60,7 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Start Time</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">End Time</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Status</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">COMPLETION</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -32,7 +70,7 @@
                                         <td>
                                             <div class="d-flex px-2">
                                                 <div class="my-auto">
-                                                    <h6 class="mb-0 text-sm">@s.Movie.Title</h6>
+                                                    <h6 class="mb-0 text-sm">@s.Movie.MovieIdApi</h6>
                                                 </div>
                                             </div>
                                         </td>
@@ -60,16 +98,16 @@
                                                 <span class="text-sm font-weight-bold mb-0">Already released</span>
                                             </td>
                                         }
-                                        <td class="align-middle text-center">
-                                            <div class="d-flex align-items-center justify-content-center">
-                                                <span class="me-2 text-xs font-weight-bold">60%</span>
-                                                <div>
-                                                    <div class="progress">
-                                                        <div class="progress-bar bg-gradient-info" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <td class="align-middle">
+                                            <form id="Delete-Movies" method="post" asp-page-handler="Delete" onsubmit="return SubmitFormDelete('@r.Id')">
+                                                <input type="hidden" asp-for="@s.Id" name="id" />
+                                                <input type="hidden" id="dateInput1-@r.Id" name="dateInput1-@r.Id" />
+                                                <button class="btn btn-danger" style="float:right;margin-right:20px">
+                                                    Delete
+                                                </button>
+                                            </form>
                                         </td>
+
                                     </tr>
                                 }
                             </tbody>
@@ -78,27 +116,32 @@
                 </div>
             </div>
             @*Modal*@
-            <div class="modal fade" id="addMovieModal" tabindex="-1" aria-labelledby="addMovieModalLabel" aria-hidden="true">
+            <div class="modal fade" id="addMovieModal-@r.Id" tabindex="-1" aria-labelledby="addMovieModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
-                    <form method="post">
+                    <form method="post" asp-page-handler="Add">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="addMovieModalLabel">Add New Movie Off Room @r.RoomName</h5>
+                                <h5 class="modal-title" id="addMovieModalLabel">Add New Movie Room @r.RoomName</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
+                            @*Thẻ Input ẩn*@
+                            <input name="IdRoom" value="@r.Id" hidden />
+                            <input type="hidden" id="dateInput-@r.Id" name="dateInput" />
+
+                            @* Input ẩn*@
                             <div class="modal-body">
                                 <div class="mb-3">
                                     <label for="category" class="form-label">Movie</label>
-                                    <select class="form-control" id="Genre" name="Genre" style="border:1px solid #ced4da">
+                                    <select class="form-control" id="MovieRoom-@r.Id" name="MovieRoom-@r.Id" style="border:1px solid #ced4da">
                                         @foreach (var m in Model.movies)
                                         {
-                                            <option value="@m.Id">@m.Title</option>
+                                            <option value="@m.Id">@m.MovieIdApi</option>
                                         }
                                     </select>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Start Time</label>
-                                    <select class="form-select" name="StartTime">
+                                    <select class="form-select" name="StartTime-@r.Id">
                                         @for (int hour = 9; hour <= 24; hour++)
                                         {
                                             for (int minute = 0; minute < 60; minute += 30)
@@ -123,3 +166,25 @@
         }
     </div>
 </div>
+<script>
+    function submitForm() {
+        document.getElementById("dateForm").submit();
+    }
+     function setDateValue(roomId) {
+        var selectedDate = document.getElementById("datetime").value;
+        var dateInput = document.getElementById("dateInput-" + roomId);
+        dateInput.value = selectedDate;
+
+    }
+     function SubmitFormDelete(roomId){
+        var selectedDate = document.getElementById("datetime").value; 
+        var dateInput = document.getElementById("dateInput1-" + roomId);
+        dateInput.value = selectedDate;
+        var result = confirm("Are you sure you want to delete?");
+        if (result) {
+           document.getElementById("Delete-Movies").submit();
+        } else {
+            return false;
+        }
+    }
+</script>

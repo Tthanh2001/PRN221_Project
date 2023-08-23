@@ -1,6 +1,7 @@
 ﻿@page
 @model PRN221_Project.Pages.Admin.ManagerMovie.IndexModel
 @{
+    Layout = "_Layout _Admin";
 }
 <div class="row">
     <div class="col-12">
@@ -13,11 +14,15 @@
             </div>
             <div class="card-body px-0 pb-2">
                 <div class="table-responsive p-0">
+                    @if (ViewBag.Message != null)
+                    {
+                        <h5 style="color:red">@ViewBag.Message</h5>
+                    }
                     <table class="table align-items-center mb-0">
                         <thead>
                             <tr>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Movie</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Genre</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Id</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">DurationMinutes</th>
                                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Release Date</th>
                                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
                                 <th class="text-secondary opacity-7 text-end" style="width:10px"></th>
@@ -31,21 +36,26 @@
                                     <td>
                                         <div class="d-flex px-2 py-1">
                                             <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">@m.Title</h6>
-                                                <p class="text-xs text-secondary mb-0">@m.Director.Name</p>
+                                                <h6 class="mb-0 text-sm">@m.MovieIdApi</h6>
                                             </div>
                                         </div>
                                     </td>
                                     <td>
-                                        <p class="text-xs font-weight-bold mb-0">@m.Genre.Name</p>
+                                        <p class="text-xs font-weight-bold mb-0">@m.DurationMinutes</p>
                                     </td>
                                     <td class="align-middle text-center">
                                         <span class="text-secondary text-xs font-weight-bold">@m.ReleaseDate</span>
                                     </td>
-                                    @if (m.ReleaseDate < DateTime.Now)
+                                    @if (m.IsReleased == true)
                                     {
                                         <td class="align-middle text-center text-sm">
                                             <span class="badge badge-sm bg-gradient-success">Released</span>
+                                        </td>
+                                    }
+                                    else if (m.IsReleased == false)
+                                    {
+                                        <td class="align-middle text-center text-sm">
+                                            <span class="badge badge-sm bg-gradient-info">Stop Release</span>
                                         </td>
                                     }
                                     else
@@ -60,9 +70,9 @@
                                         </a>
                                     </td>
                                     <td class="align-middle">
-                                        <form method="post" asp-page-handler="Delete">
+                                        <form id="Delete-Movies" method="post" asp-page-handler="Delete" onsubmit="return SubmitFormDelete()">
                                             <input type="hidden" asp-for="@m.Id" name="id" />
-                                            <button type="submit" class="btn btn-danger">
+                                            <button class="btn btn-danger">
                                                 Delete
                                             </button>
                                         </form>
@@ -87,8 +97,8 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label asp-for="AddMovie.Title" for="title" class="form-label">Title</label>
-                        <input asp-for="AddMovie.Title" type="text" class="form-control" id="title" name="title">
+                        <label asp-for="AddMovie.MovieIdApi" for="title" class="form-label">Movie Api</label>
+                        <input asp-for="AddMovie.MovieIdApi" type="text" class="form-control" id="Id" name="MovieIdApi">
                     </div>
                     <div class="mb-3">
                         <label asp-for="AddMovie.ReleaseDate" for="releaseDate" class="form-label">Release Date</label>
@@ -96,30 +106,8 @@
                     </div>
                     <div class="mb-3">
                         <label asp-for="AddMovie.DurationMinutes" for="duration" class="form-label">Duration (minutes)</label>
-                        <input asp-for="AddMovie.DurationMinutes" type="number" class="form-control" id="duration" name="duration">
+                        <input asp-for="AddMovie.DurationMinutes" type="number" min="0" class="form-control" id="duration" name="duration">
                     </div>
-                    <div class="mb-3">
-                        <label asp-for="AddMovie.Description" for="description" class="form-label">Description</label>
-                        <textarea asp-for="AddMovie.Description" class="form-control" id="description" name="description" rows="3" style="border:1px solid #ced4da"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="AddMovie.PosterUrl" for="posterUrl" class="form-label">Poster URL</label>
-                        <input asp-for="AddMovie.PosterUrl" type="url" class="form-control" id="posterUrl" name="posterUrl">
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="AddMovie.TrailerUrl" for="trailerUrl" class="form-label">Trailer URL</label>
-                        <input asp-for="AddMovie.TrailerUrl" type="url" class="form-control" id="trailerUrl" name="trailerUrl">
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="AddMovie.GenreId" for="category" class="form-label">Genre</label>
-                        <select asp-for="AddMovie.GenreId" class="form-control" id="Genre" name="Genre" style="border:1px solid #ced4da">
-                            @foreach (var g in Model.Genres)
-                            {
-                                <option value="@g.Id">@g.Name</option>
-                            }
-                        </select>
-                    </div>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -132,6 +120,17 @@
     </div>
 </div>
 
+<script>
+    function SubmitFormDelete(){
+        var result = confirm("Are you sure you want to delete?");
+        if (result) {
+           document.getElementById("Delete-Movies").submit();
+        } else {
+            return false;
+        }
+    }
+
+</script>
 
 <style>
     input.form-control {
