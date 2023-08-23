@@ -99,9 +99,9 @@
                                             </td>
                                         }
                                         <td class="align-middle">
-                                            <form id="Delete-Movies" method="post" asp-page-handler="Delete" onsubmit="return SubmitFormDelete('@r.Id')">
+                                            <form id="Delete-Movies-@r.Id" method="post" asp-page-handler="Delete" onsubmit="return SubmitFormDelete('@r.Id', '@s.Id')">
                                                 <input type="hidden" asp-for="@s.Id" name="id" />
-                                                <input type="hidden" id="dateInput1-@r.Id" name="dateInput1-@r.Id" />
+                                                <input type="hidden" id="dateInput1-@s.Id" name="dateInput1-@s.Id" />
                                                 <button class="btn btn-danger" style="float:right;margin-right:20px">
                                                     Delete
                                                 </button>
@@ -167,24 +167,26 @@
     </div>
 </div>
 <script>
-    function submitForm() {
-        document.getElementById("dateForm").submit();
-    }
-     function setDateValue(roomId) {
-        var selectedDate = document.getElementById("datetime").value;
-        var dateInput = document.getElementById("dateInput-" + roomId);
-        dateInput.value = selectedDate;
+            function submitForm() {
+                document.getElementById("dateForm").submit();
+            }
+             function setDateValue(roomId) {
+                var selectedDate = document.getElementById("datetime").value;
+                var dateInput = document.getElementById("dateInput-" + roomId);
+                dateInput.value = selectedDate;
 
-    }
-     function SubmitFormDelete(roomId){
-        var selectedDate = document.getElementById("datetime").value; 
-        var dateInput = document.getElementById("dateInput1-" + roomId);
-        dateInput.value = selectedDate;
-        var result = confirm("Are you sure you want to delete?");
-        if (result) {
-           document.getElementById("Delete-Movies").submit();
-        } else {
-            return false;
-        }
+            }
+           function SubmitFormDelete(roomId, scheduleId) {
+                var selectedDate = document.getElementById("datetime").value;
+                var dateInput = document.getElementById("dateInput1-" + scheduleId);
+                dateInput.value = selectedDate;
+                console.log(dateInput.value);
+                var result = confirm("Are you sure you want to delete?");
+                if (result) {
+                var form = document.getElementById("Delete-Movies-" + scheduleId);
+                form.submit();
+                } else {
+                    return false;
+                }
     }
 </script>

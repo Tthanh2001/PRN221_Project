@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace PRN221_Project.Pages.Admin.ManagerShowTimes
 {
-    [Authorize(Roles = "Admin, Vip, Editor")]
+    //[Authorize(Roles = "Admin, Vip, Editor")]
     public class IndexModel : PageModel
     {
         private readonly CinphileDbContext _context;
@@ -79,6 +79,7 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
             Console.WriteLine("đã vào");
             Console.WriteLine(id);
             DateTime selectedDate = DateTime.Parse(Request.Form["dateInput1-" + id]);
+            Console.WriteLine("đã vào");
             MovieSchedule m = _context.MovieSchedules.FirstOrDefault(x => x.Id == id);
             if (m != null)
             {
