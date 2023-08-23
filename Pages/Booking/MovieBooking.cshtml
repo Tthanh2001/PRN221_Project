@@ -1,0 +1,63 @@
+﻿@page
+@model PRN221_Project.Pages.Booking.MovieBookingModel
+
+@section Styles {
+    <style>
+        .table {
+            border-spacing: 5px;
+            border-collapse: separate;
+            width: 100%;
+            table-layout: fixed;
+            word-wrap: break-word;
+        }
+
+        .table-cell {
+            border: 1px solid black;
+            padding: 3px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 10%
+        }
+
+        .cell-selected {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .overflow-auto {
+            min-width: 1400px;
+        }
+
+    </style>
+}
+
+<div class="container mt-4">
+    <div class="overflow-auto">
+        <table class="table">
+            <tbody>
+                @for (char row = 'A'; row <= 'L'; row++)
+                {
+                    <tr>
+                        @for (int col = 1; col <= 24; col++)
+                        {
+                            <td class="table-cell" data-row="@row" data-col="@col">
+                                @($"{row}{col}")
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $(".grid-cell").click(function () {
+                $(this).toggleClass("cell-selected");
+            });
+        });
+    </script>
+}

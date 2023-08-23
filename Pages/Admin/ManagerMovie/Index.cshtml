@@ -1,0 +1,142 @@
+﻿@page
+@model PRN221_Project.Pages.Admin.ManagerMovie.IndexModel
+@{
+    Layout = "_Layout _Admin";
+}
+<div class="row">
+    <div class="col-12">
+        <div class="card my-4">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3" style="background: cadetblue;box-shadow:0 4px 20px 0 rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(0, 0, 0, 0.5) !important">
+                    <h6 class="text-white text-capitalize ps-3">All Movies</h6>
+                </div>
+                <button class="btn btn-success" style="float:right;bottom:-35px" data-bs-toggle="modal" data-bs-target="#addMovieModal">Add New Movie</button>
+            </div>
+            <div class="card-body px-0 pb-2">
+                <div class="table-responsive p-0">
+                    @if (ViewBag.Message != null)
+                    {
+                        <h5 style="color:red">@ViewBag.Message</h5>
+                    }
+                    <table class="table align-items-center mb-0">
+                        <thead>
+                            <tr>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Id</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">DurationMinutes</th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Release Date</th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                                <th class="text-secondary opacity-7 text-end" style="width:10px"></th>
+                                <th class="text-secondary opacity-7 text-end" style="width:10px"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var m in Model.movies)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">@m.MovieIdApi</h6>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="text-xs font-weight-bold mb-0">@m.DurationMinutes</p>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="text-secondary text-xs font-weight-bold">@m.ReleaseDate</span>
+                                    </td>
+                                    @if (m.IsReleased == true)
+                                    {
+                                        <td class="align-middle text-center text-sm">
+                                            <span class="badge badge-sm bg-gradient-success">Released</span>
+                                        </td>
+                                    }
+                                    else if (m.IsReleased == false)
+                                    {
+                                        <td class="align-middle text-center text-sm">
+                                            <span class="badge badge-sm bg-gradient-info">Stop Release</span>
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td class="align-middle text-center text-sm">
+                                            <span class="badge badge-sm bg-gradient-secondary">Upcoming</span>
+                                        </td>
+                                    }
+                                    <td class="align-middle">
+                                        <a asp-page="./Edit" asp-route-id="@m.Id" class="btn bg-gradient-info">
+                                            Edit
+                                        </a>
+                                    </td>
+                                    <td class="align-middle">
+                                        <form id="Delete-Movies" method="post" asp-page-handler="Delete" onsubmit="return SubmitFormDelete()">
+                                            <input type="hidden" asp-for="@m.Id" name="id" />
+                                            <button class="btn btn-danger">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*Modal Add New Movie*@
+<div class="modal fade" id="addMovieModal" tabindex="-1" aria-labelledby="addMovieModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="post">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addMovieModalLabel">Add New Movie</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label asp-for="AddMovie.MovieIdApi" for="title" class="form-label">Movie Api</label>
+                        <input asp-for="AddMovie.MovieIdApi" type="text" class="form-control" id="Id" name="MovieIdApi">
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="AddMovie.ReleaseDate" for="releaseDate" class="form-label">Release Date</label>
+                        <input asp-for="AddMovie.ReleaseDate" type="date" class="form-control" id="releaseDate" name="releaseDate">
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="AddMovie.DurationMinutes" for="duration" class="form-label">Duration (minutes)</label>
+                        <input asp-for="AddMovie.DurationMinutes" type="number" min="0" class="form-control" id="duration" name="duration">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <div>
+                        <input type="submit" value="Add" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function SubmitFormDelete(){
+        var result = confirm("Are you sure you want to delete?");
+        if (result) {
+           document.getElementById("Delete-Movies").submit();
+        } else {
+            return false;
+        }
+    }
+
+</script>
+
+<style>
+    input.form-control {
+        border: 1px solid #ced4da; /*  */
+    }
+</style>
+
+
+@*<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-ZziyIfnpmfV8Hj/m9t7WnU8KwvZ6GgMSnEJqJ8C1fdwFJvoRxT2MZw1T" crossorigin="anonymous"></script>*@

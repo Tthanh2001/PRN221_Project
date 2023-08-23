@@ -1,0 +1,22 @@
+﻿@{
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+@section Libraries{
+    @await RenderSectionAsync("Libraries", required: false)
+}
+
+@section Styles{
+    <style>
+        input {
+            margin: 10px 0;
+        }
+    </style>
+}
+
+
+@RenderBody()
+
+@section Scripts{
+    @await RenderSectionAsync("Scripts", required: false)
+}

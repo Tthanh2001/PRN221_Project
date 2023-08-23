@@ -1,0 +1,34 @@
+﻿@page "Admin/users"
+@model PRN221_Project.Pages.Admin.User.IndexModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "User list";
+}
+
+<partial name="_StatusMessage" model="@Model.StatusMessage"></partial>
+
+
+<table class="table">
+    <tr>
+        <th>User Name</th>
+        <th>User role</th>
+        <th>Action</th>
+    </tr>
+    @foreach(var user in Model.users)
+    {
+        <tr>
+            <td>@user.UserName</td>
+            <td>@user.RoleNames</td>
+            <td>
+                @if (string.IsNullOrEmpty(user.RoleNames))
+                {
+                    <a class="text-dark" asp-page="./AddRole" asp-route-id="@user.Id">+ Add roles</a>
+                }
+                else
+                {
+                    <a asp-page="./AddRole" asp-route-id="@user.Id">@user.RoleNames</a>
+                }               
+            </td>
+        </tr>
+    }
+</table>

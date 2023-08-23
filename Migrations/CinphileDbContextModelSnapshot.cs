@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ProjectPRN.Utils;
+using PRN221_Project.Utils;
 
 #nullable disable
 
@@ -21,21 +21,6 @@ namespace PRN221_Project.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("ActorMovie", b =>
-                {
-                    b.Property<int>("ActorsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MoviesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ActorsId", "MoviesId");
-
-                    b.HasIndex("MoviesId");
-
-                    b.ToTable("ActorMovie");
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -170,172 +155,7 @@ namespace PRN221_Project.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("PRN221_Project.Models.Bill", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("ApplicationAccountId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("BookingDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("TotalMoney")
-                        .HasColumnType("money");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationAccountId");
-
-                    b.ToTable("Bills");
-                });
-
-            modelBuilder.Entity("PRN221_Project.Models.MovieSchedule", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("MovieId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RoomId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MovieId");
-
-                    b.HasIndex("RoomId");
-
-                    b.HasIndex("Id", "StartTime")
-                        .IsUnique();
-
-                    b.ToTable("MovieSchedules");
-                });
-
-            modelBuilder.Entity("PRN221_Project.Models.Room", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("NumberOfSeats")
-                        .HasColumnType("int");
-
-                    b.Property<string>("RoomName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Rooms");
-                });
-
-            modelBuilder.Entity("PRN221_Project.Models.Seat", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<bool>("IsBookable")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("RoomId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SeatPosition")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SeatTypeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoomId");
-
-                    b.HasIndex("SeatTypeId");
-
-                    b.ToTable("Seats");
-                });
-
-            modelBuilder.Entity("PRN221_Project.Models.SeatBooking", b =>
-                {
-                    b.Property<int>("SeatId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MovieScheduleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BillId")
-                        .HasColumnType("int");
-
-                    b.HasKey("SeatId", "MovieScheduleId");
-
-                    b.HasIndex("BillId");
-
-                    b.HasIndex("MovieScheduleId");
-
-                    b.ToTable("SeatBookings");
-                });
-
-            modelBuilder.Entity("PRN221_Project.Models.SeatType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("money");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SeatTypes");
-                });
-
-            modelBuilder.Entity("ProjectPRN.Models.Actor", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Actor");
-                });
-
-            modelBuilder.Entity("ProjectPRN.Models.ApplicationAccount", b =>
+            modelBuilder.Entity("PRN221_Project.Models.ApplicationAccount", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -410,7 +230,7 @@ namespace PRN221_Project.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("ProjectPRN.Models.Director", b =>
+            modelBuilder.Entity("PRN221_Project.Models.Bill", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -418,82 +238,82 @@ namespace PRN221_Project.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Name")
+                    b.Property<string>("ApplicationAccountId")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("BookingDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("TotalMoney")
+                        .HasColumnType("money");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Director");
+                    b.HasIndex("ApplicationAccountId");
+
+                    b.ToTable("Bills");
                 });
 
-            modelBuilder.Entity("ProjectPRN.Models.Genre", b =>
+            modelBuilder.Entity("PRN221_Project.Models.Movie", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Genre");
-                });
-
-            modelBuilder.Entity("ProjectPRN.Models.Movie", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<int>("DirectorId")
-                        .HasColumnType("int");
 
                     b.Property<int>("DurationMinutes")
                         .HasColumnType("int");
 
-                    b.Property<int>("GenreId")
-                        .HasColumnType("int");
+                    b.Property<bool?>("IsReleased")
+                        .HasColumnType("bit");
 
-                    b.Property<string>("PosterUrl")
+                    b.Property<string>("MovieIdApi")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("TrailerUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("DirectorId");
-
-                    b.HasIndex("GenreId");
 
                     b.ToTable("Movie");
                 });
 
-            modelBuilder.Entity("ProjectPRN.Models.Rating", b =>
+            modelBuilder.Entity("PRN221_Project.Models.MovieSchedule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovieId");
+
+                    b.HasIndex("RoomId");
+
+                    b.HasIndex("Id", "StartTime")
+                        .IsUnique();
+
+                    b.ToTable("MovieSchedules");
+                });
+
+            modelBuilder.Entity("PRN221_Project.Models.Rating", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -520,19 +340,107 @@ namespace PRN221_Project.Migrations
                     b.ToTable("Review");
                 });
 
-            modelBuilder.Entity("ActorMovie", b =>
+            modelBuilder.Entity("PRN221_Project.Models.Room", b =>
                 {
-                    b.HasOne("ProjectPRN.Models.Actor", null)
-                        .WithMany()
-                        .HasForeignKey("ActorsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.HasOne("ProjectPRN.Models.Movie", null)
-                        .WithMany()
-                        .HasForeignKey("MoviesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("NumberOfCols")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfRows")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RoomName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Rooms");
+                });
+
+            modelBuilder.Entity("PRN221_Project.Models.Seat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<bool>("IsBookable")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SeatCol")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SeatName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SeatRow")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SeatTypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoomId");
+
+                    b.HasIndex("SeatTypeId");
+
+                    b.ToTable("Seats");
+                });
+
+            modelBuilder.Entity("PRN221_Project.Models.SeatBooking", b =>
+                {
+                    b.Property<int>("SeatId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MovieScheduleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BillId")
+                        .HasColumnType("int");
+
+                    b.HasKey("SeatId", "MovieScheduleId");
+
+                    b.HasIndex("BillId");
+
+                    b.HasIndex("MovieScheduleId");
+
+                    b.ToTable("SeatBookings");
+                });
+
+            modelBuilder.Entity("PRN221_Project.Models.SeatType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("money");
+
+                    b.Property<string>("SeatColor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SeatTypes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -546,7 +454,7 @@ namespace PRN221_Project.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("ProjectPRN.Models.ApplicationAccount", null)
+                    b.HasOne("PRN221_Project.Models.ApplicationAccount", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -555,7 +463,7 @@ namespace PRN221_Project.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("ProjectPRN.Models.ApplicationAccount", null)
+                    b.HasOne("PRN221_Project.Models.ApplicationAccount", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -570,7 +478,7 @@ namespace PRN221_Project.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ProjectPRN.Models.ApplicationAccount", null)
+                    b.HasOne("PRN221_Project.Models.ApplicationAccount", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -579,7 +487,7 @@ namespace PRN221_Project.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("ProjectPRN.Models.ApplicationAccount", null)
+                    b.HasOne("PRN221_Project.Models.ApplicationAccount", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -588,7 +496,7 @@ namespace PRN221_Project.Migrations
 
             modelBuilder.Entity("PRN221_Project.Models.Bill", b =>
                 {
-                    b.HasOne("ProjectPRN.Models.ApplicationAccount", "ApplicationAccount")
+                    b.HasOne("PRN221_Project.Models.ApplicationAccount", "ApplicationAccount")
                         .WithMany("Bills")
                         .HasForeignKey("ApplicationAccountId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -599,7 +507,7 @@ namespace PRN221_Project.Migrations
 
             modelBuilder.Entity("PRN221_Project.Models.MovieSchedule", b =>
                 {
-                    b.HasOne("ProjectPRN.Models.Movie", "Movie")
+                    b.HasOne("PRN221_Project.Models.Movie", "Movie")
                         .WithMany("MovieSchedules")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -614,6 +522,25 @@ namespace PRN221_Project.Migrations
                     b.Navigation("Movie");
 
                     b.Navigation("Room");
+                });
+
+            modelBuilder.Entity("PRN221_Project.Models.Rating", b =>
+                {
+                    b.HasOne("PRN221_Project.Models.ApplicationAccount", "ApplicationAccount")
+                        .WithMany("Ratings")
+                        .HasForeignKey("ApplicationAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PRN221_Project.Models.Movie", "Movie")
+                        .WithMany("Ratings")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationAccount");
+
+                    b.Navigation("Movie");
                 });
 
             modelBuilder.Entity("PRN221_Project.Models.Seat", b =>
@@ -662,47 +589,23 @@ namespace PRN221_Project.Migrations
                     b.Navigation("Seat");
                 });
 
-            modelBuilder.Entity("ProjectPRN.Models.Movie", b =>
+            modelBuilder.Entity("PRN221_Project.Models.ApplicationAccount", b =>
                 {
-                    b.HasOne("ProjectPRN.Models.Director", "Director")
-                        .WithMany("Movies")
-                        .HasForeignKey("DirectorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Bills");
 
-                    b.HasOne("ProjectPRN.Models.Genre", "Genre")
-                        .WithMany("Movies")
-                        .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Director");
-
-                    b.Navigation("Genre");
-                });
-
-            modelBuilder.Entity("ProjectPRN.Models.Rating", b =>
-                {
-                    b.HasOne("ProjectPRN.Models.ApplicationAccount", "ApplicationAccount")
-                        .WithMany("Ratings")
-                        .HasForeignKey("ApplicationAccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProjectPRN.Models.Movie", "Movie")
-                        .WithMany("Ratings")
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationAccount");
-
-                    b.Navigation("Movie");
+                    b.Navigation("Ratings");
                 });
 
             modelBuilder.Entity("PRN221_Project.Models.Bill", b =>
                 {
                     b.Navigation("SeatBookings");
+                });
+
+            modelBuilder.Entity("PRN221_Project.Models.Movie", b =>
+                {
+                    b.Navigation("MovieSchedules");
+
+                    b.Navigation("Ratings");
                 });
 
             modelBuilder.Entity("PRN221_Project.Models.MovieSchedule", b =>
@@ -725,30 +628,6 @@ namespace PRN221_Project.Migrations
             modelBuilder.Entity("PRN221_Project.Models.SeatType", b =>
                 {
                     b.Navigation("Seats");
-                });
-
-            modelBuilder.Entity("ProjectPRN.Models.ApplicationAccount", b =>
-                {
-                    b.Navigation("Bills");
-
-                    b.Navigation("Ratings");
-                });
-
-            modelBuilder.Entity("ProjectPRN.Models.Director", b =>
-                {
-                    b.Navigation("Movies");
-                });
-
-            modelBuilder.Entity("ProjectPRN.Models.Genre", b =>
-                {
-                    b.Navigation("Movies");
-                });
-
-            modelBuilder.Entity("ProjectPRN.Models.Movie", b =>
-                {
-                    b.Navigation("MovieSchedules");
-
-                    b.Navigation("Ratings");
                 });
 #pragma warning restore 612, 618
         }

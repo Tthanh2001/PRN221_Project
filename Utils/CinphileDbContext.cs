@@ -1,16 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PRN221_Project.Models;
-using ProjectPRN.Models;
+using PRN221_Project.Models;
 
-namespace ProjectPRN.Utils
+namespace PRN221_Project.Utils
 {
     public class CinphileDbContext : IdentityDbContext<ApplicationAccount>
     {
-        public DbSet<Actor> Actors { get; set; } = null!;
         public DbSet<Bill> Bills { get; set; } = null!;
-        public DbSet<Director> Directors { get; set; } = null!;
-        public DbSet<Genre> Genres { get; set; } = null!;
         public DbSet<Movie> Movies { get; set; } = null!;
         public DbSet<MovieSchedule> MovieSchedules { get; set; } = null!;
         public DbSet<Rating> Ratings { get; set; } = null!;
@@ -33,6 +30,8 @@ namespace ProjectPRN.Utils
                 .Build();
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             optionsBuilder.UseSqlServer(connectionString);
+           
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -52,5 +51,7 @@ namespace ProjectPRN.Utils
                 .OnDelete(DeleteBehavior.NoAction);
            
         }
+
+
     }
 }
