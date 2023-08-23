@@ -1,0 +1,300 @@
+﻿@page
+@model PRN221_Project.Pages.Home.MovieDetailModel
+@{
+    Layout = "";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="~/css/StyleSheet.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="~/css/admin/nucleo-icons.css" />
+    <style>
+        .hero {
+            height: 342px;
+            margin: 0;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+
+        .popup {
+            display: none;
+            /* Thêm các thuộc tính cần thiết cho vị trí và giao diện của popup */
+        }
+
+        .hero:before {
+            content: '';
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            overflow: hidden;
+            top: 0;
+            left: 0;
+            background: url("@Model.backdrop_path");
+            filter: brightness(50%);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -1;
+            transform: skewY(-2.2deg);
+            transform-origin: 0 0;
+            chrome antialias fix -webkit-backface-visibility: hidden;
+        }
+
+        button {
+            font-size: 20px;
+            margin-left: 20px;
+            padding: 10;
+            color: white;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.1); /* Thay đổi giá trị alpha để điều chỉnh độ trong suốt */
+        }
+
+        .rating-stars .fas.fa-star.rated {
+            color: gold; /* Hoặc màu khác tùy chọn */
+            /* Thêm các styles khác cho biểu tượng ngôi sao đã được chọn */
+        }
+
+        .rating-stars .fas.fa-star.rated {
+            color: gold; /* Hoặc màu khác tùy chọn */
+        }
+
+        .rating-stars .fas.fa-star:hover,
+        .rating-stars .fas.fa-star.hovered {
+            color: gold; /* Màu khác khi hover */
+            cursor: pointer;
+        }
+
+        .popup-wrapper {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .popup-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .video-container {
+            position: relative;
+        }
+
+            .video-container iframe {
+                width: 100%;
+                
+            }
+
+        .video-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 24px;
+            color: white;
+            z-index: 1;
+        }
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+        .show-popup {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <div class="movie-card">
+        <div class="container">
+
+            <a href="#"><img src="@Model.poster_path" width="20%" alt="cover" class="cover" /></a>
+
+            <div class="hero">
+                <div class="details">
+
+                    <div class="title1">@Model.title</div>
+
+                    <div class="title2">The Battle of the Five Armies</div>
+
+                    <fieldset class="rating">
+                        <input type="radio" id="star5" name="rating" value="5" />
+                        <label class="full" for="star5" title="Awesome - 5 stars"></label>
+                        <input type="radio" id="star4half" name="rating" value="4 and a half" />
+                        <label class="half" for="star4half" title="Pretty good - 4.5 stars"></label>
+                        <input type="radio" id="star4" name="rating" value="4" checked />
+                        <label class="full" for="star4" title="Pretty good - 4 stars"></label>
+                        <input type="radio" id="star3half" name="rating" value="3 and a half" />
+                        <label class="half" for="star3half" title="Meh - 3.5 stars"></label>
+                        <input type="radio" id="star3" name="rating" value="3" />
+                        <label class="full" for="star3" title="Meh - 3 stars"></label>
+                        <input type="radio" id="star2half" name="rating" value="2 and a half" />
+                        <label class="half" for="star2half" title="Kinda bad - 2.5 stars"></label>
+                        <input type="radio" id="star2" name="rating" value="2" />
+                        <label class="full" for="star2" title="Kinda bad - 2 stars"></label>
+                        <input type="radio" id="star1half" name="rating" value="1 and a half" />
+                        <label class="half" for="star1half" title="Meh - 1.5 stars"></label>
+                        <input type="radio" id="star1" name="rating" value="1" />
+                        <label class="full" for="star1" title="Sucks big time - 1 star"></label>
+                        <input type="radio" id="starhalf" name="rating" value="half" />
+                        <label class="half" for="starhalf" title="Sucks big time - 0.5 stars"></label>
+                    </fieldset>
+
+                    <span class="likes">109 likes</span>
+                    <div style="display:flex">
+                        <button class="bg-nono" id="openPopup"><span class="icon icon-play"></span> Play Trailer</button>
+
+                        <button id="rateButton"><span class="star-icon">&#9733;</span> Rating</button>
+                        <div id="ratingContainer" hidden>
+                            <div class="rating-stars">
+                                <i class="fas fa-star" data-rating="1"></i>
+                                <i class="fas fa-star" data-rating="2"></i>
+                                <i class="fas fa-star" data-rating="3"></i>
+                                <i class="fas fa-star" data-rating="4"></i>
+                                <i class="fas fa-star" data-rating="5"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- end details -->
+
+            </div> <!-- end hero -->
+
+            <div class="description">
+
+                <div class="column1">
+                    @foreach (var item in Model.genres)
+                    {
+                        <span class="tag">@item</span>
+
+                    }
+
+                </div> <!-- end column1 -->
+
+                <div class="column2">
+
+                    <p>@Model.overview</p>
+
+                    <div class="avatars">
+                        <a href="#" data-tooltip="Person 1" data-placement="top">
+                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/hobbit_avatar1.png" alt="avatar1" />
+                        </a>
+
+                        <a href="#" data-tooltip="Person 2" data-placement="top">
+                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/hobbit_avatar2.png" alt="avatar2" />
+                        </a>
+
+
+                        <a href="#" data-tooltip="Person 3" data-placement="top">
+                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/hobbit_avatar3.png" alt="avatar3" />
+                        </a>
+
+                    </div> <!-- end avatars -->
+
+
+
+                </div> <!-- end column2 -->
+            </div> <!-- end description -->
+
+
+        </div> <!-- end container -->
+    </div> <!-- end movie-card -->
+    <div class="popup-wrapper" id="popup">
+        <div class="popup-content" >
+            <span class="popup-close" id="closePopup">&times;</span>
+            <div class="video-container">
+                <iframe id="popupVideo" height="400px" src="@Model.video.First()" frameborder="0" allowfullscreen></iframe>
+                <span class="video-close" id="closeVideo">&times;</span>
+            </div>
+        </div>
+    </div>
+
+   
+
+
+    <script>
+        const openButton = document.getElementById('openPopup');
+        const closeButton = document.getElementById('closePopup');
+        const closeVideoButton = document.getElementById('closeVideo');
+        const popup = document.getElementById('popup');
+        const videoContainer = document.querySelector('.video-container');
+        const videoIframe = document.getElementById('popupVideo');
+
+        openButton.addEventListener('click', () => {
+            popup.classList.add('show-popup');
+        });
+
+        closeButton.addEventListener('click', () => {
+            popup.classList.remove('show-popup');
+        });
+
+        closeVideoButton.addEventListener('click', () => {
+            popup.classList.remove('show-popup');
+            videoIframe.src = ''; // Stop video playback
+        });
+
+
+        // script.js
+        const rateButton = document.getElementById('rateButton');
+        const ratingContainer = document.getElementById('ratingContainer');
+        const stars = ratingContainer.querySelectorAll('.fas.fa-star');
+
+        let selectedRating = 0;
+
+        rateButton.addEventListener('click', () => {
+            ratingContainer.removeAttribute('hidden');
+        });
+
+        stars.forEach(star => {
+            star.addEventListener('mouseover', () => {
+                markStars(parseInt(star.getAttribute('data-rating')), 'hovered');
+            });
+
+            star.addEventListener('mouseout', () => {
+                resetStars('hovered');
+                markStars(selectedRating, 'rated');
+            });
+
+            star.addEventListener('click', () => {
+                selectedRating = parseInt(star.getAttribute('data-rating'));
+                resetStars();
+                markStars(selectedRating, 'rated');
+                // Tự động gửi đánh giá tại đây
+                alert(`Bạn đã đánh giá ${selectedRating} sao!`);
+                ratingContainer.setAttribute('hidden', true);
+                resetStars();
+            });
+        });
+
+        function resetStars(className) {
+            stars.forEach(star => {
+                star.classList.remove(className);
+            });
+        }
+
+        function markStars(count, className) {
+            for (let i = 0; i < count; i++) {
+                stars[i].classList.add(className);
+            }
+        }
+
+
+    </script>
+</body>
+</html>
