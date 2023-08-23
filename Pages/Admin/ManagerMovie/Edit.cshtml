@@ -12,7 +12,7 @@
             <div class="modal-body">
                 <div class="mb-3">
                     <label for="title" class="form-label">Title</label>
-                    <input value="@Model.EditMovie.Title" type="text" class="form-control" id="title" name="title">
+                    <input value="@Model.EditMovie.Id" type="text" class="form-control" id="title" name="title">
                 </div>
                 <div class="mb-3">
                     <label asp-for="EditMovie.ReleaseDate" class="form-label">Release Date</label>
@@ -23,29 +23,15 @@
                     <input value="@Model.EditMovie.DurationMinutes" type="number" class="form-control" id="duration" name="duration">
                 </div>
                 <div class="mb-3">
-                    <label asp-for="EditMovie.Description" for="description" class="form-label">Description</label>
-                    <textarea asp-for="EditMovie.Description" value="@Model.EditMovie.Description" class="form-control" id="description" name="description" rows="3" style="border:1px solid #ced4da"></textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="posterUrl" class="form-label">Poster URL</label>
-                    <input value="@Model.EditMovie.PosterUrl" type="url" class="form-control" id="posterUrl" name="posterUrl">
-                </div>
-                <div class="mb-3">
-                    <label for="trailerUrl" class="form-label">Trailer URL</label>
-                    <input value="@Model.EditMovie.TrailerUrl" type="url" class="form-control" id="trailerUrl" name="trailerUrl">
-                </div>
-                <div class="mb-3">
-                    <label asp-for="EditMovie.GenreId"  for="category" class="form-label">Genre</label>
-                    <select asp-for="EditMovie.GenreId" class="form-control" id="Genre" name="Genre" style="border:1px solid #ced4da">
-                        @foreach (var g in Model.Genres)
-                        {
-                            <option value="@g.Id">@g.Name</option>
-                        }
+                    <label for="category" class="form-label">Genre</label>
+                    <select class="form-control" id="Genre" name="Genre" style="border:1px solid #ced4da">
+                        <option value="0">Ngừng Chiếu</option>
+                        <option value="0">Chiếu</option>
                     </select>
                 </div>
 
             </div>
-            <div class="modal-footer">                
+            <div class="modal-footer">
                 <div>
                     <input type="submit" value="Edit" class="btn btn-primary" />
                 </div>

@@ -16,9 +16,6 @@ namespace PRN221_Project.Pages.Admin.ManagerMovie
         [BindProperty]
         public Movie AddMovie { get; set; }
 
-        [BindProperty]
-        public List<Genre> Genres { get; set; }
-
         public IndexModel(CinphileDbContext context)
         {
             _context = context;
@@ -26,20 +23,28 @@ namespace PRN221_Project.Pages.Admin.ManagerMovie
 
         public void OnGet()
         {
-            movies = _context.Movies.Include(m => m.Director).Include(m => m.Genre).ToList();
-            Genres = _context.Genres.ToList();
+            movies = _context.Movies.ToList();
+
         }
 
         public IActionResult OnPost()
-        {      
-            AddMovie.GenreId = int.Parse(Request.Form["Genre"]);
-            AddMovie.DirectorId = 1;
-            AddMovie.DurationMinutes = int.Parse(Request.Form["duration"]);            
-            _context.Movies.Add(AddMovie);
-            _context.SaveChanges();
-            movies = _context.Movies.Include(m => m.Director).Include(m => m.Genre).ToList();
-            Genres = _context.Genres.ToList();
-            return Page();
+        {
+            if (AddMovie.ReleaseDate < DateTime.Now)
+            {
+                ViewData["Message"] = "Đã quá thời gian. Vui lòng chọn ngày khác";
+                OnGet();
+                return Page();
+            }
+            else
+            {
+                AddMovie.MovieIdApi = Request.Form["MovieIdApi"];
+                AddMovie.DurationMinutes = int.Parse(Request.Form["duration"]);
+                _context.Movies.Add(AddMovie);
+                _context.SaveChanges();
+                OnGet();
+                return Page();
+            }
+
         }
         public IActionResult OnPostDelete(int id)
         {
