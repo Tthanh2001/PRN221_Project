@@ -27,8 +27,8 @@ a {
 
 .container {
     margin: 0 auto;
-    width: 780px;
-    height: 780px;
+    width: 980px;
+    height: 680px;
     background: #F0F0ED;
     border-radius: 5px;
     position: relative;
@@ -44,7 +44,7 @@ a {
 }
 
 .details {
-    padding: 190px 0 0 280px;
+    padding: 170px 0 0 340px;
 }
     .title1
 
@@ -121,11 +121,12 @@ a {
     }
 
 .column2 {
-    padding-left: 41px;
+    padding-left: 100px;
     padding-top: 30px;
     margin-left: 20px;
-    width: 480px;
+    width: 680px;
     float: left;
+    font-size:20px
 }
 
 .avatars {
