@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="mailsave\**" />
+    <Content Remove="mailsave\**" />
+    <EmbeddedResource Remove="mailsave\**" />
+    <None Remove="mailsave\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MailKit" Version="4.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
@@ -71,10 +78,12 @@
     <None Include="Areas\Identity\Pages\_ValidationScriptsPartial.cshtml" />
     <None Include="Areas\Identity\Pages\_ViewImports.cshtml" />
     <None Include="Areas\Identity\Pages\_ViewStart.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="mailsave\" />
+    <None Include="wwwroot\css\admin\material-dashboard.css.map" />
+    <None Include="wwwroot\js\admin\bootstrap.min.js" />
+    <None Include="wwwroot\js\admin\material-dashboard.min.js" />
+    <None Include="wwwroot\js\admin\perfect-scrollbar.min.js" />
+    <None Include="wwwroot\js\admin\popper.min.js" />
+    <None Include="wwwroot\js\admin\smooth-scrollbar.min.js" />
   </ItemGroup>
 
 </Project>
