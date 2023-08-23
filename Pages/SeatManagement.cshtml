@@ -127,6 +127,7 @@
 
 @section Scripts {
     <script type="text/javascript">
+        var roomId = @Model.Room.Id;
         document.getElementById("seat-grid").setAttribute('style', 'grid-template-columns: repeat(' + @Model.Room.NumberOfCols + ', 40px)');
     </script>
 

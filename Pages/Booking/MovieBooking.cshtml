@@ -1,63 +1,100 @@
 ﻿@page
+@using PRN221_Project.Models;
 @model PRN221_Project.Pages.Booking.MovieBookingModel
+
+@{
+    var seatDictionary = Model.MovieSchedule.Room.Seats.ToDictionary(s => (s.SeatRow, s.SeatCol));
+    var seatBookedDictionary = Model.MovieSchedule.SeatBookings.ToDictionary(s => s.SeatId);
+}
 
 @section Styles {
     <style>
-        .table {
-            border-spacing: 5px;
-            border-collapse: separate;
-            width: 100%;
-            table-layout: fixed;
-            word-wrap: break-word;
+        #seat-grid {
+            display: grid;
+            justify-content: center;
+            overflow-x: auto;
         }
 
-        .table-cell {
+        .seat-empty {
+            height: 35px;
+            width: 35px;
+            background: rgba(0, 0, 0, 0);
+            border: 1px;
+            margin: 5px;
+        }
+
+        .seat-available {
+            height: 35px;
+            width: 35px;
             border: 1px solid black;
-            padding: 3px;
-            text-align: center;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 10%
+            margin: 5px;
+            background: rgba(0, 0, 0, 0)
         }
 
-        .cell-selected {
-            background-color: #007bff;
-            color: #fff;
+        .seat-booked {
+            height: 35px;
+            width: 35px;
+            border: 1px solid black;
+            margin: 5px;
+            border: 1px;
         }
-
-        .overflow-auto {
-            min-width: 1400px;
-        }
-
     </style>
 }
 
-<div class="container mt-4">
-    <div class="overflow-auto">
-        <table class="table">
-            <tbody>
-                @for (char row = 'A'; row <= 'L'; row++)
-                {
-                    <tr>
-                        @for (int col = 1; col <= 24; col++)
-                        {
-                            <td class="table-cell" data-row="@row" data-col="@col">
-                                @($"{row}{col}")
-                            </td>
-                        }
-                    </tr>
-                }
-            </tbody>
-        </table>
+<div class="container-fluid p-2">
+    <div class="mt-2">
+        <h4 class="text-center m-0">Screen</h4>
+        <div class="d-flex justify-content-center">
+            <hr class="bg-black w-50" size="6" />
+        </div>
+
     </div>
+
+    <div class="row mb-4 mt-2">
+        <div id="seat-grid">
+            @for (int col = 0; col < Model.MovieSchedule.Room.NumberOfCols; col++)
+            {
+                <div class="grid-col">
+                    @for (int row = 0; row < Model.MovieSchedule.Room.NumberOfRows; row++)
+                    {
+                        var seatKey = (row, col);
+                        if (seatDictionary.TryGetValue(seatKey, out var seat))
+                        {
+                            if (seatBookedDictionary.TryGetValue(seat.Id, out var seatBooked))
+                            {
+                                <div class="seat-booked" style="background-color: @seat.SeatType.SeatColor;">@seat.SeatName</div>
+                            }
+                            else
+                            {
+                                <div class="seat-available" data-color="@seat.SeatType.SeatColor"
+                                    data-is-booked="false"
+                                    style="border-color: @seat.SeatType.SeatColor;">@seat.SeatName</div>
+                            }                           
+                        }
+                        else
+                        {
+                            <div class="seat-empty"></div>
+                        }
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="row d-flex justify-content-center mt-5">
+        @Html.AntiForgeryToken()
+        <button id="saveButton" class="btn btn-info w-50">Save</button>
+    </div>
+
 </div>
 
 @section Scripts {
-    <script>
-        $(document).ready(function () {
-            $(".grid-cell").click(function () {
-                $(this).toggleClass("cell-selected");
-            });
-        });
+    <script type="text/javascript">
+
+        document.getElementById("seat-grid").setAttribute('style', 'grid-template-columns: repeat(' + @Model.MovieSchedule.Room.NumberOfCols + ', 40px)');      
     </script>
+
+    <script type="text/javascript" src="~/js/SeatBooking.js"></script>
+
 }

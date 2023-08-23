@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PRN221_Project.Models;
-using PRN221_Project.Models;
 
 namespace PRN221_Project.Utils
 {

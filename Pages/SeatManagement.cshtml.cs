@@ -17,6 +17,7 @@ namespace PRN221_Project.Pages
         public int TypeId { get; set; }
         public string SeatName { get; set; } = null!;
         public bool Available { get; set; }
+        public int RoomId { get; set; }
     }
 
     public class SeatManagementModel : PageModel
@@ -33,20 +34,20 @@ namespace PRN221_Project.Pages
             _context = context;
         }
 
-        public async Task<IActionResult> OnGetAsync(int id)
+        public async Task<IActionResult> OnGetAsync(int? id)
         {
             SeatType = await _context.SeatTypes.ToListAsync();
-            if(id == null)
+
+            if (id == null)
             {
-                Room = await _context.Rooms.Include(r => r.Seats).FirstOrDefaultAsync(r => r.Id == 1);
+                return NotFound();
             }
-            else
-            {
-                Room = await _context.Rooms.Include(r => r.Seats).FirstOrDefaultAsync(r => r.Id == id);
-            }
-            //Console.WriteLine(id);
-            //Room = await _context.Rooms.Include(r => r.Seats).FirstOrDefaultAsync(r => r.Id == 1);
-            
+
+            Room = await _context.Rooms
+                .Include(r => r.Seats)
+                .ThenInclude(s => s.SeatType)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
             if (Room == null)
             {
                 return NotFound();  // Room not found
@@ -56,7 +57,7 @@ namespace PRN221_Project.Pages
         }
 
         public async Task<IActionResult> OnPostAsync([FromBody] List<SelectedSeat> selectedSeats)
-        {           
+        {
             if (selectedSeats == null)
             {
                 return NotFound();
@@ -64,7 +65,7 @@ namespace PRN221_Project.Pages
 
             Room = await _context.Rooms
                 .Include(r => r.Seats)
-                .FirstOrDefaultAsync(r => r.Id == 1);  //Hardcode
+                .FirstOrDefaultAsync(r => r.Id == selectedSeats[0].RoomId);
 
             if (Room == null)
             {
@@ -81,7 +82,7 @@ namespace PRN221_Project.Pages
                         SeatRow = seat.Row,
                         IsBookable = seat.Available,
                         SeatName = seat.SeatName,
-                        RoomId = Room.Id,
+                        RoomId = seat.RoomId,
                         SeatTypeId = seat.TypeId
                     });
                 }
@@ -114,7 +115,7 @@ namespace PRN221_Project.Pages
                             SeatRow = selectedSeat.Row,
                             IsBookable = selectedSeat.Available,
                             SeatName = selectedSeat.SeatName,
-                            RoomId = Room.Id,
+                            RoomId = selectedSeat.RoomId,
                             SeatTypeId = selectedSeat.TypeId
                         });
                     }
@@ -132,7 +133,7 @@ namespace PRN221_Project.Pages
                     Room.Seats.AddRange(seatsToKeep);
                 }
             }
-            
+
             await _context.SaveChangesAsync();
 
             return Page();

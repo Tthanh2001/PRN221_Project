@@ -1,6 +1,7 @@
 ﻿$(document).ready(function () {
     const seatGrid = $("#seat-grid");
     const seatTypeSelect = $("#seatType");
+    var changedSeat = false;
 
     seatGrid.on("click", ".seat", function () {
         const selectedSeatType = seatTypeSelect.find("option:selected");
@@ -9,10 +10,12 @@
         if (seat.css("background-color") === "rgba(0, 0, 0, 0)") {
             seat.css("background-color", selectedSeatType.attr("data-color"));
             seat.attr("data-seatTypeId", selectedSeatType.val());
-            seat.text("");
+            changedSeat = true;
         } else {
             seat.css("background-color", "rgba(0, 0, 0, 0)");
             seat.attr("data-seatTypeId", "");
+            seat.text("");
+            changedSeat = true;
         }
     });
 
@@ -29,8 +32,9 @@
                     row: seat.attr("data-row"),
                     col: seat.attr("data-col"),
                     typeId: seatId,
-                    available: seat.attr("data-availabe"),
-                    seatName: seatName
+                    available: seat.data("available"),
+                    seatName: seatName,
+                    roomId: roomId
                 };
                 if (!seatName) {
                     emptySeatNames.push(seatData);
@@ -42,12 +46,18 @@
             
         });
 
+        if (changedSeat) {
+            alert("You just modify some seats, you should re-name all the seats by click 'Assign Name'");
+            return; // Don't proceed with submission
+        }
+
         if (emptySeatNames.length > 0) {
             const warningMessage = `There are ${emptySeatNames.length} seats don't have name'`;
             alert(warningMessage);
             return; // Don't proceed with submission
         }
 
+        //Post to backend
         if (selectedSeats.length > 0) {
             try {
                 $.post({
@@ -73,10 +83,12 @@
         }
     });
 
+    //Assign Name
     $("#assignName").click(function () {
         const selectedSeats = [];
         const selectedRows = new Set();
         const selectedColumns = new Set();
+        changedSeat = false;
 
         // Loop through selected seats to collect rows and columns and store selected seat data
         seatGrid.find(".seat").each(function () {
@@ -95,14 +107,14 @@
         var sortedRows;
         var sortedCols;
 
-        if ($("#ColumnDirection1").is(":checked")) {
+        if ($("#RowDirection1").is(":checked")) {
             sortedRows = Array.from(selectedRows).sort((a, b) => a - b);
         }
         else {
             sortedRows = Array.from(selectedRows).sort((a, b) => b - a);
         }
-
-        if ($("#RowDirection1").is(":checked")) {
+        
+        if ($("#ColumnDirection1").is(":checked")) {
             sortedCols = Array.from(selectedColumns).sort((a, b) => a - b);
         }
         else {
