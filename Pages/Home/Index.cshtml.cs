@@ -34,9 +34,9 @@ namespace PRN221_Project.Pages
 
         }
 
-        public List<MovieApi> listFilmsPopular { get; set; }
-        public List<MovieApi> listFilmsToprate { get; set; }
-        public List<MovieApi> listFilmsUpcoming { get; set; }
+        public List<MovieApi> listFilmsPopular { get; set; } = new List<MovieApi>();
+        public List<MovieApi> listFilmsToprate { get; set; } = new List<MovieApi>();
+        public List<MovieApi> listFilmsUpcoming { get; set; } = new List<MovieApi>();
 
         public List<string> movie { get; set; }
         public async Task<IActionResult> OnGetAsync()
@@ -102,37 +102,37 @@ namespace PRN221_Project.Pages
                 }
             }
 
-            ////upcoming
-            //string apiUrl = PopularFilm;
-            //HttpResponseMessage response = await client.GetAsync(apiUrl);
+            //upcoming
+            string apiUrlupcoming = upcoming;
+            HttpResponseMessage response2 = await client.GetAsync(apiUrlupcoming);
 
 
 
-            //if (response.IsSuccessStatusCode)
-            //{
-            //    string json = await response.Content.ReadAsStringAsync();
-            //    dynamic dataFromApi = JsonConvert.DeserializeObject(json);
+            if (response2.IsSuccessStatusCode)
+            {
+                string json = await response2.Content.ReadAsStringAsync();
+                dynamic dataFromApiupcoming = JsonConvert.DeserializeObject(json);
 
 
-            //    foreach (var result in dataFromApi["results"])
-            //    {
-            //        foreach (var item in movie)
-            //        {
+                foreach (var result in dataFromApiupcoming["results"])
+                {
+                    foreach (var item in movie)
+                    {
 
-            //            if (item == result["id"].ToString())
-            //            {
+                        if (item == result["id"].ToString())
+                        {
 
-            //                int Id = result["id"];
-            //                string poster_path = "https://image.tmdb.org/t/p/w500/" + result["poster_path"];
-            //                string title = result["title"];
+                            int Id = result["id"];
+                            string poster_path = "https://image.tmdb.org/t/p/w500/" + result["poster_path"];
+                            string title = result["title"];
 
 
 
-            //                listFilmsPopular.Add(new MovieApi { Id = Id, poster_path = poster_path, title = title });
-            //            }
-            //        }
-            //    }
-            //}
+                            listFilmsUpcoming.Add(new MovieApi { Id = Id, poster_path = poster_path, title = title });
+                        }
+                    }
+                }
+            }
             return Page();
 
         }
