@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PRN221_Project.Utils;
 
@@ -11,9 +12,10 @@ using PRN221_Project.Utils;
 namespace PRN221_Project.Migrations
 {
     [DbContext(typeof(CinphileDbContext))]
-    partial class CinphileDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230820161607_modifyseatcolor")]
+    partial class modifyseatcolor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -438,10 +440,7 @@ namespace PRN221_Project.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("NumberOfCols")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NumberOfRows")
+                    b.Property<int>("NumberOfSeats")
                         .HasColumnType("int");
 
                     b.Property<string>("RoomName")
@@ -469,10 +468,6 @@ namespace PRN221_Project.Migrations
 
                     b.Property<int>("SeatCol")
                         .HasColumnType("int");
-
-                    b.Property<string>("SeatName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SeatRow")
                         .HasColumnType("int");
