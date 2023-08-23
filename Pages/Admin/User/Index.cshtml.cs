@@ -6,8 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.PowerBI.Api.Models;
 using PRN221_Project.Models;
 using PRN221_Project.Utils;
+using PRN221_Project.Pages.Admin.User;
 
-namespace PRN221_Project.Areas.Admin.Pages.User
+namespace PRN221_Project.Pages.Admin.User
 {
     [Authorize(Roles="Admin, Vip, Editor")]
     public class IndexModel : PageModel

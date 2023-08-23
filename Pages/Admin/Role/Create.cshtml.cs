@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using PRN221_Project.Pages.Admin.Role;
 using PRN221_Project.Utils;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PRN221_Project.Areas.Admin.Pages.Role
+namespace PRN221_Project.Pages.Admin.Role
 {
     public class CreateModel : RolePageModel
     {

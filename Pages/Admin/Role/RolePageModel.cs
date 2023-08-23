@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using PRN221_Project.Utils;
 
-namespace PRN221_Project.Areas.Admin.Pages.Role
+namespace PRN221_Project.Pages.Admin.Role
 {
     public class RolePageModel:PageModel
     {
