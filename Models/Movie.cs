@@ -1,4 +1,5 @@
-﻿using PRN221_Project.Models;
+﻿using Newtonsoft.Json;
+using PRN221_Project.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
@@ -30,7 +31,7 @@ namespace PRN221_Project.Models
 
         [StringLength(1000)]
         public string Description { get; set; } = null!;
-
+        
         public string PosterUrl { get; set; } = null!;
 
         public string TrailerUrl { get; set; } = null!;
