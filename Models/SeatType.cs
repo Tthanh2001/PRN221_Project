@@ -16,6 +16,7 @@ namespace PRN221_Project.Models
         public string Name { get; set; } = null!;
         [Column(TypeName = "money")]
         public decimal Price { get; set; }
+        public string SeatColor { get; set; }
         public virtual ICollection<Seat> Seats { get; set; } = null!;
     }
 }

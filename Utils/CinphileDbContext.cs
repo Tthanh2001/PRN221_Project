@@ -7,10 +7,7 @@ namespace PRN221_Project.Utils
 {
     public class CinphileDbContext : IdentityDbContext<ApplicationAccount>
     {
-        public DbSet<Actor> Actors { get; set; } = null!;
         public DbSet<Bill> Bills { get; set; } = null!;
-        public DbSet<Director> Directors { get; set; } = null!;
-        public DbSet<Genre> Genres { get; set; } = null!;
         public DbSet<Movie> Movies { get; set; } = null!;
         public DbSet<MovieSchedule> MovieSchedules { get; set; } = null!;
         public DbSet<Rating> Ratings { get; set; } = null!;

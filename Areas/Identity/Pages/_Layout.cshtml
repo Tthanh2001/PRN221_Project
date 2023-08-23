@@ -2,6 +2,10 @@
     Layout = "~/Pages/Shared/_Layout.cshtml";
 }
 
+@section Libraries{
+    @await RenderSectionAsync("Libraries", required: false)
+}
+
 @section Styles{
     <style>
         input {
@@ -13,7 +17,6 @@
 
 @RenderBody()
 
-@section Scripts
-    {
-    @RenderSection("Scripts", required: false)
+@section Scripts{
+    @await RenderSectionAsync("Scripts", required: false)
 }
