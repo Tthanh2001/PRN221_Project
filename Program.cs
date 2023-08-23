@@ -18,9 +18,9 @@ namespace PRN221_Project
             services.AddDbContext<CinphileDbContext>(options =>
             {
                 var configuration = new ConfigurationBuilder()
-               .SetBasePath(Directory.GetCurrentDirectory())
-               .AddJsonFile("appsettings.json")
-               .Build();
+                   .SetBasePath(Directory.GetCurrentDirectory())
+                   .AddJsonFile("appsettings.json")
+                   .Build();
                 string connectString = configuration.GetConnectionString("DefaultConnection");
                 options.UseSqlServer(connectString);
             });
@@ -93,6 +93,10 @@ namespace PRN221_Project
                     googleOptions.CallbackPath = "/google-authorization";
 
                 });
+
+            //VnPay
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddScoped<PaymentUtil>();
 
             var app = builder.Build();
 

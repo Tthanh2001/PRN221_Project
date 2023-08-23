@@ -30,9 +30,14 @@ namespace PRN221_Project.Pages.Booking
 
             if (MovieSchedule == null)
             {
-                return NotFound();  // Room not found
+                return NotFound();  // Schedule not found
             }
 
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostAsync([FromBody] List<int> selectedSeats)
+        {
             return Page();
         }
     }
