@@ -76,10 +76,7 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
         }
         public IActionResult OnPostDelete(int id)
         {
-            Console.WriteLine("đã vào");
-            Console.WriteLine(id);
             DateTime selectedDate = DateTime.Parse(Request.Form["dateInput1-" + id]);
-            Console.WriteLine("đã vào");
             MovieSchedule m = _context.MovieSchedules.FirstOrDefault(x => x.Id == id);
             if (m != null)
             {
@@ -91,7 +88,7 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
             ViewData["SelectedDate"] = selectedDate;
 
             return Page();
-        }      
+        }
 
         public IActionResult OnPostSelect()
         {
