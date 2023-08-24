@@ -80,9 +80,9 @@
                         <table class="table align-items-center justify-content-center mb-0">
                             <thead>
                                 <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Movies</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Start Time</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">End Time</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" style="width: 445px;">Movies</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" style="width: 340px">Start Time</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" style="width: 300px">End Time</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Status</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2"></th>
                                 </tr>
@@ -95,17 +95,17 @@
                                         @if (s.Movie.MovieIdApi == t.Id.ToString())
                                         {
                                             <tr>
-                                                <td>
+                                                <td style="width: 445px;">
                                                     <div class="d-flex px-2">
                                                         <div class="my-auto">
                                                             <h6 class="mb-0 text-sm">@t.title</h6>
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td>
+                                                <td style="width: 340px">
                                                     <p class="text-sm font-weight-bold mb-0">@s.StartTime</p>
                                                 </td>
-                                                <td>
+                                                <td style="width: 300px">
                                                     <span class="text-sm font-weight-bold mb-0">@s.EndTime</span>
                                                 </td>
                                                 @if (s.StartTime < DateTime.Now && s.EndTime > DateTime.Now)
@@ -126,16 +126,22 @@
                                                         <span class="text-sm font-weight-bold mb-0">Already released</span>
                                                     </td>
                                                 }
-                                                <td class="align-middle">
-                                                    <form id="Delete-Movies-@r.Id" method="post" asp-page-handler="Delete" onsubmit="return SubmitFormDelete('@r.Id', '@s.Id')">
-                                                        <input type="hidden" asp-for="@s.Id" name="id" />
-                                                        <input type="hidden" id="dateInput1-@s.Id" name="dateInput1-@s.Id" />
-                                                        <button class="btn btn-danger" style="float:right;margin-right:20px">
-                                                            Delete
-                                                        </button>
-                                                    </form>
-                                                </td>
+                                                @if (s.StartTime < DateTime.Now && s.EndTime > DateTime.Now)
+                                                {
 
+                                                }
+                                                else
+                                                {
+                                                    <td class="align-middle">
+                                                        <form id="Delete-Movies-@r.Id" method="post" asp-page-handler="Delete" onsubmit="return SubmitFormDelete('@r.Id', '@s.Id')">
+                                                            <input type="hidden" asp-for="@s.Id" name="id" />
+                                                            <input type="hidden" id="dateInput1-@s.Id" name="dateInput1-@s.Id" />
+                                                            <button class="btn btn-danger" style="float:right;margin-right:20px">
+                                                                Delete
+                                                            </button>
+                                                        </form>
+                                                    </td>
+                                                }
                                             </tr>
                                         }
                                     }
@@ -165,14 +171,20 @@
                                     <select class="form-control" id="MovieRoom-@r.Id" name="MovieRoom-@r.Id" style="border:1px solid #ced4da">
                                         @foreach (var m in Model.listFilmsPopular)
                                         {
-                                            <option value="@m.Id">@m.title</option>
+                                            @foreach (var a in Model.movies)
+                                            {
+                                                if (m.Id.ToString() == a.MovieIdApi)
+                                                {
+                                                    <option value="@m.Id">@m.title</option>
+                                                }
+                                            }
                                         }
                                     </select>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Start Time</label>
                                     <select class="form-select" name="StartTime-@r.Id">
-                                        @for (int hour = 9; hour <= 24; hour++)
+                                        @for (int hour = 9; hour <= 23; hour++)
                                         {
                                             for (int minute = 0; minute < 60; minute += 30)
                                             {
@@ -196,6 +208,19 @@
         }
     </div>
 </div>
+<style>
+    select#datetime {
+        border: 1px solid #ced4da;
+        background: white;
+        padding: 10px;
+    }
+
+    select.form-select {
+        border: 1px solid #ced4da;
+        background: white;
+        padding: 10px;
+    }
+</style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
        function submitForm() {

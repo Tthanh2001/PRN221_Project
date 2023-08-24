@@ -8,31 +8,81 @@
     <form method="post">
         <div class="modal-content">
             <div class="modal-header">
+                @if (ViewBag.Message != null)
+                {
+                    <h5 style="color:red">@ViewBag.Message</h5>
+                }
                 <h5 class="modal-title" id="addMovieModalLabel">Edit New Movie</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <label for="title" class="form-label">Movie API</label>
-                    <input value="@Model.EditMovie.MovieIdApi" type="text" class="form-control" id="title" name="MovieIdApi">
+                    <label for="title" class="form-label">Movies</label>
+                    @if (Model.EditMovie.IsReleased.HasValue)
+                    {
+                        @foreach (var a in Model.listFilmsPopular)
+                        {
+                            if (@a.Id.ToString() == Model.EditMovie.MovieIdApi)
+                            {
+                                <input value="@a.title" type="text" class="form-control" name="MovieIdtitle" readonly />
+                                <input value="@a.Id" type="text" class="form-control" name="MovieIdApi" hidden />
+
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <select class="form-control" id="movieApi" name="MovieIdApi" style="border: 1px solid #ced4da;">
+                            @foreach (var a in Model.listFilmsPopular)
+                            {
+                                if (@a.Id.ToString() == Model.EditMovie.MovieIdApi)
+                                {
+                                    <option value="@a.Id" selected="selected">@a.title</option>
+
+                                }
+                                else
+                                {
+                                    <option value="@a.Id">@a.title</option>
+                                }
+
+                            }
+                        </select>
+                    }
                 </div>
-                <div class="mb-3">
-                    <label asp-for="EditMovie.ReleaseDate" class="form-label">Release Date</label>
-                    <input asp-for="EditMovie.ReleaseDate" type="date" class="form-control" name="ReleaseDate" />
-                </div>
+                @if (!Model.EditMovie.IsReleased.HasValue)
+                {
+                    <div class="mb-3">
+                        <label asp-for="EditMovie.ReleaseDate" class="form-label">Release Date</label>
+                        <input asp-for="EditMovie.ReleaseDate" type="date" class="form-control" name="ReleaseDate" />
+                    </div>
+                }
                 <div class="mb-3">
                     <label for="duration" class="form-label">Duration (minutes)</label>
                     <input value="@Model.EditMovie.DurationMinutes" type="number" class="form-control" id="duration" name="duration">
                 </div>
-                <div class="mb-3">
-                    <label for="category" class="form-label">Status</label>
-                    <select class="form-control" id="Status" name="Status" style="border:1px solid #ced4da">
-                        <option value="0">Stop Release</option>
-                        <option value="1">Released</option>
-                        <option value="2">Upcoming</option>
-                    </select>
-                </div>
-
+                @if (Model.EditMovie.IsReleased.HasValue)
+                {
+                    @if (Model.EditMovie.IsReleased == true)
+                    {
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Status</label>
+                            <select class="form-control" id="Status" name="Status" style="border:1px solid #ced4da">
+                                <option value="0">Stop Release</option>
+                                <option value="1" selected="selected">Released</option>
+                            </select>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Status</label>
+                            <select class="form-control" id="Status" name="Status" style="border:1px solid #ced4da">
+                                <option value="0">Stop Release</option>
+                                <option value="1">Released</option>
+                            </select>
+                        </div>
+                    }
+                }
             </div>
             <div class="modal-footer">
                 <div>
@@ -44,6 +94,25 @@
 </div>
 <style>
     input.form-control {
-        border: 1px solid #ced4da; /*  */
+        border: 1px solid #ced4da;
+        background: white;
+        padding: 10px;
     }
+
+    .form-control:focus {
+        background: white !important;
+    }
+
+    select#movieApi {
+        border: 1px solid #ced4da;
+        background: white;
+        padding: 10px;
+    }
+
+    select#Status {
+        border: 1px solid #ced4da;
+        background: white;
+        padding: 10px;
+    }
+
 </style>

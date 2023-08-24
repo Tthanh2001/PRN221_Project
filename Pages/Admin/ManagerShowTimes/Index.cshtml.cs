@@ -45,7 +45,7 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
         public async Task OnGetAsync()
         {
             await LoadMovieInRoomToday();
-            movies = _context.Movies.Where(x => x.IsReleased != false && x.IsReleased != null).ToList();
+            movies = _context.Movies.Where(x => x.IsReleased != false).ToList();
         }
         public async Task LoadDataFromApi()
         {
@@ -118,7 +118,7 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
             }
 
             ViewData["SelectedDate"] = selectedDate;
-            movies = _context.Movies.Where(x => x.IsReleased != false && x.IsReleased != null).ToList();
+            movies = _context.Movies.Where(x => x.IsReleased != false).ToList();
         }
         public async Task<IActionResult> OnPostDelete(int id)
         {
@@ -156,7 +156,7 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
 
             ViewData["SelectedDate"] = selectedDate;
             await LoadDataFromApi();
-            movies = _context.Movies.Where(x => x.IsReleased != false && x.IsReleased != null).ToList();
+            movies = _context.Movies.Where(x => x.IsReleased != false).ToList();
 
             return Page();
         }

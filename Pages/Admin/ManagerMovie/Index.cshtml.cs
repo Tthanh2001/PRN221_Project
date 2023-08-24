@@ -28,6 +28,9 @@ namespace PRN221_Project.Pages.Admin.ManagerMovie
         [BindProperty]
         public List<MovieApi> listFilmsPopular { get; set; } = new List<MovieApi>();
 
+        [BindProperty]
+        public List<MovieApi> listAllFilmsPopular { get; set; } = new List<MovieApi>();
+
         public IndexModel(CinphileDbContext context, IConfiguration configuration)
         {
             _context = context;
@@ -37,42 +40,35 @@ namespace PRN221_Project.Pages.Admin.ManagerMovie
             client.DefaultRequestHeaders.Accept.Add(contentType);
             PopularFilm = "https://api.themoviedb.org/3/movie/popular?api_key=e9e9d8da18ae29fc430845952232787c&append_to_response=videos";
         }
+        public async Task LoadAllDataFromApi()
+        {
+            string apiUrl = PopularFilm;
+            HttpResponseMessage response = await client.GetAsync(apiUrl);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string json = await response.Content.ReadAsStringAsync();
+                dynamic dataFromApi = JsonConvert.DeserializeObject(json);
+
+
+                foreach (var result in dataFromApi["results"])
+                {
+                    int Id = result["id"];
+                    string poster_path = "https://image.tmdb.org/t/p/w500/" + result["poster_path"];
+                    string title = result["title"];
+                    listAllFilmsPopular.Add(new MovieApi { Id = Id, poster_path = poster_path, title = title });
+                }
+                Console.WriteLine(listAllFilmsPopular);
+            }
+        }
 
         public async Task OnGetAsync()
         {
             movies = _context.Movies.ToList();
             await LoadDataFromApi();
+            await LoadAllDataFromApi();
 
-        }
-        public async Task<bool> CheckApi(string api)
-        {
-            string apiUrl = PopularFilm;
-            HttpResponseMessage response = await client.GetAsync(apiUrl);
-            try
-            {
-                int Id = int.Parse(api);
-                if (response.IsSuccessStatusCode)
-                {
-                    string json = await response.Content.ReadAsStringAsync();
-                    dynamic dataFromApi = JsonConvert.DeserializeObject(json);
-                    foreach (var result in dataFromApi["results"])
-                    {
-                        if (result["id"] == Id)
-                        {
-                            return true;
-                        }
-
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-
-
-            return false;
-        }
+        }        
         public async Task LoadDataFromApi()
         {
             string apiUrl = PopularFilm;
@@ -104,12 +100,19 @@ namespace PRN221_Project.Pages.Admin.ManagerMovie
             }
         }
 
-
+        public Movie getMovieById(string api)
+        {
+            Movie m = new Movie();
+            m = _context.Movies.FirstOrDefault(x => x.MovieIdApi == api);
+            return m;
+        }
         public async Task<IActionResult> OnPost()
         {
+            Movie m = new Movie();
             AddMovie.MovieIdApi = Request.Form["MovieIdApi"];
             AddMovie.DurationMinutes = int.Parse(Request.Form["duration"]);
-            if (await CheckApi(AddMovie.MovieIdApi))
+            m = getMovieById(AddMovie.MovieIdApi);
+            if (m == null)
             {
                 if (AddMovie.ReleaseDate < DateTime.Now)
                 {
@@ -135,9 +138,11 @@ namespace PRN221_Project.Pages.Admin.ManagerMovie
             }
             else
             {
-                ViewData["msg"] = "Phim không tồn tại";
+                ViewData["Message"] = "Phim đã tồn tại";
+                await OnGetAsync();
                 return Page();
             }
+
 
         }
         public async Task<IActionResult> OnPostDelete(int id)

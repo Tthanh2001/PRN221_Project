@@ -28,11 +28,11 @@ namespace PRN221_Project.Pages.Admin.User
         
         public async Task OnGet()
         {
-            var qr = _userManager.Users.OrderBy(u => u.UserName);
+            var qr = _userManager.Users.OrderBy(u => u.FullName);
             var qr1 = qr.Select(u => new UserAndRole()
             {
                 Id= u.Id,
-                UserName=u.UserName,
+                FullName=u.FullName,
 
             });
             users=await qr1.ToListAsync();
