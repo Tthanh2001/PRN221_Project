@@ -286,6 +286,17 @@
 
 
     <script>
+
+        var intValue = @Model.rate; // Thay thế bằng giá trị int bạn chuyền vào
+
+    var radioInputs = document.querySelectorAll('input[type="radio"][name="rating"]');
+    for (var i = 0; i < radioInputs.length; i++) {
+        if (parseInt(radioInputs[i].value) === intValue) {
+            radioInputs[i].checked = true;
+            break;
+        }
+    }
+
         var ratingInputs = document.querySelectorAll('input[name="rating"]');
 
         ratingInputs.forEach(input => {

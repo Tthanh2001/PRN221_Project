@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using NuGet.DependencyResolver;
@@ -17,10 +18,11 @@ namespace PRN221_Project.Pages.Home
 
     {
         private readonly CinphileDbContext _db;
-        private readonly CinphileDbContext _context;
         private readonly HttpClient client;
         private readonly IConfiguration _configuration;
         private readonly string AuthorApiUrl;
+
+        private readonly UserManager<ApplicationAccount> _userManager;
         [BindProperty]
         public Movie movies { get; set; }
 
@@ -32,15 +34,15 @@ namespace PRN221_Project.Pages.Home
         public List<string> video { get; set; } = new List<string>();
         public List<string> genres { get; set; } = new List<string>();
 
-
-        public MovieDetailModel(IConfiguration configuration, CinphileDbContext db)
+        public int rate { get; set; }
+        public MovieDetailModel(IConfiguration configuration, CinphileDbContext db, UserManager<ApplicationAccount> userManager)
         {
             _db = db;
             _configuration = configuration;
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
-
+            _userManager = userManager;
         }
         public List<string> movie { get; set; }
 
@@ -56,18 +58,29 @@ namespace PRN221_Project.Pages.Home
         public int Id { get; set; }
         public async Task<IActionResult> OnGetAsync(int rating, int id)
         {
-            if (rating != null)
+            int mid = _db.Movies.Where(o => o.MovieIdApi == id.ToString()).Select(o => o.Id).First();
+
+            if (rating != 0)
             {
                 Rating rating1 = new Rating
                 {
                     Rates = rating,
-                    MovieId= id,
-                    ApplicationAccountId = ,
-
-
-                }
+                    MovieId = mid,
+                    ApplicationAccountId = _userManager.GetUserId(User),
+                };
+                _db.Ratings.Add(rating1);
+                _db.SaveChanges();
             }
-            Id= id;
+            int rated = _db.Ratings
+    .Where(o => o.MovieId == mid && o.ApplicationAccountId == _userManager.GetUserId(User))
+    .OrderByDescending(o => o.Id) // Sắp xếp theo thuộc tính Id giảm dần
+    .Select(o => o.Rates)
+    .FirstOrDefault();
+            if (rated != 0)
+            {
+                rate = rated;
+            }
+            Id = id;
             string apiUrl = "https://api.themoviedb.org/3/movie/" + id + "?api_key=e9e9d8da18ae29fc430845952232787c&append_to_response=videos";
             HttpResponseMessage response = await client.GetAsync(apiUrl);
 
