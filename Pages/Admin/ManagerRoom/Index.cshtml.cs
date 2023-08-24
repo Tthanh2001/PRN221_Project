@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace PRN221_Project.Pages.Admin.ManagerRoom
 {
-    [Authorize(Roles = "Admin, Vip, Editor")]
+    //[Authorize(Roles = "Admin, Vip, Editor")]
     public class IndexModel : PageModel
     {
         private readonly CinphileDbContext _context;

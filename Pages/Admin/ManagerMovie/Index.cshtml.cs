@@ -9,7 +9,7 @@ using System.Net.Http.Headers;
 
 namespace PRN221_Project.Pages.Admin.ManagerMovie
 {
-    [Authorize(Roles = "Admin, Vip, Editor")]
+    //[Authorize(Roles = "Admin, Vip, Editor")]
     public class IndexModel : PageModel
     {
         private readonly HttpClient client;
@@ -68,36 +68,7 @@ namespace PRN221_Project.Pages.Admin.ManagerMovie
             await LoadDataFromApi();
             await LoadAllDataFromApi();
 
-        }
-        public async Task<bool> CheckApi(string api)
-        {
-            string apiUrl = PopularFilm;
-            HttpResponseMessage response = await client.GetAsync(apiUrl);
-            try
-            {
-                int Id = int.Parse(api);
-                if (response.IsSuccessStatusCode)
-                {
-                    string json = await response.Content.ReadAsStringAsync();
-                    dynamic dataFromApi = JsonConvert.DeserializeObject(json);
-                    foreach (var result in dataFromApi["results"])
-                    {
-                        if (result["id"] == Id)
-                        {
-                            return true;
-                        }
-
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-
-
-            return false;
-        }
+        }        
         public async Task LoadDataFromApi()
         {
             string apiUrl = PopularFilm;

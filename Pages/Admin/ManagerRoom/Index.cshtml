@@ -48,7 +48,7 @@
                                         <span class="text-secondary text-xs font-weight-bold">@m.NumberOfCols</span>
                                     </td>
                                     <td class="align-middle">
-                                        <a asp-page="/SeatManagement" asp-route-id="@m.Id" class="btn bg-gradient-success">
+                                        <a asp-page="/Seats/SeatManagement" asp-route-id="@m.Id" class="btn bg-gradient-success">
                                             Setting Seats
                                         </a>
                                     </td>
@@ -119,9 +119,27 @@
     }
 
 </script>
-
 <style>
     input.form-control {
         border: 1px solid #ced4da;
+        background: white;
+        padding: 10px;
     }
+
+    .form-control:focus {
+        background: white !important;
+    }
+
+    select#movieApi {
+        border: 1px solid #ced4da;
+        background: white;
+        padding: 10px;
+    }
+
+    select#Status {
+        border: 1px solid #ced4da;
+        background: white;
+        padding: 10px;
+    }
+
 </style>
