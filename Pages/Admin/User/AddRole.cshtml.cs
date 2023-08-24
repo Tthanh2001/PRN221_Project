@@ -17,7 +17,7 @@ using System.Data;
 
 namespace PRN221_Project.Pages.Admin.User
 {
-    [Authorize(Roles = "Admin, Vip, Editor")]
+    //[Authorize(Roles = "Admin, Vip, Editor")]
     public class AddRoleModel : PageModel
     {
         private readonly UserManager<ApplicationAccount> _userManager;
@@ -102,7 +102,7 @@ namespace PRN221_Project.Pages.Admin.User
                 return Page();
             }
 
-            StatusMessage = $"Updated role for user:{user.UserName}";
+            StatusMessage = $"Updated role for user:{user.FullName}";
             return RedirectToPage("./Index");
         }
     }

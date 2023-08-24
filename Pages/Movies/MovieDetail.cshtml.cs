@@ -56,9 +56,12 @@ namespace PRN221_Project.Pages.Home
 
         }
         public int Id { get; set; }
-        public async Task<IActionResult> OnGetAsync(int rating, int id)
+        public async Task<IActionResult> OnGetAsync( int id)
         {
             int mid = _db.Movies.Where(o => o.MovieIdApi == id.ToString()).Select(o => o.Id).First();
+
+            
+
             Id = id;
             string apiUrl = "https://api.themoviedb.org/3/movie/" + id + "?api_key=e9e9d8da18ae29fc430845952232787c&append_to_response=videos";
             HttpResponseMessage response = await client.GetAsync(apiUrl);

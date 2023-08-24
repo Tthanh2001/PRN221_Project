@@ -183,7 +183,7 @@
                 <div style="float:right; margin-top:18%; margin-right:20px">
                     <div style="display: flex;flex-direction: column; align-items: flex-start;">
                         <button class="bg-nono" style="margin-bottom:10px" id="openPopup"><span class="icon icon-play"></span> Play Trailer</button>
-                        <a asp-page ="MovieSchedule" asp-route-id="@Model.Id" class="bg-nono"><span class="icon icon-ticket"></span> Buy Ticket</a>
+                        <button class="bg-nono"  style="margin-bottom:10px"><a asp-page="MovieSchedule" asp-route-id="@Model.Id" class="bg-nono"><span class="icon icon-ticket"></span> Buy Ticket</a></button>
                     </div>
 
                 </div>
@@ -286,24 +286,6 @@
 
     <script>
 
-        var intValue = @Model.rate; // Thay thế bằng giá trị int bạn chuyền vào
-
-    var radioInputs = document.querySelectorAll('input[type="radio"][name="rating"]');
-    for (var i = 0; i < radioInputs.length; i++) {
-        if (parseInt(radioInputs[i].value) === intValue) {
-            radioInputs[i].checked = true;
-            break;
-        }
-    }
-
-        var ratingInputs = document.querySelectorAll('input[name="rating"]');
-
-        ratingInputs.forEach(input => {
-            input.addEventListener('change', function () {
-                // Submit form khi một loại radio được chọn
-                document.getElementById('ratingForm').submit();
-            });
-        });
         const openButton = document.getElementById('openPopup');
         const closeButton = document.getElementById('closePopup');
         const closeVideoButton = document.getElementById('closeVideo');

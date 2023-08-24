@@ -10,7 +10,7 @@ using PRN221_Project.Pages.Admin.User;
 
 namespace PRN221_Project.Pages.Admin.User
 {
-    [Authorize(Roles="Admin, Vip, Editor")]
+    //[Authorize(Roles="Admin, Vip, Editor")]
     public class IndexModel : PageModel
     {
         private readonly UserManager<ApplicationAccount> _userManager;

@@ -9,7 +9,7 @@ using PRN221_Project.Models;
 
 namespace PRN221_Project.Pages.Admin.Role
 {
-    [Authorize(Roles = "Admin, Vip, Editor")]
+
     public class IndexModel : RolePageModel
     {
         private readonly RoleManager<IdentityRole> _roleManager;

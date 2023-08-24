@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using PRN221_Project.Models;
+using Microsoft.PowerBI.Api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace PRN221_Project.Areas.Identity.Pages.Account
 {
@@ -23,14 +25,17 @@ namespace PRN221_Project.Areas.Identity.Pages.Account
         private readonly SignInManager<ApplicationAccount> _signInManager;
         private readonly ILogger<LoginModel> _logger;
         private readonly UserManager<ApplicationAccount> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public LoginModel(SignInManager<ApplicationAccount> signInManager,
             ILogger<LoginModel> logger,
-            UserManager<ApplicationAccount> userManager)
+            UserManager<ApplicationAccount> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             _signInManager = signInManager;
             _logger = logger;
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         /// <summary>
@@ -109,7 +114,8 @@ namespace PRN221_Project.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/Home");
+            returnUrl ??= Url.Content("~/Privacy");
+            string adminUrl = Url.Content("~/Admin/ManagerRoom");
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
@@ -123,7 +129,7 @@ namespace PRN221_Project.Areas.Identity.Pages.Account
                 if (user != null)
                 {
                     // Attempt to log in using the email/username and password
-                    var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: true);
+                    var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: true); 
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("User logged in.");
@@ -133,7 +139,17 @@ namespace PRN221_Project.Areas.Identity.Pages.Account
                         // Trigger authentication middleware to update the authentication cookie
                         await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, userPrincipal);
 
-                        return LocalRedirect(returnUrl);
+                        //Phan quyen
+                        List<IdentityRole> roles = await _roleManager.Roles.ToListAsync();
+                        if (await _userManager.IsInRoleAsync(user, "Admin"))
+                        {
+                            return LocalRedirect(adminUrl);
+                        }
+                       else
+                        {
+                            return LocalRedirect(returnUrl);
+                        }
+                       
                     }
                     if (result.RequiresTwoFactor)
                     {

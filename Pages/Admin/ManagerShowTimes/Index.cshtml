@@ -4,29 +4,6 @@
     Layout = "_Layout _Admin";
 }
 <h2 class="text-center mb-3" style="margin-bottom: 60px!important">Management Movie Showtimes</h2>
-<button onclick="HideShowChart()" id="toggleRevenueButton" class="btn btn-success">Hide/Show Revenue</button>
-<div id="chart-line" class="col-lg-4 col-md-6 mt-4 mb-4" style="display:none">
-    <div class="card z-index-2  ">
-        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-            <div class="bg-gradient-success shadow-success border-radius-lg py-3 pe-1">
-                <div class="chart">
-                    <canvas id="revenueChart" width="800" height="400"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="card-body">
-            <h6 class="mb-0 "> Daily Sales </h6>
-            <p class="text-sm "> (<span class="font-weight-bolder">+15%</span>) increase in today sales. </p>
-            <hr class="dark horizontal">
-            <div class="d-flex ">
-                <i class="material-icons text-sm my-auto me-1">schedule</i>
-                <p class="mb-0 text-sm"> updated 4 min ago </p>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 <div class="row">
     <div class="col-12">
         <div style="margin-bottom:50px">
@@ -282,28 +259,4 @@
             }
         }
         //Test Chart
-           var ctx = document.getElementById('revenueChart').getContext('2d');
-
-            var revenueData = {
-            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-            datasets: [{
-                label: 'Revenue',
-                data: [2000, 3000, 2500, 4000],
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }]
-          };
-
-        var revenueChart = new Chart(ctx, {
-            type: 'bar',
-            data: revenueData,
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
 </script>
