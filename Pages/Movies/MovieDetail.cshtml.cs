@@ -60,26 +60,8 @@ namespace PRN221_Project.Pages.Home
         {
             int mid = _db.Movies.Where(o => o.MovieIdApi == id.ToString()).Select(o => o.Id).First();
 
-            if (rating != 0)
-            {
-                Rating rating1 = new Rating
-                {
-                    Rates = rating,
-                    MovieId = mid,
-                    ApplicationAccountId = _userManager.GetUserId(User),
-                };
-                _db.Ratings.Add(rating1);
-                _db.SaveChanges();
-            }
-            int rated = _db.Ratings
-    .Where(o => o.MovieId == mid && o.ApplicationAccountId == _userManager.GetUserId(User))
-    .OrderByDescending(o => o.Id) // Sắp xếp theo thuộc tính Id giảm dần
-    .Select(o => o.Rates)
-    .FirstOrDefault();
-            if (rated != 0)
-            {
-                rate = rated;
-            }
+            
+
             Id = id;
             string apiUrl = "https://api.themoviedb.org/3/movie/" + id + "?api_key=e9e9d8da18ae29fc430845952232787c&append_to_response=videos";
             HttpResponseMessage response = await client.GetAsync(apiUrl);

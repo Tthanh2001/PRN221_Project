@@ -14,25 +14,28 @@ namespace PRN221_Project.Pages.Home
         {
             _db = db;   
         }
-        public List<string> date { get; set; } = new List<string>();
+        public List<DateTime> date { get; set; } = new List<DateTime>();
         public List<MovieSchedule> movieSchedules { get; set; } = new List<MovieSchedule>();
         public int Id { get; set; }
-        public string Day { get; set; }
+        public DateTime Day { get; set; }
         public async Task<IActionResult> OnGetAsync(int id, string day)
         {
-            Day= day;
+            if (day != null)
+            {
+                Day = DateTime.Parse(day);
+
+            }
             Id = id;
             DateTime currentDate = DateTime.Now.Date;
             int mid = _db.Movies.Where(o => o.MovieIdApi == id.ToString()).Select(o => o.Id).First();
             for (int i = 1; i <= 7; i++)
             {
                 DateTime nextDay = currentDate.AddDays(i);
-                date.Add(nextDay.ToString(" dd/MM"));
+                date.Add(nextDay);
             }
             if(day!= null)
             {
-                movieSchedules = _db.MovieSchedules.Include(c=>c.Room).Where(o => o.MovieId == mid && o.StartTime.Date == DateTime.Parse(day)).ToList();
-
+                movieSchedules = _db.MovieSchedules.Where(o => o.MovieId == mid && o.StartTime.Date == DateTime.Parse(day).Date).ToList();
             }
             
             return Page();

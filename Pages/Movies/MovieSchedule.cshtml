@@ -64,7 +64,7 @@
                 <h2>Date</h2>
                 @foreach (var item in Model.date)
                 {
-                       <button ><a class="bg-success" asp-route-day="@item" asp-route-id="@Model.Id">@item</a></button> 
+                    <button><a class="bg-success" asp-route-day="@item.ToString("dd/MM/yyyy")" asp-route-id="@Model.Id">@item.ToString("dd/MM")</a></button>
                 }
             </div>
             <hr />
