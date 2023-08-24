@@ -56,7 +56,7 @@ namespace PRN221_Project.Pages.Home
 
         }
         public int Id { get; set; }
-        public async Task<IActionResult> OnGetAsync(int rating, int id)
+        public async Task<IActionResult> OnGetAsync( int id)
         {
             int mid = _db.Movies.Where(o => o.MovieIdApi == id.ToString()).Select(o => o.Id).First();
 
