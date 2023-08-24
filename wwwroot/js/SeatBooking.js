@@ -37,27 +37,8 @@
 
         //Post to backend
         if (selectedSeats.length > 0) {
-            try {
-                $.post({
-                    url: "/Booking/MovieBooking",
-                    dataType: 'json',
-                    contentType: "application/json; charset=UTF-8",
-                    data: JSON.stringify(selectedSeats),
-                    headers: {
-                        RequestVerificationToken:
-                            $('input:hidden[name="__RequestVerificationToken"]').val()
-                    },
-                    success: function (response) {
-                        console.log(response);
-                    },
-                    error: function (error) {
-                        console.log("Error:", error);
-                    }
-                });
-            } catch (error) {
-                // Handle error, e.g., show an error message
-                console.log("Error saving selected seats:", error);
-            }
+            var data = JSON.stringify(selectedSeats)
+            window.location.href = `/Booking/Payment?selectedSeats=${data}&scheduleId=${movieScheduleId}`;
         }
     });
 

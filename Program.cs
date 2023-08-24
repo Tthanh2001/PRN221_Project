@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.PowerBI.Api.Models;
 using PRN221_Project.Models;
 using PRN221_Project.Services;
 using PRN221_Project.Utils;
-using System.Configuration;
 
 namespace PRN221_Project
 {
@@ -26,11 +23,10 @@ namespace PRN221_Project
             });
 
             builder.Services.AddIdentity<ApplicationAccount, IdentityRole>()
+                .AddErrorDescriber<ProjectIdentityErrorDescriber>()
                 .AddDefaultUI()
                 .AddEntityFrameworkStores<CinphileDbContext>()
                 .AddDefaultTokenProviders();
-            //
-            builder.Services.AddScoped<ApplicationAccount>();
 
             builder.Services.Configure<IdentityOptions>(options =>
             {
