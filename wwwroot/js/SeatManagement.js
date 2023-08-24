@@ -61,7 +61,7 @@
         if (selectedSeats.length > 0) {
             try {
                 $.post({
-                    url: "/SeatManagement",
+                    url: "/Admin/Seats/SeatManagement",
                     dataType: 'json',
                     contentType: "application/json; charset=UTF-8",
                     data: JSON.stringify(selectedSeats),
