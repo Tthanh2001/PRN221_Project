@@ -3,6 +3,30 @@
 @{
     Layout = "_Layout _Admin";
 }
+<h2 class="text-center mb-3" style="margin-bottom: 60px!important">Management Movie Showtimes</h2>
+<button onclick="HideShowChart()" id="toggleRevenueButton" class="btn btn-success">Hide/Show Revenue</button>
+<div id="chart-line" class="col-lg-4 col-md-6 mt-4 mb-4" style="display:none">
+    <div class="card z-index-2  ">
+        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+            <div class="bg-gradient-success shadow-success border-radius-lg py-3 pe-1">
+                <div class="chart">
+                    <canvas id="revenueChart" width="800" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <h6 class="mb-0 "> Daily Sales </h6>
+            <p class="text-sm "> (<span class="font-weight-bolder">+15%</span>) increase in today sales. </p>
+            <hr class="dark horizontal">
+            <div class="d-flex ">
+                <i class="material-icons text-sm my-auto me-1">schedule</i>
+                <p class="mb-0 text-sm"> updated 4 min ago </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="row">
     <div class="col-12">
         <div style="margin-bottom:50px">
@@ -66,49 +90,55 @@
                             <tbody>
                                 @foreach (var s in r.MovieSchedules)
                                 {
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex px-2">
-                                                <div class="my-auto">
-                                                    <h6 class="mb-0 text-sm">@s.Movie.MovieIdApi</h6>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <p class="text-sm font-weight-bold mb-0">@s.StartTime</p>
-                                        </td>
-                                        <td>
-                                            <span class="text-sm font-weight-bold mb-0">@s.EndTime</span>
-                                        </td>
-                                        @if (s.StartTime < DateTime.Now && s.EndTime > DateTime.Now)
+                                    @foreach (var t in Model.listFilmsPopular)
+                                    {
+                                        @if (s.Movie.MovieIdApi == t.Id.ToString())
                                         {
-                                            <td style="text-align: center">
-                                                <span class="text-sm font-weight-bold mb-0">Currently showing</span>
-                                            </td>
-                                        }
-                                        else if (s.StartTime > DateTime.Now)
-                                        {
-                                            <td style="text-align: center">
-                                                <span class="text-sm font-weight-bold mb-0">Not yet</span>
-                                            </td>
-                                        }
-                                        else
-                                        {
-                                            <td style="text-align: center">
-                                                <span class="text-sm font-weight-bold mb-0">Already released</span>
-                                            </td>
-                                        }
-                                        <td class="align-middle">
-                                            <form id="Delete-Movies" method="post" asp-page-handler="Delete" onsubmit="return SubmitFormDelete('@r.Id')">
-                                                <input type="hidden" asp-for="@s.Id" name="id" />
-                                                <input type="hidden" id="dateInput1-@r.Id" name="dateInput1-@r.Id" />
-                                                <button class="btn btn-danger" style="float:right;margin-right:20px">
-                                                    Delete
-                                                </button>
-                                            </form>
-                                        </td>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex px-2">
+                                                        <div class="my-auto">
+                                                            <h6 class="mb-0 text-sm">@t.title</h6>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <p class="text-sm font-weight-bold mb-0">@s.StartTime</p>
+                                                </td>
+                                                <td>
+                                                    <span class="text-sm font-weight-bold mb-0">@s.EndTime</span>
+                                                </td>
+                                                @if (s.StartTime < DateTime.Now && s.EndTime > DateTime.Now)
+                                                {
+                                                    <td style="text-align: center">
+                                                        <span class="text-sm font-weight-bold mb-0">Currently showing</span>
+                                                    </td>
+                                                }
+                                                else if (s.StartTime > DateTime.Now)
+                                                {
+                                                    <td style="text-align: center">
+                                                        <span class="text-sm font-weight-bold mb-0">Not yet</span>
+                                                    </td>
+                                                }
+                                                else
+                                                {
+                                                    <td style="text-align: center">
+                                                        <span class="text-sm font-weight-bold mb-0">Already released</span>
+                                                    </td>
+                                                }
+                                                <td class="align-middle">
+                                                    <form id="Delete-Movies-@r.Id" method="post" asp-page-handler="Delete" onsubmit="return SubmitFormDelete('@r.Id', '@s.Id')">
+                                                        <input type="hidden" asp-for="@s.Id" name="id" />
+                                                        <input type="hidden" id="dateInput1-@s.Id" name="dateInput1-@s.Id" />
+                                                        <button class="btn btn-danger" style="float:right;margin-right:20px">
+                                                            Delete
+                                                        </button>
+                                                    </form>
+                                                </td>
 
-                                    </tr>
+                                            </tr>
+                                        }
+                                    }
                                 }
                             </tbody>
                         </table>
@@ -133,9 +163,9 @@
                                 <div class="mb-3">
                                     <label for="category" class="form-label">Movie</label>
                                     <select class="form-control" id="MovieRoom-@r.Id" name="MovieRoom-@r.Id" style="border:1px solid #ced4da">
-                                        @foreach (var m in Model.movies)
+                                        @foreach (var m in Model.listFilmsPopular)
                                         {
-                                            <option value="@m.Id">@m.MovieIdApi</option>
+                                            <option value="@m.Id">@m.title</option>
                                         }
                                     </select>
                                 </div>
@@ -166,25 +196,63 @@
         }
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    function submitForm() {
-        document.getElementById("dateForm").submit();
-    }
-     function setDateValue(roomId) {
-        var selectedDate = document.getElementById("datetime").value;
-        var dateInput = document.getElementById("dateInput-" + roomId);
-        dateInput.value = selectedDate;
+       function submitForm() {
+           document.getElementById("dateForm").submit();
+       }
+       function setDateValue(roomId) {
+           var selectedDate = document.getElementById("datetime").value;
+           var dateInput = document.getElementById("dateInput-" + roomId);
+           dateInput.value = selectedDate;
 
-    }
-     function SubmitFormDelete(roomId){
-        var selectedDate = document.getElementById("datetime").value; 
-        var dateInput = document.getElementById("dateInput1-" + roomId);
-        dateInput.value = selectedDate;
-        var result = confirm("Are you sure you want to delete?");
-        if (result) {
-           document.getElementById("Delete-Movies").submit();
-        } else {
-            return false;
+       }
+       function SubmitFormDelete(roomId, scheduleId) {
+           var selectedDate = document.getElementById("datetime").value;
+           var dateInput = document.getElementById("dateInput1-" + scheduleId);
+           dateInput.value = selectedDate;
+           console.log(dateInput.value);
+           var result = confirm("Are you sure you want to delete?");
+           if (result) {
+              var form = document.getElementById("Delete-Movies-" + scheduleId);
+              form.submit();
+           } else {
+              return false;
+           }
         }
-    }
+    //ẩn hiện doanh thu
+       function HideShowChart() {
+            var chartContainer = document.getElementById("chart-line");
+
+            if (chartContainer.style.display === "none") {
+                chartContainer.style.display = "block";
+            } else {
+                chartContainer.style.display = "none";
+            }
+        }
+        //Test Chart
+           var ctx = document.getElementById('revenueChart').getContext('2d');
+
+            var revenueData = {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+            datasets: [{
+                label: 'Revenue',
+                data: [2000, 3000, 2500, 4000],
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+          };
+
+        var revenueChart = new Chart(ctx, {
+            type: 'bar',
+            data: revenueData,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
 </script>

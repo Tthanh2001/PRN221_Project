@@ -2,17 +2,23 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using PRN221_Project.Models;
 using PRN221_Project.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 
 namespace PRN221_Project.Pages.Admin.ManagerShowTimes
 {
-    [Authorize(Roles = "Admin, Vip, Editor")]
+    //[Authorize(Roles = "Admin, Vip, Editor")]
     public class IndexModel : PageModel
     {
+        private readonly HttpClient client;
+        private readonly IConfiguration _configuration;
+        private readonly string PopularFilm;
+
         private readonly CinphileDbContext _context;
         DateTime _date;
 
@@ -20,21 +26,61 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
         public List<Room> rooms { get; set; }
 
         [BindProperty]
-        public List<Movie> movies { get; set; }
+        public List<MovieApi> listFilmsPopular { get; set; } = new List<MovieApi>();
 
-        public IndexModel(CinphileDbContext context)
+        [BindProperty]
+        public List<Movie> movies { get; set; }
+        public List<string> movie { get; set; }
+
+        public IndexModel(CinphileDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
+            client = new HttpClient();
+            var contentType = new MediaTypeWithQualityHeaderValue("application/json");
+            client.DefaultRequestHeaders.Accept.Add(contentType);
+            PopularFilm = "https://api.themoviedb.org/3/movie/popular?api_key=e9e9d8da18ae29fc430845952232787c&append_to_response=videos";
         }
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
-            LoadMovieInRoomToday();
+            await LoadMovieInRoomToday();
             movies = _context.Movies.Where(x => x.IsReleased != false && x.IsReleased != null).ToList();
         }
-
-        public void LoadMovieInRoomToday()
+        public async Task LoadDataFromApi()
         {
+            string apiUrl = PopularFilm;
+            HttpResponseMessage response = await client.GetAsync(apiUrl);
+
+            movie = _context.Movies.Select(o => o.MovieIdApi).ToList();
+
+            if (response.IsSuccessStatusCode)
+            {
+                string json = await response.Content.ReadAsStringAsync();
+                dynamic dataFromApi = JsonConvert.DeserializeObject(json);
+
+
+                foreach (var result in dataFromApi["results"])
+                {
+                    foreach (var item in movie)
+                    {
+
+                        if (item == result["id"].ToString())
+                        {
+
+                            int Id = result["id"];
+                            string poster_path = "https://image.tmdb.org/t/p/w500/" + result["poster_path"];
+                            string title = result["title"];
+                            listFilmsPopular.Add(new MovieApi { Id = Id, poster_path = poster_path, title = title });
+                        }
+                    }
+                }
+            }
+        }
+
+        public async Task LoadMovieInRoomToday()
+        {
+            await LoadDataFromApi();
             var today = DateTime.Today;
             _date = today;
             var startDate = today;
@@ -74,10 +120,8 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
             ViewData["SelectedDate"] = selectedDate;
             movies = _context.Movies.Where(x => x.IsReleased != false && x.IsReleased != null).ToList();
         }
-        public IActionResult OnPostDelete(int id)
+        public async Task<IActionResult> OnPostDelete(int id)
         {
-            Console.WriteLine("đã vào");
-            Console.WriteLine(id);
             DateTime selectedDate = DateTime.Parse(Request.Form["dateInput1-" + id]);
             MovieSchedule m = _context.MovieSchedules.FirstOrDefault(x => x.Id == id);
             if (m != null)
@@ -85,14 +129,14 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
                 _context.MovieSchedules.Remove(m);
                 _context.SaveChanges();
             }
-
+            await LoadDataFromApi();
             GetMovieSchedules(selectedDate);
             ViewData["SelectedDate"] = selectedDate;
 
             return Page();
-        }      
+        }
 
-        public IActionResult OnPostSelect()
+        public async Task<IActionResult> OnPostSelect()
         {
             var selectedDate = DateTime.Parse(Request.Form["date"]);
             var startDate = selectedDate.Date;
@@ -111,17 +155,23 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
             }
 
             ViewData["SelectedDate"] = selectedDate;
+            await LoadDataFromApi();
             movies = _context.Movies.Where(x => x.IsReleased != false && x.IsReleased != null).ToList();
 
             return Page();
         }
 
-        public IActionResult OnPostAdd()
+        public async Task<IActionResult> OnPostAdd()
         {
+            int IdMovie = 0;
             DateTime selectedDate = DateTime.Parse(Request.Form["dateInput"]);
             int idRoom = int.Parse(Request.Form["IdRoom"]);
-            int IdMovie = int.Parse(Request.Form["MovieRoom-" + idRoom]);
-
+            string movieApi = Request.Form["MovieRoom-" + idRoom];
+            Movie selectMovie = _context.Movies.FirstOrDefault(movie => movie.MovieIdApi == movieApi);
+            if (selectMovie != null)
+            {
+                IdMovie = selectMovie.Id;
+            }
             TimeSpan selectedStartTime = TimeSpan.Parse(Request.Form["StartTime-" + idRoom]);
             DateTime StartTime = selectedDate.Date.Add(selectedStartTime);
 
@@ -136,7 +186,7 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
                         {
                             if (IsStartTimeValid(selectedDate, StartTime, idRoom, IdMovie))
                             {
-                                TimeSpan convertTime = TimeSpan.FromMinutes(m.DurationMinutes);
+                                TimeSpan convertTime = TimeSpan.FromMinutes((double)m.DurationMinutes);
                                 MovieSchedule movieSchedule = new MovieSchedule();
                                 movieSchedule.RoomId = idRoom;
                                 movieSchedule.MovieId = IdMovie;
@@ -171,6 +221,7 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
                     Console.WriteLine("Phim Chưa được công chiếu");
                 }
             }
+            await LoadDataFromApi();
             GetMovieSchedules(selectedDate);
             ViewData["SelectedDate"] = selectedDate;
             //OnGet();
@@ -235,4 +286,13 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
             return true;
         }
     }
+    public class MovieApi
+    {
+        public int? Id { get; set; }
+        public string? title { get; set; }
+        public string? poster_path { get; set; }
+
+    }
+   
+
 }

@@ -21,23 +21,30 @@
         <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link text-white " href="./Admin/User/Admin/users">
+                    <a class="nav-link text-white" href="./Admin/User/Admin/users">
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-icons opacity-10">Manager User</i>
                         </div>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white active bg-gradient-primary" href="../pages/tables.html">
+                    <a class="nav-link text-white" href="/Admin/ManagerMovie">
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-icons opacity-10">Manager Movie</i>
                         </div>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white " href="../pages/billing.html">
+                    <a class="nav-link text-white " href="/Admin/ManagerShowTimes">
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons opacity-10">Manager revenue</i>
+                            <i class="material-icons opacity-10">Manager ShowTimes</i>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white " href="/Admin/ManagerRoom">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">Manager Room</i>
                         </div>
                     </a>
                 </li>
@@ -53,10 +60,7 @@
     </aside>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" data-scroll="true">
-            <div class="container-fluid py-1 px-3">
-                <nav aria-label="breadcrumb">                 
-                    <h6 class="font-weight-bolder mb-0">Manager Movies</h6>
-                </nav>
+            <div class="container-fluid py-1 px-3">              
                 <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
                     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
                         <div class="input-group input-group-outline">
@@ -131,6 +135,7 @@
     <script src="~/js/admin/perfect-scrollbar.min.js"></script>
     <script src="~/js/admin/popper.min.js"></script>
     <script src="~/js/admin/smooth-scrollbar.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         var win = navigator.platform.indexOf('Win') > -1;
         if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -144,5 +149,20 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <script src="/js/admin/material-dashboard.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        // Get the current URL
+        var currentUrl = window.location.pathname;
+
+        // Get all the nav links
+        var navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+
+        // Loop through the nav links and add the "active bg-gradient-primary" class to the one with a matching URL
+        for (var i = 0; i < navLinks.length; i++) {
+            var linkUrl = navLinks[i].getAttribute('href');
+            if (currentUrl === linkUrl) {
+                navLinks[i].classList.add('active', 'bg-gradient-primary');
+            }
+        }
+    </script>
 </body>
 </html>

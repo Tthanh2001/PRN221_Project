@@ -19,10 +19,10 @@ namespace PRN221_Project.Models
         public int Id { get; set; }
 
         [Required]
-        public DateTime ReleaseDate { get; set; }
+        public DateTime? ReleaseDate { get; set; }
 
         [Required]
-        public int DurationMinutes { get; set; }
+        public int? DurationMinutes { get; set; }
 
         public string MovieIdApi { get; set; } = null!;
         public bool? IsReleased { get; set; } 
