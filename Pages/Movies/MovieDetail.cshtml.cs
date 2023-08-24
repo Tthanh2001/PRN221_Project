@@ -56,93 +56,93 @@ namespace PRN221_Project.Pages.Home
 
         }
         public int Id { get; set; }
-        public async Task<IActionResult> OnGetAsync(int rating, int id)
-        {
-            int mid = _db.Movies.Where(o => o.MovieIdApi == id.ToString()).Select(o => o.Id).First();
+    //    public async Task<IActionResult> OnGetAsync(int rating, int id)
+    //    {
+    //        int mid = _db.Movies.Where(o => o.MovieIdApi == id.ToString()).Select(o => o.Id).First();
 
-            if (rating != 0)
-            {
-                Rating rating1 = new Rating
-                {
-                    Rates = rating,
-                    MovieId = mid,
-                    ApplicationAccountId = _userManager.GetUserId(User),
-                };
-                _db.Ratings.Add(rating1);
-                _db.SaveChanges();
-            }
-            int rated = _db.Ratings
-    .Where(o => o.MovieId == mid && o.ApplicationAccountId == _userManager.GetUserId(User))
-    .OrderByDescending(o => o.Id) // Sắp xếp theo thuộc tính Id giảm dần
-    .Select(o => o.Rates)
-    .FirstOrDefault();
-            if (rated != 0)
-            {
-                rate = rated;
-            }
-            Id = id;
-            string apiUrl = "https://api.themoviedb.org/3/movie/" + id + "?api_key=e9e9d8da18ae29fc430845952232787c&append_to_response=videos";
-            HttpResponseMessage response = await client.GetAsync(apiUrl);
+    //        //if (rating != 0)
+    //        //{
+    //        //    Rating rating1 = new Rating
+    //        //    {
+    //        //        Rates = rating,
+    //        //        MovieId = mid,
+    //        //        ApplicationAccountId = _userManager.GetUserId(User),
+    //        //    };
+    //        //    _db.Ratings.Add(rating1);
+    //        //    _db.SaveChanges();
+    //        //}
+    //        //int rated = _db.Ratings
+    //.Where(o => o.MovieId == mid && o.ApplicationAccountId == _userManager.GetUserId(User))
+    //.OrderByDescending(o => o.Id) // Sắp xếp theo thuộc tính Id giảm dần
+    //.Select(o => o.Rates)
+    //.FirstOrDefault();
+    //        if (rated != 0)
+    //        {
+    //            rate = rated;
+    //        }
+    //        Id = id;
+    //        string apiUrl = "https://api.themoviedb.org/3/movie/" + id + "?api_key=e9e9d8da18ae29fc430845952232787c&append_to_response=videos";
+    //        HttpResponseMessage response = await client.GetAsync(apiUrl);
 
-            if (response.IsSuccessStatusCode)
-            {
-                string json = await response.Content.ReadAsStringAsync();
-                dynamic dataFromApi = JsonConvert.DeserializeObject(json);
-                title = dataFromApi.title;
-                runtime = dataFromApi.runtime;
-                poster_path = "https://image.tmdb.org/t/p/w500/" + dataFromApi.poster_path;
-                backdrop_path = "https://image.tmdb.org/t/p/w500/" + dataFromApi.backdrop_path;
-                foreach (var result in dataFromApi["videos"]["results"])
-                {
-                    if (result["type"] == "Trailer")
-                    {
-                        string key = "https://www.youtube.com/embed/" + result["key"];
-                        video.Add(key);
-                    }
+    //        if (response.IsSuccessStatusCode)
+    //        {
+    //            string json = await response.Content.ReadAsStringAsync();
+    //            dynamic dataFromApi = JsonConvert.DeserializeObject(json);
+    //            title = dataFromApi.title;
+    //            runtime = dataFromApi.runtime;
+    //            poster_path = "https://image.tmdb.org/t/p/w500/" + dataFromApi.poster_path;
+    //            backdrop_path = "https://image.tmdb.org/t/p/w500/" + dataFromApi.backdrop_path;
+    //            foreach (var result in dataFromApi["videos"]["results"])
+    //            {
+    //                if (result["type"] == "Trailer")
+    //                {
+    //                    string key = "https://www.youtube.com/embed/" + result["key"];
+    //                    video.Add(key);
+    //                }
 
-                }
+    //            }
 
-                overview = dataFromApi.overview;
-                foreach (var genre in dataFromApi["genres"])
-                {
-                    string name = genre["name"];
-                    genres.Add(name);
-                }
+    //            overview = dataFromApi.overview;
+    //            foreach (var genre in dataFromApi["genres"])
+    //            {
+    //                string name = genre["name"];
+    //                genres.Add(name);
+    //            }
 
-            }
+    //        }
 
-            HttpResponseMessage response1 = await client.GetAsync("https://api.themoviedb.org/3/movie/" + id + "/similar?api_key=e9e9d8da18ae29fc430845952232787c&language=en-US&page=1");
+    //        HttpResponseMessage response1 = await client.GetAsync("https://api.themoviedb.org/3/movie/" + id + "/similar?api_key=e9e9d8da18ae29fc430845952232787c&language=en-US&page=1");
 
-            movie = _db.Movies.Select(o => o.MovieIdApi).ToList();
+    //        movie = _db.Movies.Select(o => o.MovieIdApi).ToList();
 
-            if (response.IsSuccessStatusCode)
-            {
-                string json = await response1.Content.ReadAsStringAsync();
-                dynamic dataFromApisimilar = JsonConvert.DeserializeObject(json);
-
-
-                foreach (var result in dataFromApisimilar["results"])
-                {
-                    foreach (var item in movie)
-                    {
-
-                        if (item == result["id"].ToString())
-                        {
-
-                            int Id = result["id"];
-                            string poster_path = "https://image.tmdb.org/t/p/w500/" + result["poster_path"];
-                            string title = result["title"];
-                            int  runtime = result["runtime"];
+    //        if (response.IsSuccessStatusCode)
+    //        {
+    //            string json = await response1.Content.ReadAsStringAsync();
+    //            dynamic dataFromApisimilar = JsonConvert.DeserializeObject(json);
 
 
-                            listFilmSimilar.Add(new MovieApi { Id = Id, poster_path = poster_path, title = title, runtime = runtime });
-                        }
-                    }
-                }
-            }
-            
-            return Page();
-        }
-      
+    //            foreach (var result in dataFromApisimilar["results"])
+    //            {
+    //                foreach (var item in movie)
+    //                {
+
+    //                    if (item == result["id"].ToString())
+    //                    {
+
+    //                        int Id = result["id"];
+    //                        string poster_path = "https://image.tmdb.org/t/p/w500/" + result["poster_path"];
+    //                        string title = result["title"];
+    //                        int runtime = result["runtime"];
+
+
+    //                        listFilmSimilar.Add(new MovieApi { Id = Id, poster_path = poster_path, title = title, runtime = runtime });
+    //                    }
+    //                }
+    //            }
+    //        }
+
+    //        return Page();
+    //    }
+
     }
 }

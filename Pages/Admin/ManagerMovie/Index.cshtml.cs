@@ -80,7 +80,25 @@ namespace PRN221_Project.Pages.Admin.ManagerMovie
             await SetStatusMovie();
             await LoadDataFromApi();
             await LoadAllDataFromApi();
+            await GetTitle();
 
+        }
+        public async Task GetTitle()
+        {
+            List<Movie> ListMovies = _context.Movies.ToList();
+            Console.Write(listAllFilmsPopular);
+            Console.Write(listAllFilmsPopular);
+            for (int i = 0; i < listAllFilmsPopular.Count; i++)
+            {
+                for(int j = 0; j < ListMovies.Count; j++)
+                {
+                    if(listAllFilmsPopular[i].Id.ToString() == ListMovies[j].MovieIdApi)
+                    {
+                        ListMovies[j].Title = listAllFilmsPopular[i].title;
+                    }
+                }
+            }
+            _context.SaveChanges();
         }
         public async Task LoadDataFromApi()
         {
