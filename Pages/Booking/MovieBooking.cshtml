@@ -91,7 +91,7 @@
 
 @section Scripts {
     <script type="text/javascript">
-
+        var movieScheduleId = @Model.MovieSchedule.Id;
         document.getElementById("seat-grid").setAttribute('style', 'grid-template-columns: repeat(' + @Model.MovieSchedule.Room.NumberOfCols + ', 40px)');      
     </script>
 

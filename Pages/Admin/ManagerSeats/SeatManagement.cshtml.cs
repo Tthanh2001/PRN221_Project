@@ -1,14 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using NuGet.Packaging;
 using PRN221_Project.Models;
 using PRN221_Project.Utils;
 
-namespace PRN221_Project.Pages
+namespace PRN221_Project.Pages.Admin.ManagerSeats
 {
     public class SelectedSeat
     {
@@ -136,7 +133,7 @@ namespace PRN221_Project.Pages
 
             await _context.SaveChangesAsync();
 
-            return Page();
+            return RedirectToPage("/Admin/ManagerRoom/");
         }
     }
 }

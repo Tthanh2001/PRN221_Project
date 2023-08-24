@@ -1,0 +1,65 @@
+﻿@page
+@using Microsoft.AspNetCore.Identity
+@using PRN221_Project.Models
+@model PRN221_Project.Pages.Booking.PaymentModel
+
+@inject UserManager<ApplicationAccount> UserManager
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title text-center">Invoice</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <h6>Address</h6>
+                            <address>
+                                Name: @user.FullName<br>
+                                Email: @user.Email<br>
+                                Phone Number: @user.PhoneNumber<br>
+                            </address>
+                        </div>
+                        <div class="col-6">
+                            <h6>Detail</h6>
+                            <address>
+                                Name: @user.FullName<br>
+                                Email: @user.Email<br>
+                                Phone Number: @user.PhoneNumber<br>
+                            </address>
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th class="text-end">Total Money</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (Seat sb in Model.Seats)
+                            {
+                                <tr>
+                                    <td>@sb.SeatName</td>
+                                    <td class="text-end">@sb.SeatType.Price</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Total</th>
+                                <td class="text-end">@Model.Seats.Sum(sb => sb.SeatType.Price)</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
