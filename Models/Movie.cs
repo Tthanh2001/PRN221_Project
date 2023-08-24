@@ -11,7 +11,6 @@ namespace PRN221_Project.Models
     {
         public Movie()
         {
-            this.Ratings = new HashSet<Rating>();
             this.MovieSchedules = new HashSet<MovieSchedule>();
         }
 
@@ -25,9 +24,8 @@ namespace PRN221_Project.Models
         public int? DurationMinutes { get; set; }
 
         public string MovieIdApi { get; set; } = null!;
+        public string? Title { get; set; } = null!;
         public bool? IsReleased { get; set; } 
-
-        public virtual ICollection<Rating>? Ratings { get; set; } = null!;
         public virtual ICollection<MovieSchedule> MovieSchedules { get; set; } = null!;
 
     }

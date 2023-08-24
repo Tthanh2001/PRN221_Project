@@ -29,17 +29,17 @@
                         <div class="col-6">
                             <h6>Detail</h6>
                             <address>
-                                Name: @user.FullName<br>
-                                Email: @user.Email<br>
-                                Phone Number: @user.PhoneNumber<br>
+                                Name: @Model.MovieSchedule.Movie.MovieIdApi<br>
+                                Time: @Model.MovieSchedule.StartTime.ToString("HH:mm tt") - @Model.MovieSchedule.EndTime.ToString("HH:mm tt")<br>
+                                Room: @Model.MovieSchedule.Room.RoomName<br>
                             </address>
                         </div>
                     </div>
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Description</th>
-                                <th class="text-end">Total Money</th>
+                                <th>Seat Name</th>
+                                <th>Price</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -60,6 +60,10 @@
                     </table>
                 </div>
             </div>
+        </div>
+
+        <div class="col-md-6 offset-md-3">
+            <button class="btn btn-dark-blue">Pay Up</button>
         </div>
     </div>
 </div>
