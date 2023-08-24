@@ -157,9 +157,20 @@ namespace PRN221_Project.Pages
 
                         listFilmsPopular.Add(new MovieApi { Id = id, poster_path = posterPath, title = title });
                     }
-                }
 
+                    if (listFilmsPopular.Count == 0)
+                    {
+                        // No movies found, display "Not found" message
+                        ViewData["SearchMessage"] = "No movies found.";
+                    }
+                }
+                else
+                {
+                    // Handle error response from the API
+                    ViewData["SearchMessage"] = "Error occurred while searching for movies.";
+                }
             }
+
 
 
             Console.WriteLine(listFilmsUpcoming);
