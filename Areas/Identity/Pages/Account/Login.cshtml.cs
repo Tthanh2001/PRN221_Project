@@ -114,8 +114,8 @@ namespace PRN221_Project.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/Home");
-            string adminUrl = Url.Content("~/Admin/ManagerMovie");
+            returnUrl ??= Url.Content("~/Privacy");
+            string adminUrl = Url.Content("~/Admin/ManagerRoom");
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
@@ -129,7 +129,7 @@ namespace PRN221_Project.Areas.Identity.Pages.Account
                 if (user != null)
                 {
                     // Attempt to log in using the email/username and password
-                    var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: true);
+                    var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: true); 
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("User logged in.");
