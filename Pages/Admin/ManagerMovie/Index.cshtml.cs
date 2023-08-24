@@ -64,13 +64,13 @@ namespace PRN221_Project.Pages.Admin.ManagerMovie
         public async Task SetStatusMovie()
         {
             movies = _context.Movies.ToList();
-           foreach(var movie in movies)
+            foreach (var movie in movies)
             {
-                if(movie.IsReleased == null)
+                if (movie.IsReleased == null)
                 {
-                    if(DateTime.Now > movie.ReleaseDate)
+                    if (DateTime.Now > movie.ReleaseDate)
                     {
-                        movie.IsReleased = true;    
+                        movie.IsReleased = true;
                     }
                 }
             }
@@ -81,7 +81,7 @@ namespace PRN221_Project.Pages.Admin.ManagerMovie
             await LoadDataFromApi();
             await LoadAllDataFromApi();
 
-        }        
+        }
         public async Task LoadDataFromApi()
         {
             string apiUrl = PopularFilm;
@@ -158,13 +158,29 @@ namespace PRN221_Project.Pages.Admin.ManagerMovie
 
 
         }
+        public bool IsAnyMoviePlayingInRoom(int movieId)
+        {
+            var currentTime = DateTime.Now;
+
+            var isPlaying = _context.MovieSchedules
+                .Any(schedule => schedule.MovieId == movieId && schedule.StartTime <= currentTime && schedule.EndTime >= currentTime);
+
+            return isPlaying;
+        }
         public async Task<IActionResult> OnPostDelete(int id)
         {
             var movie = _context.Movies.Find(id);
             if (movie != null)
             {
-                _context.Movies.Remove(movie);
-                _context.SaveChanges();
+                if (IsAnyMoviePlayingInRoom(id))
+                {
+                    ViewData["Message"] = "Có bộ phim đã chiếu, Không thể xóa";
+                }
+                else
+                {
+                    _context.Movies.Remove(movie);
+                    _context.SaveChanges();
+                }
             }
             await OnGetAsync();
             return Page();
