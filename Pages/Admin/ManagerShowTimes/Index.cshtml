@@ -4,29 +4,6 @@
     Layout = "_Layout _Admin";
 }
 <h2 class="text-center mb-3" style="margin-bottom: 60px!important">Management Movie Showtimes</h2>
-<button onclick="HideShowChart()" id="toggleRevenueButton" class="btn btn-success">Hide/Show Revenue</button>
-<div id="chart-line" class="col-lg-4 col-md-6 mt-4 mb-4" style="display:none">
-    <div class="card z-index-2  ">
-        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-            <div class="bg-gradient-success shadow-success border-radius-lg py-3 pe-1">
-                <div class="chart">
-                    <canvas id="revenueChart" width="800" height="400"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="card-body">
-            <h6 class="mb-0 "> Daily Sales </h6>
-            <p class="text-sm "> (<span class="font-weight-bolder">+15%</span>) increase in today sales. </p>
-            <hr class="dark horizontal">
-            <div class="d-flex ">
-                <i class="material-icons text-sm my-auto me-1">schedule</i>
-                <p class="mb-0 text-sm"> updated 4 min ago </p>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 <div class="row">
     <div class="col-12">
         <div style="margin-bottom:50px">
@@ -80,9 +57,9 @@
                         <table class="table align-items-center justify-content-center mb-0">
                             <thead>
                                 <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Movies</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Start Time</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">End Time</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" style="width: 445px;">Movies</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" style="width: 340px">Start Time</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" style="width: 300px">End Time</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Status</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2"></th>
                                 </tr>
@@ -95,17 +72,17 @@
                                         @if (s.Movie.MovieIdApi == t.Id.ToString())
                                         {
                                             <tr>
-                                                <td>
+                                                <td style="width: 445px;">
                                                     <div class="d-flex px-2">
                                                         <div class="my-auto">
                                                             <h6 class="mb-0 text-sm">@t.title</h6>
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td>
+                                                <td style="width: 340px">
                                                     <p class="text-sm font-weight-bold mb-0">@s.StartTime</p>
                                                 </td>
-                                                <td>
+                                                <td style="width: 300px">
                                                     <span class="text-sm font-weight-bold mb-0">@s.EndTime</span>
                                                 </td>
                                                 @if (s.StartTime < DateTime.Now && s.EndTime > DateTime.Now)
@@ -126,16 +103,22 @@
                                                         <span class="text-sm font-weight-bold mb-0">Already released</span>
                                                     </td>
                                                 }
-                                                <td class="align-middle">
-                                                    <form id="Delete-Movies-@r.Id" method="post" asp-page-handler="Delete" onsubmit="return SubmitFormDelete('@r.Id', '@s.Id')">
-                                                        <input type="hidden" asp-for="@s.Id" name="id" />
-                                                        <input type="hidden" id="dateInput1-@s.Id" name="dateInput1-@s.Id" />
-                                                        <button class="btn btn-danger" style="float:right;margin-right:20px">
-                                                            Delete
-                                                        </button>
-                                                    </form>
-                                                </td>
+                                                @if (s.StartTime < DateTime.Now && s.EndTime > DateTime.Now)
+                                                {
 
+                                                }
+                                                else
+                                                {
+                                                    <td class="align-middle">
+                                                        <form id="Delete-Movies-@r.Id" method="post" asp-page-handler="Delete" onsubmit="return SubmitFormDelete('@r.Id', '@s.Id')">
+                                                            <input type="hidden" asp-for="@s.Id" name="id" />
+                                                            <input type="hidden" id="dateInput1-@s.Id" name="dateInput1-@s.Id" />
+                                                            <button class="btn btn-danger" style="float:right;margin-right:20px">
+                                                                Delete
+                                                            </button>
+                                                        </form>
+                                                    </td>
+                                                }
                                             </tr>
                                         }
                                     }
@@ -165,22 +148,42 @@
                                     <select class="form-control" id="MovieRoom-@r.Id" name="MovieRoom-@r.Id" style="border:1px solid #ced4da">
                                         @foreach (var m in Model.listFilmsPopular)
                                         {
-                                            <option value="@m.Id">@m.title</option>
+                                            @foreach (var a in Model.movies)
+                                            {
+                                                if (m.Id.ToString() == a.MovieIdApi)
+                                                {
+                                                    <option value="@m.Id">@m.title</option>
+                                                }
+                                            }
                                         }
                                     </select>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Start Time</label>
-                                    <select class="form-select" name="StartTime-@r.Id">
-                                        @for (int hour = 9; hour <= 24; hour++)
-                                        {
-                                            for (int minute = 0; minute < 60; minute += 30)
-                                            {
-                                                <option value="@($"{hour:D2}:{minute:D2}")">@($"{hour:D2}:{minute:D2}")</option>
-                                            }
-                                        }
-                                        <option value="24:00">24:00</option>
-                                    </select>
+                                    <label class="form-label">Start Time(House- minute)</label>
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col">
+                                                <select class="form-select" name="StartTimeHour-@r.Id">
+                                                    @for (int hour = 8; hour <= 24; hour++)
+                                                    {
+                                                        <option value="@hour">@hour</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            <div class="col">
+                                                <select class="form-select" name="StartTimeMinute-@r.Id">
+                                                    @for (int minute = 0; minute < 60; minute += 1)
+                                                    {
+                                                        <option value="@minute">@($"{minute:D2}")</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="duration" class="form-label">TimeBreak</label>
+                                    <input type="number" min="5" max="15" value="5" class="form-control" id="TimeBreak" name="TimeBreak">
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -196,6 +199,31 @@
         }
     </div>
 </div>
+<style>
+    select#datetime {
+        border: 1px solid #ced4da;
+        background: white;
+        padding: 10px;
+    }
+
+    select.form-select:focus {
+        border: 1px solid #ced4da;
+        background: white;
+        padding: 10px;
+    }
+
+    select.form-select {
+        border: 1px solid #ced4da;
+        background: white;
+        padding: 10px;
+    }
+
+    input#TimeBreak {
+        border: 1px solid #ced4da;
+        background: white;
+        padding: 10px;
+    }
+</style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
        function submitForm() {
@@ -231,28 +259,4 @@
             }
         }
         //Test Chart
-           var ctx = document.getElementById('revenueChart').getContext('2d');
-
-            var revenueData = {
-            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-            datasets: [{
-                label: 'Revenue',
-                data: [2000, 3000, 2500, 4000],
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }]
-          };
-
-        var revenueChart = new Chart(ctx, {
-            type: 'bar',
-            data: revenueData,
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
 </script>

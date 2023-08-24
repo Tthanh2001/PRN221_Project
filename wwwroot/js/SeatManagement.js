@@ -61,7 +61,9 @@
         if (selectedSeats.length > 0) {
             try {
                 $.post({
-                    url: "/SeatManagement",
+
+                    url: "/Admin/ManagerSeats/SeatManagement",
+
                     dataType: 'json',
                     contentType: "application/json; charset=UTF-8",
                     data: JSON.stringify(selectedSeats),
@@ -70,10 +72,11 @@
                             $('input:hidden[name="__RequestVerificationToken"]').val()
                     },
                     success: function (response) {
-                        console.log(response);
+                        alert("Save Success");
                     },
                     error: function (error) {
-                        console.log("Error:", error);
+                        alert("Save Failed");
+                        console.log("Error saving selected seats:", error);
                     }
                 });
             } catch (error) {

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using PRN221_Project.Models;
 using PRN221_Project.Utils;
+using System.Text.Json;
 
 namespace PRN221_Project.Pages.Booking
 {
@@ -33,11 +34,6 @@ namespace PRN221_Project.Pages.Booking
                 return NotFound();  // Schedule not found
             }
 
-            return Page();
-        }
-
-        public async Task<IActionResult> OnPostAsync([FromBody] List<int> selectedSeats)
-        {
             return Page();
         }
     }

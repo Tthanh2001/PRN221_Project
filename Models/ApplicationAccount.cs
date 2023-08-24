@@ -10,13 +10,11 @@ namespace PRN221_Project.Models
     {
         public ApplicationAccount()
         {
-            this.Ratings = new HashSet<Rating>();
             this.Bills = new HashSet<Bill>();
         }
         public string FullName { get; set; } = null!;
         public DateTime DateOfBirth { get; set; }
         public DateTime RegistrationDate { get; set; }
-        public virtual ICollection<Rating> Ratings { get; set; } = null!;
         public virtual ICollection<Bill> Bills { get; set; } = null!;
     }
 }

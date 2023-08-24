@@ -151,9 +151,8 @@ i{
 
 
 
-.slider{
-    position: absolute;
-    top: 600px ;
+.slider {
+    top: 300px;
     z-index: 500;
     /* margin-left: 80px; */
 }
@@ -161,13 +160,11 @@ i{
 
 
 .slider2{
-    position: absolute;
     top: 800px ;
     z-index: 500;
 }
 
 .slider3{
-    position: absolute;
     top: 1000px ;
     z-index: 500;
 }

@@ -9,7 +9,6 @@ namespace PRN221_Project.Utils
         public DbSet<Bill> Bills { get; set; } = null!;
         public DbSet<Movie> Movies { get; set; } = null!;
         public DbSet<MovieSchedule> MovieSchedules { get; set; } = null!;
-        public DbSet<Rating> Ratings { get; set; } = null!;
         public DbSet<Room> Rooms { get; set; } = null!;
         public DbSet<Seat> Seats { get; set; } = null!;
         public DbSet<SeatBooking> SeatBookings { get; set; } = null!;

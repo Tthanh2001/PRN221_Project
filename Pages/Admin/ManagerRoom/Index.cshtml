@@ -37,18 +37,18 @@
                                     <td>
                                         <div class="d-flex px-2 py-1">
                                             <div class="d-flex flex-column justify-content-center">
-                                                <span class="text-secondary text-xs font-weight-bold">@m.RoomName</span>                                               
+                                                <span class="text-secondary text-xs font-weight-bold">@m.RoomName</span>
                                             </div>
                                         </div>
                                     </td>
                                     <td>
-                                        <span class="text-secondary text-xs font-weight-bold">@m.NumberOfRows</span>                                      
+                                        <span class="text-secondary text-xs font-weight-bold">@m.NumberOfRows</span>
                                     </td>
                                     <td class="align-middle text-center">
                                         <span class="text-secondary text-xs font-weight-bold">@m.NumberOfCols</span>
                                     </td>
                                     <td class="align-middle">
-                                        <a asp-page="/SeatManagement" asp-route-id="@m.Id" class="btn bg-gradient-success">
+                                        <a asp-page="/Admin/ManagerSeats/SeatManagement" asp-route-id="@m.Id" class="btn bg-gradient-success">
                                             Setting Seats
                                         </a>
                                     </td>
@@ -119,9 +119,27 @@
     }
 
 </script>
-
 <style>
     input.form-control {
         border: 1px solid #ced4da;
+        background: white;
+        padding: 10px;
     }
+
+    .form-control:focus {
+        background: white !important;
+    }
+
+    select#movieApi {
+        border: 1px solid #ced4da;
+        background: white;
+        padding: 10px;
+    }
+
+    select#Status {
+        border: 1px solid #ced4da;
+        background: white;
+        padding: 10px;
+    }
+
 </style>
