@@ -133,6 +133,8 @@ namespace PRN221_Project.Pages
                     }
                 }
             }
+            Console.WriteLine(listFilmsUpcoming);
+            Console.WriteLine(listFilmsUpcoming);
             return Page();
 
         }
