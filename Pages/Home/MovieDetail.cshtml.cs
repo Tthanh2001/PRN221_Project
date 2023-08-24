@@ -54,8 +54,19 @@ namespace PRN221_Project.Pages.Home
 
         }
         public int Id { get; set; }
-        public async Task<IActionResult> OnGetAsync(int id)
+        public async Task<IActionResult> OnGetAsync(int rating, int id)
         {
+            if (rating != null)
+            {
+                Rating rating1 = new Rating
+                {
+                    Rates = rating,
+                    MovieId= id,
+                    ApplicationAccountId = ,
+
+
+                }
+            }
             Id= id;
             string apiUrl = "https://api.themoviedb.org/3/movie/" + id + "?api_key=e9e9d8da18ae29fc430845952232787c&append_to_response=videos";
             HttpResponseMessage response = await client.GetAsync(apiUrl);
@@ -119,21 +130,6 @@ namespace PRN221_Project.Pages.Home
             
             return Page();
         }
-        public async Task<IActionResult> OnPostAsyn(int rating,string Id)
-        {
-            int movideid = _db.Movies.Where(o=>o.MovieIdApi == Id).Select(o=>o.Id).First();
-
-            Rating rate = new Rating
-            {
-                Rates = rating,
-                MovieId = movideid,
-                ApplicationAccountId = "a",
-            };
-
-            _db.Ratings.Add(rate);
-            _db.SaveChanges();
-
-            return RedirectToPage("MovieDetail", new {id =Id});
-        }
+      
     }
 }

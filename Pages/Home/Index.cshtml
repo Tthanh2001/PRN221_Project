@@ -28,9 +28,7 @@
             <div class="container-fluid">
                 <div class="netflix-row">
                     <div class="left d-flex align-items-center">
-                        <a class="navbar-brand" href="#">
-                            <img src="~/Assets/images/logo.png" alt="">
-                        </a>
+                      
                         <div class="netflix-nav">
                             <section>
                                 <button>Home</button>
@@ -68,18 +66,8 @@
             <section class="netflix-home-video">
                 <div class="top"></div>
                 <div class="bottom"></div>
-                <video src="~/Assets/video/video.mp4" autoplay muted loop></video>
-                <div class="content">
-                    <section class="left">
-                        <img src="./images/image2.webp" alt="">
-
-                        <div class="d-flex mt-2">
-                            <button class="btn btn-light m-2"> <i class="bi bi-play-fill" style="color: black; padding: 0%;"></i> Play Now </button>
-                            <button class="btn btn-secondary m-2"><i class="bi bi-info-circle" style=" padding: 0%;"></i> More Info</button>
-                        </div>
-                    </section>
-
-                </div>
+                <video src="~/Assets/video/video.mp4" height="700px" width="100%" autoplay muted loop></video>
+                
             </section>
 
         </div>
@@ -102,7 +90,7 @@
                             <section class="d-flex" style="">
                                 @foreach (var item in Model.listFilmsPopular)
                                 {
-                                    if (count < 6)
+                                    if (count < 7)
                                     {
                                         <div class="card">
                                             <img src="@item.poster_path" class="card-img-top" alt="...">
@@ -138,7 +126,7 @@
                             <section class="d-flex" style="">
                                 @foreach (var item in Model.listFilmsPopular)
                                 {
-                                    if (count >= 6)
+                                    if (count > 7)
                                     {
                                         <div class="card">
                                             <img src="@item.poster_path" class="card-img-top" alt="...">
@@ -189,7 +177,7 @@
                         <button class="tab-change-btn" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
                     </div>
                 </section>
-                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                <div id="carouselExampleIndicators1" class="carousel slide" data-bs-ride="carousel">
                     @{
                         count = 0;
                     }
@@ -234,7 +222,7 @@
                             <section class="d-flex">
                                 @foreach (var item in Model.listFilmsToprate)
                                 {
-                                    @if(count>=8){
+                                    @if(count>8){
                                         <div class="card">
                                             <img src="@item.poster_path" class="card-img-top" alt="...">
                                             <div class="card-body">
@@ -264,11 +252,11 @@
                             </section>
                         </div>
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators1" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Previous</span>
                     </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators1" data-bs-slide="next">
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Next</span>
                     </button>
