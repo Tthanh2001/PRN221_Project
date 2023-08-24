@@ -12,7 +12,7 @@ using System.Net.Http.Headers;
 
 namespace PRN221_Project.Pages.Admin.ManagerShowTimes
 {
-    //[Authorize(Roles = "Admin, Vip, Editor")]
+    [Authorize(Roles = "Admin, Vip, Editor")]
     public class IndexModel : PageModel
     {
         private readonly HttpClient client;

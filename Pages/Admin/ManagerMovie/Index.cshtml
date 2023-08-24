@@ -104,8 +104,13 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label asp-for="AddMovie.MovieIdApi" for="title" class="form-label">Movie Api</label>
-                        <input asp-for="AddMovie.MovieIdApi" type="text" class="form-control" id="Id" name="MovieIdApi">
+                        <label asp-for="AddMovie.MovieIdApi" for="title" class="form-label">Movie</label>
+                        <select class="form-control" id="datetime" name="MovieIdApi" style="border: 1px solid #ced4da;">
+                            @foreach (var a in Model.listAllFilmsPopular)
+                            {
+                                <option value="@a.Id">@a.title</option>
+                            }
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label asp-for="AddMovie.ReleaseDate" for="releaseDate" class="form-label">Release Date</label>
