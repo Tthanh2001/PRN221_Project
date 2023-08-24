@@ -183,48 +183,59 @@
             <a href="#"><img src="@Model.poster_path" width="25%" alt="cover" class="cover" /></a>
 
             <div class="hero">
-                <div class="details">
+                <div style="float:right; margin-top:18%; margin-right:20px">
+                    <div style="display: flex;flex-direction: column; align-items: flex-start;">
+                        <button class="bg-nono" style="margin-bottom:10px" id="openPopup"><span class="icon icon-play"></span> Play Trailer</button>
+                        <button class="bg-nono" id="openPopup"><span class="icon icon-ticket"></span> Buy Ticket</button>
+                    </div>
 
+
+                    @*<button id="rateButton"><span class="star-icon">&#9733;</span> Rating</button>
+                    <div id="ratingContainer" hidden>
+                    <div class="rating-stars">
+
+
+                    <i class="fas fa-star" data-rating="1"></i>
+                    <i class="fas fa-star" data-rating="2"></i>
+                    <i class="fas fa-star" data-rating="3"></i>
+                    <i class="fas fa-star" data-rating="4"></i>
+                    <i class="fas fa-star" data-rating="5"></i>
+
+                    </div>
+                    </div>*@
+
+
+                </div>
+
+                <div class="details" style="display:grid">
                     <div class="title1">@Model.title</div>
 
-                    <fieldset class="rating">
-                        <input type="radio" id="star5" name="rating" value="5" />
-                        <label class="full" for="star5" title="Awesome - 5 stars"></label>
-                        <input type="radio" id="star4half" name="rating" value="4 and a half" />
-                        <label class="half" for="star4half" title="Pretty good - 4.5 stars"></label>
-                        <input type="radio" id="star4" name="rating" value="4" checked />
-                        <label class="full" for="star4" title="Pretty good - 4 stars"></label>
-                        <input type="radio" id="star3half" name="rating" value="3 and a half" />
-                        <label class="half" for="star3half" title="Meh - 3.5 stars"></label>
-                        <input type="radio" id="star3" name="rating" value="3" />
-                        <label class="full" for="star3" title="Meh - 3 stars"></label>
-                        <input type="radio" id="star2half" name="rating" value="2 and a half" />
-                        <label class="half" for="star2half" title="Kinda bad - 2.5 stars"></label>
-                        <input type="radio" id="star2" name="rating" value="2" />
-                        <label class="full" for="star2" title="Kinda bad - 2 stars"></label>
-                        <input type="radio" id="star1half" name="rating" value="1 and a half" />
-                        <label class="half" for="star1half" title="Meh - 1.5 stars"></label>
-                        <input type="radio" id="star1" name="rating" value="1" />
-                        <label class="full" for="star1" title="Sucks big time - 1 star"></label>
-                        <input type="radio" id="starhalf" name="rating" value="half" />
-                        <label class="half" for="starhalf" title="Sucks big time - 0.5 stars"></label>
-                    </fieldset>
+                    <form id="ratingForm" method="post">
+                        <fieldset class="rating">
+                            <input type="radio" id="star5" name="rating" value="5" />
+                            <label class="full" for="star5" title="Awesome - 5 stars"></label>
 
-                    <span class="likes">109 likes</span>
-                    <div style="display:flex">
-                        <button class="bg-nono" id="openPopup"><span class="icon icon-play"></span> Play Trailer</button>
+                            <input type="radio" id="star4" name="rating" value="4" checked />
+                            <label class="full" for="star4" title="Pretty good - 4 stars"></label>
 
-                        <button id="rateButton"><span class="star-icon">&#9733;</span> Rating</button>
-                        <div id="ratingContainer" hidden>
-                            <div class="rating-stars">
-                                <i class="fas fa-star" data-rating="1"></i>
-                                <i class="fas fa-star" data-rating="2"></i>
-                                <i class="fas fa-star" data-rating="3"></i>
-                                <i class="fas fa-star" data-rating="4"></i>
-                                <i class="fas fa-star" data-rating="5"></i>
-                            </div>
-                        </div>
+                            <input type="radio" id="star3" name="rating" value="3" />
+                            <label class="full" for="star3" title="Meh - 3 stars"></label>
+
+                            <input type="radio" id="star2" name="rating" value="2" />
+                            <label class="full" for="star2" title="Kinda bad - 2 stars"></label>
+
+                            <input type="radio" id="star1" name="rating" value="1" />
+                            <label class="full" for="star1" title="Sucks big time - 1 star"></label>
+                            <input type="text" hidden name="Id" value="@Model.Id" />
+                        </fieldset>
+                    </form>
+
+                    <div style="display:grid">
+                        <span class="likes">109 likes</span>
+                        <span class="fas fa-clock " style="padding-left:25px;margin-top:10px">        @Model.runtime  minutes</span>
                     </div>
+
+
                 </div> <!-- end details -->
 
             </div> <!-- end hero -->
@@ -263,12 +274,12 @@
 
 
                 </div> <!-- end column2 -->
-                
 
-                        
 
-                   
-               
+
+
+
+
             </div> <!-- end description -->
 
 
@@ -287,12 +298,20 @@
         </div>
     </div>
 
-    
+
 
 
 
 
     <script>
+        var ratingInputs = document.querySelectorAll('input[name="rating"]');
+
+        ratingInputs.forEach(input => {
+            input.addEventListener('change', function () {
+                // Submit form khi một loại radio được chọn
+                document.getElementById('ratingForm').submit();
+            });
+        });
         const openButton = document.getElementById('openPopup');
         const closeButton = document.getElementById('closePopup');
         const closeVideoButton = document.getElementById('closeVideo');
@@ -339,12 +358,15 @@
                 selectedRating = parseInt(star.getAttribute('data-rating'));
                 resetStars();
                 markStars(selectedRating, 'rated');
-                // Tự động gửi đánh giá tại đây
-                alert(`Bạn đã đánh giá ${selectedRating} sao!`);
+
+                // Gửi selectedRating và otherData lên server
+                sendRatingToServer(selectedRating);
                 ratingContainer.setAttribute('hidden', true);
                 resetStars();
             });
+
         });
+
 
         function resetStars(className) {
             stars.forEach(star => {
@@ -357,6 +379,7 @@
                 stars[i].classList.add(className);
             }
         }
+
 
 
     </script>

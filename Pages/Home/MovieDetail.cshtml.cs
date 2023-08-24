@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using NuGet.DependencyResolver;
@@ -6,6 +6,7 @@ using PRN221_Project.Models;
 using PRN221_Project.Utils;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using static Microsoft.AspNetCore.Razor.Language.TagHelperMetadata;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 using static PRN221_Project.Pages.IndexModel;
 using static System.Net.WebRequestMethods;
@@ -27,11 +28,12 @@ namespace PRN221_Project.Pages.Home
         public string poster_path { get; set; }
         public string backdrop_path { get; set; }
         public string overview { get; set; }
+        public int runtime { get; set; }
         public List<string> video { get; set; } = new List<string>();
         public List<string> genres { get; set; } = new List<string>();
 
-        
-        public MovieDetailModel(IConfiguration configuration,CinphileDbContext db)
+
+        public MovieDetailModel(IConfiguration configuration, CinphileDbContext db)
         {
             _db = db;
             _configuration = configuration;
@@ -48,28 +50,32 @@ namespace PRN221_Project.Pages.Home
             public int? Id { get; set; }
             public string? title { get; set; }
             public string? poster_path { get; set; }
+            public int runtime { get; set; }
 
         }
+        public int Id { get; set; }
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            string apiUrl = "https://api.themoviedb.org/3/movie/"+id+"?api_key=e9e9d8da18ae29fc430845952232787c&append_to_response=videos";
+            Id= id;
+            string apiUrl = "https://api.themoviedb.org/3/movie/" + id + "?api_key=e9e9d8da18ae29fc430845952232787c&append_to_response=videos";
             HttpResponseMessage response = await client.GetAsync(apiUrl);
 
             if (response.IsSuccessStatusCode)
             {
                 string json = await response.Content.ReadAsStringAsync();
                 dynamic dataFromApi = JsonConvert.DeserializeObject(json);
-                 title = dataFromApi.title;
-                poster_path = "https://image.tmdb.org/t/p/w500/"+dataFromApi.poster_path;
+                title = dataFromApi.title;
+                runtime = dataFromApi.runtime;
+                poster_path = "https://image.tmdb.org/t/p/w500/" + dataFromApi.poster_path;
                 backdrop_path = "https://image.tmdb.org/t/p/w500/" + dataFromApi.backdrop_path;
                 foreach (var result in dataFromApi["videos"]["results"])
                 {
-                    if (result["type"]== "Trailer")
+                    if (result["type"] == "Trailer")
                     {
                         string key = "https://www.youtube.com/embed/" + result["key"];
                         video.Add(key);
                     }
-                   
+
                 }
 
                 overview = dataFromApi.overview;
@@ -80,8 +86,8 @@ namespace PRN221_Project.Pages.Home
                 }
 
             }
-           
-            HttpResponseMessage response1 = await client.GetAsync("https://api.themoviedb.org/3/movie/"+id+"/similar?api_key=e9e9d8da18ae29fc430845952232787c&language=en-US&page=1");
+
+            HttpResponseMessage response1 = await client.GetAsync("https://api.themoviedb.org/3/movie/" + id + "/similar?api_key=e9e9d8da18ae29fc430845952232787c&language=en-US&page=1");
 
             movie = _db.Movies.Select(o => o.MovieIdApi).ToList();
 
@@ -102,15 +108,32 @@ namespace PRN221_Project.Pages.Home
                             int Id = result["id"];
                             string poster_path = "https://image.tmdb.org/t/p/w500/" + result["poster_path"];
                             string title = result["title"];
+                            int  runtime = result["runtime"];
 
 
-
-                            listFilmSimilar.Add(new MovieApi { Id = Id, poster_path = poster_path, title = title });
+                            listFilmSimilar.Add(new MovieApi { Id = Id, poster_path = poster_path, title = title, runtime = runtime });
                         }
                     }
                 }
             }
+            
             return Page();
+        }
+        public async Task<IActionResult> OnPostAsyn(int rating,string Id)
+        {
+            int movideid = _db.Movies.Where(o=>o.MovieIdApi == Id).Select(o=>o.Id).First();
+
+            Rating rate = new Rating
+            {
+                Rates = rating,
+                MovieId = movideid,
+                ApplicationAccountId = "a",
+            };
+
+            _db.Ratings.Add(rate);
+            _db.SaveChanges();
+
+            return RedirectToPage("MovieDetail", new {id =Id});
         }
     }
 }
