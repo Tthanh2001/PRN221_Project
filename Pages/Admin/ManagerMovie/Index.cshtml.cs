@@ -61,10 +61,23 @@ namespace PRN221_Project.Pages.Admin.ManagerMovie
                 Console.WriteLine(listAllFilmsPopular);
             }
         }
-
-        public async Task OnGetAsync()
+        public async Task SetStatusMovie()
         {
             movies = _context.Movies.ToList();
+           foreach(var movie in movies)
+            {
+                if(movie.IsReleased == null)
+                {
+                    if(DateTime.Now > movie.ReleaseDate)
+                    {
+                        movie.IsReleased = true;    
+                    }
+                }
+            }
+        }
+        public async Task OnGetAsync()
+        {
+            await SetStatusMovie();
             await LoadDataFromApi();
             await LoadAllDataFromApi();
 
