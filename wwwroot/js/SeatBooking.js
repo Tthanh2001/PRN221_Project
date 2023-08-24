@@ -12,15 +12,54 @@
             }
 
             seat.css("background-color", seat.attr("data-color"));
-            seat.attr("data-is-booked", "true");
-            
+            seat.attr("data-is-booked", true);
+
             numberSeats++;
         } else {
+
             seat.css("background-color", "rgba(0, 0, 0, 0)");
-            seat.attr("data-is-booked", "false");
+            seat.attr("data-is-booked", false);
             numberSeats--;
+
         }
     });
 
-   
+    $("#saveButton").click(function () {
+        const selectedSeats = [];
+        seatGrid.find(".seat-available").each(function () {
+            const seat = $(this);
+            var seatId = seat.data("seatId");
+
+            if (seat.data("isBooked")) {
+                selectedSeats.push(seatId);
+            }
+        });
+
+        //Post to backend
+        if (selectedSeats.length > 0) {
+            try {
+                $.post({
+                    url: "/Booking/MovieBooking",
+                    dataType: 'json',
+                    contentType: "application/json; charset=UTF-8",
+                    data: JSON.stringify(selectedSeats),
+                    headers: {
+                        RequestVerificationToken:
+                            $('input:hidden[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function (response) {
+                        console.log(response);
+                    },
+                    error: function (error) {
+                        console.log("Error:", error);
+                    }
+                });
+            } catch (error) {
+                // Handle error, e.g., show an error message
+                console.log("Error saving selected seats:", error);
+            }
+        }
+    });
+
+
 });
