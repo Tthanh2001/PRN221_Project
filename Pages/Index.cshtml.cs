@@ -39,11 +39,14 @@ namespace PRN221_Project.Pages
         public List<MovieApi> listFilmsToprate { get; set; } = new List<MovieApi>();
         public List<MovieApi> listFilmsUpcoming { get; set; } = new List<MovieApi>();
 
+        [BindProperty]
+        public List<Movie> movies { get; set; }
         public List<string> movie { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string searchQuery)
         {
             //popular
+            movies = _db.Movies.ToList();
             string apiUrl = PopularFilm;
             HttpResponseMessage response = await client.GetAsync(apiUrl);
 
@@ -106,7 +109,7 @@ namespace PRN221_Project.Pages
 
             //upcoming
             string apiUrlupcoming = upcoming;
-            HttpResponseMessage response2 = await client.GetAsync(apiUrlupcoming);
+            HttpResponseMessage response2 = await client.GetAsync(PopularFilm);
 
 
 
@@ -187,7 +190,7 @@ namespace PRN221_Project.Pages
 
         }
 
-     
+
 
     }
 }
