@@ -54,7 +54,11 @@
                         </div>
                     </div>
                     <div class="right d-flex align-items-center">
-                        <i class="bi bi-search"></i>
+                        <form method="get">
+                            <input type="text" name="searchQuery" placeholder="Search for a movie..." />
+                            <input type="hidden" name="search" value="true" /> 
+                            <button type="submit">Search</button>
+                        </form>
                         <i class="bi bi-bell-fill"></i>
                         <section class="netflix-profile">
                         </section>
@@ -149,7 +153,7 @@
                                                         <i class="bi bi-plus-circle card-icon"></i>
                                                     </div>
                                                     <div>
-                                                                                                                <a asp-page="MovieDetail" asp-route-id="@item.Id"><i class="bi bi-info-circle"></i></a>
+                                                    <a asp-page="MovieDetail" asp-route-id="@item.Id"><i class="bi bi-info-circle"></i></a>
 
                                                     </div>
                                                 </section>

@@ -1,3 +1,4 @@
+using MailKit.Search;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -39,7 +40,8 @@ namespace PRN221_Project.Pages
         public List<MovieApi> listFilmsUpcoming { get; set; } = new List<MovieApi>();
 
         public List<string> movie { get; set; }
-        public async Task<IActionResult> OnGetAsync()
+
+        public async Task<IActionResult> OnGetAsync(string searchQuery)
         {
             //popular
             string apiUrl = PopularFilm;
@@ -133,6 +135,33 @@ namespace PRN221_Project.Pages
                     }
                 }
             }
+
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                // Perform search based on the searchQuery
+                string searchUrl = $"https://api.themoviedb.org/3/search/movie?api_key=ededa5fa66293fac3e0230a470cf5788&query={searchQuery}";
+                HttpResponseMessage searchResponse = await client.GetAsync(searchUrl);
+
+                if (searchResponse.IsSuccessStatusCode)
+                {
+                    string searchJson = await searchResponse.Content.ReadAsStringAsync();
+                    dynamic searchData = JsonConvert.DeserializeObject(searchJson);
+
+                    listFilmsPopular.Clear(); // Clear the list before adding new search results
+
+                    foreach (var result in searchData["results"])
+                    {
+                        int id = result["id"];
+                        string posterPath = "https://image.tmdb.org/t/p/w500/" + result["poster_path"];
+                        string title = result["title"];
+
+                        listFilmsPopular.Add(new MovieApi { Id = id, poster_path = posterPath, title = title });
+                    }
+                }
+
+            }
+
+
             Console.WriteLine(listFilmsUpcoming);
             Console.WriteLine(listFilmsUpcoming);
             return Page();
@@ -146,6 +175,8 @@ namespace PRN221_Project.Pages
             public string? poster_path { get; set; }
 
         }
+
+     
 
     }
 }
