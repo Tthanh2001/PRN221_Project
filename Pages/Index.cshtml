@@ -97,11 +97,11 @@
                                             <div class="card-body">
                                                 <section class="d-flex justify-content-between">
                                                     <div>
-                                                        <i class="bi bi-play-circle-fill card-icon"></i>
+                                                        <a asp-page="Movies/MovieSchedule" asp-route-id="@item.Id"><i class="bi bi-play-circle-fill card-icon"></i></a>
                                                         <i class="bi bi-plus-circle card-icon"></i>
                                                     </div>
                                                     <div>
-                                                        <a asp-page="MovieDetail" asp-route-id="@item.Id"><i class="bi bi-info-circle"></i></a>
+                                                        <a asp-page="Movies/MovieDetail" asp-route-id="@item.Id"><i class="bi bi-info-circle"></i></a>
                                                     </div>
                                                 </section>
                                                 <section class="d-flex align-items-center justify-content-between">

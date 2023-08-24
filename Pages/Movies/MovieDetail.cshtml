@@ -14,7 +14,6 @@
 
     <link rel="stylesheet" href="~/css/landing.css">
     <link rel="stylesheet" href="~/css/responsive.css">
-    <title>Hello, world!</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <style>
         .hero {
@@ -184,7 +183,7 @@
                 <div style="float:right; margin-top:18%; margin-right:20px">
                     <div style="display: flex;flex-direction: column; align-items: flex-start;">
                         <button class="bg-nono" style="margin-bottom:10px" id="openPopup"><span class="icon icon-play"></span> Play Trailer</button>
-                        <button class="bg-nono" id="openPopup"><span class="icon icon-ticket"></span> Buy Ticket</button>
+                        <a asp-page ="MovieSchedule" asp-route-id="@Model.Id" class="bg-nono"><span class="icon icon-ticket"></span> Buy Ticket</a>
                     </div>
 
                 </div>
