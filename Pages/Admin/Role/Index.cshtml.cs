@@ -8,7 +8,7 @@ using PRN221_Project.Pages.Admin.Role;
 
 namespace PRN221_Project.Pages.Admin.Role
 {
-    [Authorize(Roles ="Admin, Vip, Editor")]
+    //[Authorize(Roles ="Admin, Vip, Editor")]
     public class IndexModel : RolePageModel
     {
        
