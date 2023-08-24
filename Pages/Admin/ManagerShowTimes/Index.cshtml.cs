@@ -32,6 +32,8 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
         public List<Movie> movies { get; set; }
         public List<string> movie { get; set; }
 
+        public List<int> WeeklyRevenueData { get; set; }
+
         public IndexModel(CinphileDbContext context, IConfiguration configuration)
         {
             _context = context;
@@ -46,6 +48,23 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
         {
             await LoadMovieInRoomToday();
             movies = _context.Movies.Where(x => x.IsReleased != false).ToList();
+        }
+        public void GetDoanhThuMovie()
+        {
+            List<Bill> rawData = _context.Bills.ToList();
+            DateTime startDate = DateTime.Now.AddDays(-30);
+
+            WeeklyRevenueData = new List<int>();
+            //for (int i = 0; i < 4; i++) // 4 tuần trong tháng
+            //{
+            //    DateTime weekStart = startDate.AddDays(i * 7);
+            //    DateTime weekEnd = weekStart.AddDays(6);
+
+            //    int weeklyTotal = int.Parse(rawData .Where(item => item.BookingDate >= weekStart && item.BookingDate <= weekEnd)
+            //        .Sum(item => item.TotalMoney));
+
+            //    WeeklyRevenueData.Add(weeklyTotal);
+            //}
         }
         public async Task LoadDataFromApi()
         {
@@ -109,11 +128,11 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
                .Include(m => m.MovieSchedules)
                .ThenInclude(m => m.Movie)
                .ToList();
-
             foreach (var room in rooms)
             {
                 room.MovieSchedules = room.MovieSchedules
                     .Where(s => s.StartTime >= startDate && s.StartTime <= endDate)
+                    .OrderBy(s => s.StartTime)
                     .ToList();
             }
 
@@ -172,7 +191,7 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
             {
                 IdMovie = selectMovie.Id;
             }
-            TimeSpan selectedStartTime = TimeSpan.Parse(Request.Form["StartTime-" + idRoom]);
+            TimeSpan selectedStartTime = new TimeSpan(int.Parse(Request.Form["StartTimeHour-" + idRoom]), int.Parse(Request.Form["StartTimeMinute-" + idRoom]), 0);
             DateTime StartTime = selectedDate.Date.Add(selectedStartTime);
 
             Movie m = _context.Movies.FirstOrDefault(movie => movie.Id == IdMovie);
@@ -184,22 +203,30 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
                     {
                         if (IsEndTimeValid(selectedDate, StartTime, idRoom))
                         {
-                            if (IsStartTimeValid(selectedDate, StartTime, idRoom, IdMovie))
+                            if (CheckTimeBreak(selectedDate, selectedStartTime, idRoom))
                             {
-                                TimeSpan convertTime = TimeSpan.FromMinutes((double)m.DurationMinutes);
-                                MovieSchedule movieSchedule = new MovieSchedule();
-                                movieSchedule.RoomId = idRoom;
-                                movieSchedule.MovieId = IdMovie;
-                                movieSchedule.StartTime = StartTime;
-                                movieSchedule.EndTime = StartTime.Add(convertTime);
+                                if (IsStartTimeValid(selectedDate, StartTime, idRoom, IdMovie))
+                                {
+                                    TimeSpan convertTime = TimeSpan.FromMinutes((double)m.DurationMinutes);
+                                    MovieSchedule movieSchedule = new MovieSchedule();
+                                    movieSchedule.RoomId = idRoom;
+                                    movieSchedule.MovieId = IdMovie;
+                                    movieSchedule.StartTime = StartTime;
+                                    movieSchedule.EndTime = StartTime.Add(convertTime);
 
-                                _context.MovieSchedules.Add(movieSchedule);
-                                _context.SaveChanges();
+                                    _context.MovieSchedules.Add(movieSchedule);
+                                    _context.SaveChanges();
 
+                                }
+                                else
+                                {
+                                    ViewData["msg" + idRoom] = "Không thể sếp một bộ phim cùng một giờ chiếu";
+                                    Console.WriteLine("Không hợp lệ");
+                                }
                             }
                             else
                             {
-                                ViewData["msg" + idRoom] = "Không thể sếp một bộ phim cùng một giờ chiếu";
+                                ViewData["msg" + idRoom] = "Chưa đủ thời gian nghỉ";
                                 Console.WriteLine("Không hợp lệ");
                             }
                         }
@@ -221,12 +248,43 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
                     Console.WriteLine("Phim Chưa được công chiếu");
                 }
             }
-            await LoadDataFromApi();
             GetMovieSchedules(selectedDate);
+            await LoadDataFromApi();
             ViewData["SelectedDate"] = selectedDate;
             //OnGet();
             return Page();
         }
+
+
+        public bool CheckTimeBreak(DateTime selectedDate, TimeSpan newStartTime, int roomId)
+        {
+            // Lấy thời gian nghỉ từ thẻ input
+            int timeBreakInMinutes = int.Parse(Request.Form["TimeBreak"]);
+
+            var latestScheduleInRoom = _context.MovieSchedules
+                .Where(s => s.RoomId == roomId && s.StartTime.Date == selectedDate.Date)
+                .OrderByDescending(s => s.StartTime)
+                .FirstOrDefault();
+
+            if (latestScheduleInRoom != null)
+            {
+                // Tính thời gian kết thúc dự kiến của phim trước
+                TimeSpan previousMovieEndTime = latestScheduleInRoom.EndTime.TimeOfDay;
+
+                // Tính thời gian bắt đầu dự kiến của phim hiện tại
+                TimeSpan currentMovieStartTime = newStartTime;
+
+
+                if (currentMovieStartTime < previousMovieEndTime.Add(TimeSpan.FromMinutes(timeBreakInMinutes)))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+
 
         public bool IsEndTimeValid(DateTime selectedDate, DateTime newStartTime, int roomId)
         {
@@ -293,6 +351,6 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
         public string? poster_path { get; set; }
 
     }
-   
+
 
 }
