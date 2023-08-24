@@ -86,4 +86,6 @@
     <None Include="wwwroot\js\admin\smooth-scrollbar.min.js" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="https://json.schemastore.org/appveyor.json" /></VisualStudio></ProjectExtensions>
+
 </Project>
