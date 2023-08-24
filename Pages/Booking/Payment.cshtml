@@ -7,6 +7,7 @@
 
 @{
     var user = await UserManager.GetUserAsync(User);
+    var total = Model.Seats.Sum(sb => sb.SeatType.Price);
 }
 
 <div class="container mt-5">
@@ -29,7 +30,7 @@
                         <div class="col-6">
                             <h6>Detail</h6>
                             <address>
-                                Name: @Model.MovieSchedule.Movie.MovieIdApi<br>
+                                Name: @Model.MovieSchedule.Movie.Title<br>
                                 Time: @Model.MovieSchedule.StartTime.ToString("HH:mm tt") - @Model.MovieSchedule.EndTime.ToString("HH:mm tt")<br>
                                 Room: @Model.MovieSchedule.Room.RoomName<br>
                             </address>
@@ -39,7 +40,7 @@
                         <thead>
                             <tr>
                                 <th>Seat Name</th>
-                                <th>Price</th>
+                                <th class="text-end">Price</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -47,14 +48,14 @@
                             {
                                 <tr>
                                     <td>@sb.SeatName</td>
-                                    <td class="text-end">@sb.SeatType.Price</td>
+                                    <td class="text-end">@sb.SeatType.Price.ToString("0.00") VNĐ</td>
                                 </tr>
                             }
                         </tbody>
                         <tfoot>
                             <tr>
                                 <th>Total</th>
-                                <td class="text-end">@Model.Seats.Sum(sb => sb.SeatType.Price)</td>
+                                <td class="text-end">@total.ToString("0.00") VNĐ</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -63,7 +64,34 @@
         </div>
 
         <div class="col-md-6 offset-md-3">
-            <button class="btn btn-dark-blue">Pay Up</button>
+            @Html.AntiForgeryToken()
+            <button class="btn btn-dark-blue" id="button-pay">Pay Up</button>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $("#button-pay").click(function () {
+            const price = @total; // Make sure @total is properly defined or replaced with the actual total price
+            try {
+                $.post({
+                    url: "/Booking/Payment",
+                    data: { amount: price }, // Send the price as data
+                    headers: {
+                        RequestVerificationToken:
+                            $('input:hidden[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function (response) {
+                        window.location.href = response;
+                    },
+                    error: function (error) {
+                        console.log("Error making payment:", error);
+                    }
+                });
+            } catch (error) {
+                console.log("Error making payment:", error);
+            }
+        });
+    </script>
+}

@@ -72,7 +72,7 @@
                             $('input:hidden[name="__RequestVerificationToken"]').val()
                     },
                     success: function (response) {
-                        alert("Save Success");
+                        window.location.href = response;
                     },
                     error: function (error) {
                         alert("Save Failed");
