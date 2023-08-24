@@ -12,21 +12,6 @@ namespace PRN221_Project
 {
     public class Program
     {
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddRazorPages();
-            services.AddDbContext<CinphileDbContext>(options =>
-            {
-                var configuration = new ConfigurationBuilder()
-                   .SetBasePath(Directory.GetCurrentDirectory())
-                   .AddJsonFile("appsettings.json")
-                   .Build();
-                string connectString = configuration.GetConnectionString("DefaultConnection");
-                options.UseSqlServer(connectString);
-            });
-            //Dang ki Identity
-            
-        }
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -96,7 +81,7 @@ namespace PRN221_Project
 
             //VnPay
             builder.Services.AddHttpContextAccessor();
-            builder.Services.AddScoped<PaymentUtil>();
+            builder.Services.AddScoped<IVnPayService, VnPayService>();
 
             var app = builder.Build();
 
