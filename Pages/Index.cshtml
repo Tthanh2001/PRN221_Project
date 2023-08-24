@@ -28,9 +28,7 @@
             <div class="container-fluid">
                 <div class="netflix-row">
                     <div class="left d-flex align-items-center">
-                        <a class="navbar-brand" href="#">
-                            <img src="~/Assets/images/logo.png" alt="">
-                        </a>
+                      
                         <div class="netflix-nav">
                             <section>
                                 <button>Home</button>
@@ -54,11 +52,7 @@
                         </div>
                     </div>
                     <div class="right d-flex align-items-center">
-                        <form method="get">
-                            <input type="text" name="searchQuery" placeholder="Search for a movie..." />
-                            <input type="hidden" name="search" value="true" /> 
-                            <button type="submit">Search</button>
-                        </form>
+                        <i class="bi bi-search"></i>
                         <i class="bi bi-bell-fill"></i>
                         <section class="netflix-profile">
                         </section>
@@ -72,18 +66,8 @@
             <section class="netflix-home-video">
                 <div class="top"></div>
                 <div class="bottom"></div>
-                <video src="~/Assets/video/video.mp4" autoplay muted loop></video>
-                <div class="content">
-                    <section class="left">
-                        <img src="./images/image2.webp" alt="">
-
-                        <div class="d-flex mt-2">
-                            <button class="btn btn-light m-2"> <i class="bi bi-play-fill" style="color: black; padding: 0%;"></i> Play Now </button>
-                            <button class="btn btn-secondary m-2"><i class="bi bi-info-circle" style=" padding: 0%;"></i> More Info</button>
-                        </div>
-                    </section>
-
-                </div>
+                <video src="~/Assets/video/video.mp4" height="700px" width="100%" autoplay muted loop></video>
+                
             </section>
 
         </div>
@@ -106,18 +90,18 @@
                             <section class="d-flex" style="">
                                 @foreach (var item in Model.listFilmsPopular)
                                 {
-                                    if (count < 8)
+                                    if (count < 7)
                                     {
                                         <div class="card">
                                             <img src="@item.poster_path" class="card-img-top" alt="...">
                                             <div class="card-body">
                                                 <section class="d-flex justify-content-between">
                                                     <div>
-                                                        <i class="bi bi-play-circle-fill card-icon"></i>
+                                                        <a asp-page="Movies/MovieSchedule" asp-route-id="@item.Id"><i class="bi bi-play-circle-fill card-icon"></i></a>
                                                         <i class="bi bi-plus-circle card-icon"></i>
                                                     </div>
                                                     <div>
-                                                        <a asp-page="MovieDetail" asp-route-id="@item.Id"><i class="bi bi-info-circle"></i></a>
+                                                        <a asp-page="Movies/MovieDetail" asp-route-id="@item.Id"><i class="bi bi-info-circle"></i></a>
                                                     </div>
                                                 </section>
                                                 <section class="d-flex align-items-center justify-content-between">
@@ -142,7 +126,7 @@
                             <section class="d-flex" style="">
                                 @foreach (var item in Model.listFilmsPopular)
                                 {
-                                    if (count >= 8)
+                                    if (count > 7)
                                     {
                                         <div class="card">
                                             <img src="@item.poster_path" class="card-img-top" alt="...">
@@ -153,7 +137,7 @@
                                                         <i class="bi bi-plus-circle card-icon"></i>
                                                     </div>
                                                     <div>
-                                                    <a asp-page="MovieDetail" asp-route-id="@item.Id"><i class="bi bi-info-circle"></i></a>
+                                                        <a asp-page="MovieDetail" asp-route-id="@item.Id"><i class="bi bi-info-circle"></i></a>
 
                                                     </div>
                                                 </section>
@@ -193,51 +177,92 @@
                         <button class="tab-change-btn" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
                     </div>
                 </section>
-                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-
+                <div id="carouselExampleIndicators1" class="carousel slide" data-bs-ride="carousel">
+                    @{
+                        count = 0;
+                    }
                     <div class="carousel-inner" style="position: relative; overflow: visible;">
                         <div class="carousel-item active">
                             <section class="d-flex">
                                 @foreach (var item in Model.listFilmsToprate)
                                 {
-                                    <div class="card">
-                                        <img src="@item.poster_path" class="card-img-top" alt="...">
-                                        <div class="card-body">
-                                            <section class="d-flex justify-content-between">
-                                                <div>
-                                                    <i class="bi bi-play-circle-fill card-icon"></i>
-                                                    <i class="bi bi-plus-circle card-icon"></i>
-                                                </div>
-                                                <div>
-                                                    <a asp-page="MovieDetail" asp-route-id="@item.Id"><i class="bi bi-info-circle"></i></a>
+                                    @if(count<8){
+                                        <div class="card">
+                                            <img src="@item.poster_path" class="card-img-top" alt="...">
+                                            <div class="card-body">
+                                                <section class="d-flex justify-content-between">
+                                                    <div>
+                                                        <i class="bi bi-play-circle-fill card-icon"></i>
+                                                        <i class="bi bi-plus-circle card-icon"></i>
+                                                    </div>
+                                                    <div>
+                                                        <a asp-page="MovieDetail" asp-route-id="@item.Id"><i class="bi bi-info-circle"></i></a>
 
-                                                </div>
-                                            </section>
-                                            <section class="d-flex align-items-center justify-content-between">
-                                                <p class="netflix-card-text m-0" style="color: rgb(0, 186, 0);">97% match</p>
-                                                <span class="m-2 netflix-card-text text-white">Limited Series</span> <span class="border netflix-card-text p-1 text-white">HD</span>
+                                                    </div>
+                                                </section>
+                                                <section class="d-flex align-items-center justify-content-between">
+                                                    <p class="netflix-card-text m-0" style="color: rgb(0, 186, 0);">97% match</p>
+                                                    <span class="m-2 netflix-card-text text-white">Limited Series</span> <span class="border netflix-card-text p-1 text-white">HD</span>
 
-                                            </section>
-                                            <span class="netflix-card-text text-white">Provocative • Psychological • Thriller</span>
+                                                </section>
+                                                <span class="netflix-card-text text-white">Provocative • Psychological • Thriller</span>
+                                            </div>
                                         </div>
-                                    </div>
+                                    }
+                                    count++;
                                 }
 
 
                             </section>
                         </div>
+                        @{
+                            count = 0;  
+                        }
+                        <div class="carousel-item active">
+                            <section class="d-flex">
+                                @foreach (var item in Model.listFilmsToprate)
+                                {
+                                    @if(count>8){
+                                        <div class="card">
+                                            <img src="@item.poster_path" class="card-img-top" alt="...">
+                                            <div class="card-body">
+                                                <section class="d-flex justify-content-between">
+                                                    <div>
+                                                        <i class="bi bi-play-circle-fill card-icon"></i>
+                                                        <i class="bi bi-plus-circle card-icon"></i>
+                                                    </div>
+                                                    <div>
+                                                        <a asp-page="MovieDetail" asp-route-id="@item.Id"><i class="bi bi-info-circle"></i></a>
 
+                                                    </div>
+                                                </section>
+                                                <section class="d-flex align-items-center justify-content-between">
+                                                    <p class="netflix-card-text m-0" style="color: rgb(0, 186, 0);">97% match</p>
+                                                    <span class="m-2 netflix-card-text text-white">Limited Series</span> <span class="border netflix-card-text p-1 text-white">HD</span>
+
+                                                </section>
+                                                <span class="netflix-card-text text-white">Provocative • Psychological • Thriller</span>
+                                            </div>
+                                        </div>
+                                    }
+                                    count++;
+                                }
+
+
+                            </section>
+                        </div>
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators1" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Previous</span>
                     </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators1" data-bs-slide="next">
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Next</span>
                     </button>
                 </div>
             </div>
+
             <div class="container-fluid  slide3">
                 <section class="d-flex justify-content-between margin-right margin-title2">
                     <p class="text-white"> <b>Upcoming</b> </p>
@@ -252,7 +277,7 @@
                     <div class="carousel-inner" style="position: relative; overflow: visible;">
                         <div class="carousel-item active">
                             <section class="d-flex ">
-                                @foreach(var item in Model.listFilmsUpcoming)
+                                @foreach (var item in Model.listFilmsUpcoming)
                                 {
                                     <div class="card">
                                         <img src="@item.poster_path" class="card-img-top" alt="...">
@@ -352,11 +377,10 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-    -->
+ 
 
 
     <script src="./javaScript.js"></script>
 </body>
 </html>
-=======
->>>>>>> hungmv
+

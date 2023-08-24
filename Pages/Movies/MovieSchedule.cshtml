@@ -1,0 +1,82 @@
+﻿@page
+@model PRN221_Project.Pages.Home.MovieScheduleModel
+@{
+    Layout = "";
+}
+
+
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="~/css/StyleSheet.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="~/css/admin/nucleo-icons.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <!-- Bootstrap CSS -->
+
+    <link rel="stylesheet" href="~/css/landing.css">
+    <link rel="stylesheet" href="~/css/responsive.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <div style="position: relative;">
+        <!-- header -->
+        <nav class="navbar navbar-expand-lg netflix-navbar netflix-padding-left netflix-padding-right">
+            <div class="container-fluid">
+                <div class="netflix-row">
+                    <div class="left d-flex align-items-center">
+
+                        <div class="netflix-nav">
+                            <section>
+                                <button asp-page="Index">Home</button>
+                                <button>TV Shows</button>
+                                <button>Movies</button>
+                                <button>News & Popular</button>
+                                <button>My List</button>
+                            </section>
+                        </div>
+                        <div class="netflix-dropdown-box dropdown">
+                            <button class="netflix-dropdown dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                Browse
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <li><a class="dropdown-item" asp-page="Index">Home</a></li>
+                                <li><a class="dropdown-item" href="#">TV Shows</a></li>
+                                <li><a class="dropdown-item" href="#">Movies</a></li>
+                                <li><a class="dropdown-item" href="#">News & Popular</a></li>
+                                <li><a class="dropdown-item" href="#">My List</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="right d-flex align-items-center">
+                        <i class="bi bi-search"></i>
+                        <i class="bi bi-bell-fill"></i>
+                        <section class="netflix-profile">
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div class="movie-card" >
+        <div class="container" style=" margin-top:50px">
+            <div class="d-inline-block">
+                <h2>Date</h2>
+                @foreach (var item in Model.date)
+                {
+                       <button ><a class="bg-success" asp-route-day="@item" asp-route-id="@Model.Id">@item</a></button> 
+                }
+            </div>
+            <hr />
+            <h2>Start Time</h2>
+            <div>
+                @foreach (var item in Model.movieSchedules)
+                {
+                    <button>@item.StartTime.ToString("HH:mm")</button>
+                }
+            </div>
+        </div> <!-- end container -->
+
+    </div>
+</body>
+</html>
