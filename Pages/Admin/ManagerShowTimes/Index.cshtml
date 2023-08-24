@@ -182,17 +182,31 @@
                                     </select>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Start Time</label>
-                                    <select class="form-select" name="StartTime-@r.Id">
-                                        @for (int hour = 9; hour <= 23; hour++)
-                                        {
-                                            for (int minute = 0; minute < 60; minute += 30)
-                                            {
-                                                <option value="@($"{hour:D2}:{minute:D2}")">@($"{hour:D2}:{minute:D2}")</option>
-                                            }
-                                        }
-                                        <option value="24:00">24:00</option>
-                                    </select>
+                                    <label class="form-label">Start Time(House- minute)</label>
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col">
+                                                <select class="form-select" name="StartTimeHour-@r.Id">
+                                                    @for (int hour = 8; hour <= 24; hour++)
+                                                    {
+                                                        <option value="@hour">@hour</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            <div class="col">
+                                                <select class="form-select" name="StartTimeMinute-@r.Id">
+                                                    @for (int minute = 0; minute < 60; minute += 1)
+                                                    {
+                                                        <option value="@minute">@($"{minute:D2}")</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="duration" class="form-label">TimeBreak</label>
+                                    <input type="number" min="5" max="15" value="5" class="form-control" id="TimeBreak" name="TimeBreak">
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -215,7 +229,19 @@
         padding: 10px;
     }
 
+    select.form-select:focus {
+        border: 1px solid #ced4da;
+        background: white;
+        padding: 10px;
+    }
+
     select.form-select {
+        border: 1px solid #ced4da;
+        background: white;
+        padding: 10px;
+    }
+
+    input#TimeBreak {
         border: 1px solid #ced4da;
         background: white;
         padding: 10px;

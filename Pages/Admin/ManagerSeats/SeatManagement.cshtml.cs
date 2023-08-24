@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Packaging;
@@ -52,83 +52,113 @@ namespace PRN221_Project.Pages.Admin.ManagerSeats
 
             return Page();
         }
+        public bool IsAnyMoviePlayingInRoom(int roomId)
+        {
+            var currentTime = DateTime.Now;
 
+            var isPlaying = _context.MovieSchedules
+                .Any(schedule => schedule.RoomId == roomId && schedule.StartTime <= currentTime && schedule.EndTime >= currentTime);
+
+            return isPlaying;
+        }
+        public bool IsRoomPlayingMovie(int roomId)
+        {
+            var currentTime = DateTime.Now;
+
+            var isPlaying = _context.MovieSchedules
+                .Any(schedule => schedule.RoomId == roomId && schedule.StartTime <= currentTime && schedule.EndTime >= currentTime);
+
+            return isPlaying;
+        }
         public async Task<IActionResult> OnPostAsync([FromBody] List<SelectedSeat> selectedSeats)
         {
-            if (selectedSeats == null)
+            int roomId = selectedSeats[0].RoomId;
+            if (IsRoomPlayingMovie(roomId))
             {
-                return NotFound();
+                ViewData["Message"] = "Phòng đang chiếu phim, không thể thay đổi thông tin ghế.";
+                return Page();
             }
-
-            Room = await _context.Rooms
-                .Include(r => r.Seats)
-                .FirstOrDefaultAsync(r => r.Id == selectedSeats[0].RoomId);
-
-            if (Room == null)
-            {
-                return NotFound();  // Room not found
-            }
-
-            if (Room.Seats.Count == 0)
-            {
-                foreach (var seat in selectedSeats)
-                {
-                    await _context.Seats.AddAsync(new Seat
-                    {
-                        SeatCol = seat.Col,
-                        SeatRow = seat.Row,
-                        IsBookable = seat.Available,
-                        SeatName = seat.SeatName,
-                        RoomId = seat.RoomId,
-                        SeatTypeId = seat.TypeId
-                    });
-                }
-            }
-
             else
             {
-                var existingSeats = Room.Seats.ToDictionary(seat => (seat.SeatRow, seat.SeatCol));
-                var seatsToDelete = new List<Seat>();
-
-                foreach (var selectedSeat in selectedSeats)
+                if (selectedSeats == null)
                 {
-                    var seatKey = (selectedSeat.Row, selectedSeat.Col);
-                    if (existingSeats.TryGetValue(seatKey, out var existingSeat))
-                    {
-                        // Update existing seat attributes
-                        existingSeat.SeatTypeId = selectedSeat.TypeId;
-                        existingSeat.IsBookable = selectedSeat.Available;
-                        existingSeat.SeatName = selectedSeat.SeatName;
+                    return NotFound();
+                }
 
-                        // Remove seat from dictionary to avoid duplicate updates
-                        existingSeats.Remove(seatKey);
-                    }
-                    else
+                Room = await _context.Rooms
+                    .Include(r => r.Seats)
+                    .FirstOrDefaultAsync(r => r.Id == selectedSeats[0].RoomId);
+
+                if (Room == null)
+                {
+                    return NotFound();  // Room not found
+                }
+
+                if (Room.Seats.Count == 0)
+                {
+                    foreach (var seat in selectedSeats)
                     {
-                        //Add not exist seat
                         await _context.Seats.AddAsync(new Seat
                         {
-                            SeatCol = selectedSeat.Col,
-                            SeatRow = selectedSeat.Row,
-                            IsBookable = selectedSeat.Available,
-                            SeatName = selectedSeat.SeatName,
-                            RoomId = selectedSeat.RoomId,
-                            SeatTypeId = selectedSeat.TypeId
+                            SeatCol = seat.Col,
+                            SeatRow = seat.Row,
+                            IsBookable = seat.Available,
+                            SeatName = seat.SeatName,
+                            RoomId = seat.RoomId,
+                            SeatTypeId = seat.TypeId
                         });
                     }
                 }
 
-                // Mark seats for deletion
-                seatsToDelete.AddRange(existingSeats.Values);
-
-                // Remove seats marked for deletion from both database and room's collection
-                if (seatsToDelete.Any())
+                else
                 {
-                    _context.Seats.RemoveRange(seatsToDelete);
-                    var seatsToKeep = Room.Seats.Where(seat => !seatsToDelete.Contains(seat)).ToList();
-                    Room.Seats.Clear();
-                    Room.Seats.AddRange(seatsToKeep);
+                    var existingSeats = Room.Seats.ToDictionary(seat => (seat.SeatRow, seat.SeatCol));
+                    var seatsToDelete = new List<Seat>();
+
+                    foreach (var selectedSeat in selectedSeats)
+                    {
+                        var seatKey = (selectedSeat.Row, selectedSeat.Col);
+                        if (existingSeats.TryGetValue(seatKey, out var existingSeat))
+                        {
+                            // Update existing seat attributes
+                            existingSeat.SeatTypeId = selectedSeat.TypeId;
+                            existingSeat.IsBookable = selectedSeat.Available;
+                            existingSeat.SeatName = selectedSeat.SeatName;
+
+                            // Remove seat from dictionary to avoid duplicate updates
+                            existingSeats.Remove(seatKey);
+                        }
+                        else
+                        {
+                            //Add not exist seat
+                            await _context.Seats.AddAsync(new Seat
+                            {
+                                SeatCol = selectedSeat.Col,
+                                SeatRow = selectedSeat.Row,
+                                IsBookable = selectedSeat.Available,
+                                SeatName = selectedSeat.SeatName,
+                                RoomId = selectedSeat.RoomId,
+                                SeatTypeId = selectedSeat.TypeId
+                            });
+                        }
+                    }
+
+                    // Mark seats for deletion
+                    seatsToDelete.AddRange(existingSeats.Values);
+
+                    // Remove seats marked for deletion from both database and room's collection
+                    if (seatsToDelete.Any())
+                    {
+                        _context.Seats.RemoveRange(seatsToDelete);
+                        var seatsToKeep = Room.Seats.Where(seat => !seatsToDelete.Contains(seat)).ToList();
+                        Room.Seats.Clear();
+                        Room.Seats.AddRange(seatsToKeep);
+                    }
                 }
+
+                await _context.SaveChangesAsync();
+
+                return RedirectToPage("/Admin/ManagerRoom/Index");
             }
 
             await _context.SaveChangesAsync();
