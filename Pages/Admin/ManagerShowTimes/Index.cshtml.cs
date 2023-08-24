@@ -78,7 +78,6 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
                 string json = await response.Content.ReadAsStringAsync();
                 dynamic dataFromApi = JsonConvert.DeserializeObject(json);
 
-
                 foreach (var result in dataFromApi["results"])
                 {
                     foreach (var item in movie)
@@ -250,8 +249,7 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
             }
             GetMovieSchedules(selectedDate);
             await LoadDataFromApi();
-            ViewData["SelectedDate"] = selectedDate;
-            //OnGet();
+            ViewData["SelectedDate"] = selectedDate;            
             return Page();
         }
 
@@ -293,13 +291,34 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
                 .OrderByDescending(s => s.StartTime)
                 .FirstOrDefault();
 
-            if (latestScheduleInRoom != null && newStartTime < latestScheduleInRoom.EndTime)
+            if (latestScheduleInRoom != null && newStartTime <= latestScheduleInRoom.EndTime) // Thay đổi điều kiện ở đây
             {
                 return false;
             }
 
             return true;
         }
+        //public bool IsEndTimeValid(DateTime selectedDate, DateTime newStartTime, int roomId)
+        //{
+        //    var latestScheduleInRoom = _context.MovieSchedules
+        //        .Where(s => s.RoomId == roomId && s.StartTime.Date == selectedDate.Date)
+        //        .OrderByDescending(s => s.StartTime)
+        //        .FirstOrDefault();
+
+        //    if (latestScheduleInRoom != null)
+        //    {
+        //        // Tính thời gian kết thúc của phim trước
+        //        TimeSpan previousMovieEndTime = latestScheduleInRoom.EndTime.TimeOfDay;
+
+        //        // Kiểm tra xem thời gian bắt đầu của lịch mới có lớn hơn thời gian kết thúc của phim trước hay không
+        //        if (newStartTime < previousMovieEndTime)
+        //        {
+        //            return false;
+        //        }
+        //    }
+
+        //    return true;
+        //}
         public bool CheckStartTime(DateTime StartTime)
         {
             DateTime time = DateTime.Now;
