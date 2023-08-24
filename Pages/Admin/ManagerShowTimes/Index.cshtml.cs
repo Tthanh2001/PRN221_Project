@@ -293,20 +293,6 @@ namespace PRN221_Project.Pages.Admin.ManagerShowTimes
         public string? poster_path { get; set; }
 
     }
-    public class CombinedMovie
-    {
-        public int Id { get; set; }
-        public string poster_path { get; set; }
-        public string title { get; set; }
-        public Movie MovieFromDb { get; set; }
-
-        public CombinedMovie(MovieApi apiMovie, Movie dbMovie)
-        {
-            Id = apiMovie.Id.Value;
-            poster_path = apiMovie.poster_path;
-            title = apiMovie.title;
-            MovieFromDb = dbMovie;
-        }
-    }
+   
 
 }

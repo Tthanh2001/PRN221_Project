@@ -33,52 +33,58 @@
                         <tbody>
                             @foreach (var m in Model.movies)
                             {
-                                <tr>
-                                    <td>
-                                        <div class="d-flex px-2 py-1">
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">@m.MovieIdApi</h6>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="text-xs font-weight-bold mb-0">@m.DurationMinutes</p>
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-bold">@m.ReleaseDate</span>
-                                    </td>
-                                    @if (m.IsReleased == true)
+                                @foreach (var a in Model.listFilmsPopular)
+                                {
+                                    @if (m.MovieIdApi == a.Id.ToString())
                                     {
-                                        <td class="align-middle text-center text-sm">
-                                            <span class="badge badge-sm bg-gradient-success">Released</span>
-                                        </td>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">@a.title</h6>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">@m.DurationMinutes</p>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <span class="text-secondary text-xs font-weight-bold">@m.ReleaseDate</span>
+                                            </td>
+                                            @if (m.IsReleased == true)
+                                            {
+                                                <td class="align-middle text-center text-sm">
+                                                    <span class="badge badge-sm bg-gradient-success">Released</span>
+                                                </td>
+                                            }
+                                            else if (m.IsReleased == false)
+                                            {
+                                                <td class="align-middle text-center text-sm">
+                                                    <span class="badge badge-sm bg-gradient-info">Stop Release</span>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td class="align-middle text-center text-sm">
+                                                    <span class="badge badge-sm bg-gradient-secondary">Upcoming</span>
+                                                </td>
+                                            }
+                                            <td class="align-middle">
+                                                <a asp-page="./Edit" asp-route-id="@m.Id" class="btn bg-gradient-info">
+                                                    Edit
+                                                </a>
+                                            </td>
+                                            <td class="align-middle">
+                                                <form id="Delete-Movies" method="post" asp-page-handler="Delete" onsubmit="return SubmitFormDelete()">
+                                                    <input type="hidden" asp-for="@m.Id" name="id" />
+                                                    <button class="btn btn-danger">
+                                                        Delete
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
                                     }
-                                    else if (m.IsReleased == false)
-                                    {
-                                        <td class="align-middle text-center text-sm">
-                                            <span class="badge badge-sm bg-gradient-info">Stop Release</span>
-                                        </td>
-                                    }
-                                    else
-                                    {
-                                        <td class="align-middle text-center text-sm">
-                                            <span class="badge badge-sm bg-gradient-secondary">Upcoming</span>
-                                        </td>
-                                    }
-                                    <td class="align-middle">
-                                        <a asp-page="./Edit" asp-route-id="@m.Id" class="btn bg-gradient-info">
-                                            Edit
-                                        </a>
-                                    </td>
-                                    <td class="align-middle">
-                                        <form id="Delete-Movies" method="post" asp-page-handler="Delete" onsubmit="return SubmitFormDelete()">
-                                            <input type="hidden" asp-for="@m.Id" name="id" />
-                                            <button class="btn btn-danger">
-                                                Delete
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
+                                }
                             }
                         </tbody>
                     </table>
@@ -103,7 +109,7 @@
                     </div>
                     <div class="mb-3">
                         <label asp-for="AddMovie.ReleaseDate" for="releaseDate" class="form-label">Release Date</label>
-                        <input asp-for="AddMovie.ReleaseDate" type="date" class="form-control" id="releaseDate" name="releaseDate">
+                        <input asp-for="AddMovie.ReleaseDate" type="date" class="form-control" id="releaseDate" name="releaseDate" required>
                     </div>
                     <div class="mb-3">
                         <label asp-for="AddMovie.DurationMinutes" for="duration" class="form-label">Duration (minutes)</label>
